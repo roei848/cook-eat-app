@@ -31,7 +31,6 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome Back 👋</Text>
-
       <Input
         label="Email"
         placeholder="Enter your email"
@@ -40,7 +39,6 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         value={email}
         onChangeText={setEmail}
       />
-
       <Input
         label="Password"
         placeholder="Enter your password"
@@ -56,7 +54,6 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         onPress={() => navigation.navigate("Register")}
         style={{ marginTop: 16 }}
       />
-
       <FlatButton
         title="Forgot password?"
         onPress={() => navigation.navigate("ForgotPassword")}

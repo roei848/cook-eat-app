@@ -26,8 +26,7 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
 
     try {
       setLoading(true);
-      await registerWithEmail(email, password);
-      // Later we will save user info in Firestore (name, avatar, etc.)
+      await registerWithEmail(name.trim(), email.trim(), password.trim());
     } catch (error: any) {
       Alert.alert("Registration Failed", error.message);
     } finally {

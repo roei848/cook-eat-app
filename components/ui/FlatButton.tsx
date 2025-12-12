@@ -9,7 +9,13 @@ interface FlatButtonProps {
   textStyle?: any;
 }
 
-export default function FlatButton({ title, onPress, disabled = false, style, textStyle }: FlatButtonProps) {
+export default function FlatButton({
+  title,
+  onPress,
+  disabled = false,
+  style,
+  textStyle,
+}: FlatButtonProps) {
   return (
     <TouchableOpacity
       onPress={onPress}

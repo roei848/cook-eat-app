@@ -1,8 +1,14 @@
+// src/config/firebase.ts
+
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import {
+  initializeAuth,
+  GoogleAuthProvider,
+  getReactNativePersistence,
+} from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getFirestore } from "firebase/firestore";
 
-// TODO: replace with your Firebase config values
 const firebaseConfig = {
   apiKey: "AIzaSyCbJlh_062a2pOwcdMyyjhKgDsokc4Ruwg",
   authDomain: "cook-eat-app-88800.firebaseapp.com",
@@ -12,13 +18,15 @@ const firebaseConfig = {
   appId: "1:963986344144:web:c27a06dcc7e35daa9ab6d5",
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 export const firebaseApp = initializeApp(firebaseConfig);
 
-// Auth
-export const auth = getAuth(firebaseApp);
+// 🔥 Initialize Auth with React Native persistence
+export const auth = initializeAuth(firebaseApp, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
-// Google provider
+// Google Auth Provider
 export const googleProvider = new GoogleAuthProvider();
 
 // Firestore
