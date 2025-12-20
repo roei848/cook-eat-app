@@ -4,7 +4,7 @@ import HomeScreen from "../screens/rootScreens/HomeScreen";
 import SearchScreen from "../screens/rootScreens/SearchScreen";
 import AddRecipeScreen from "../screens/rootScreens/AddRecipeScreen";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
-import ProfileScreen from "../screens/rootScreens/ProfileScreen";
+import ProfileStack from "./rootScreens/profile/ProfileStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +15,7 @@ export default function AppTabs() {
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="AddRecipe" component={AddRecipeScreen} />
       <Tab.Screen name="Grocery" component={GroceryListScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }

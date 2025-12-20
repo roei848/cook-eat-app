@@ -1,5 +1,5 @@
 export interface UserProfile {
-  id: string; // Firestore UID
+  uid: string; // Firestore UID
   name: string;
   email: string;
   avatarUrl?: string;
