@@ -1,17 +1,17 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Text, Switch, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 
 import { signOut } from "firebase/auth";
 import { RootState } from "../../../store/store";
+import { ThemeColors } from "../../../theme/colors";
 import { setProfile } from "../../../store/userSlice";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { auth } from "../../../services/firebase/firebaseConfig";
 import { updateUserProfile } from "../../../services/firebase/userService";
 
 import Button from "../../../components/ui/Button";
+import ThemeToggle from "../../../components/profile/ThemeToggle";
 import ProfileAvatar from "../../../components/profile/ProfileAvatar";
-import { ThemeColors } from "../../../theme/colors";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
@@ -19,24 +19,20 @@ export default function ProfileScreen() {
   const styles = createStyles(colors);
   const profile = useSelector((state: RootState) => state.user.profile);
 
-  const [darkModeState, setDarkModeState] = useState(
-    profile?.darkMode || false
-  );
-
   if (!profile) return <Text>Loading...</Text>;
 
-  const handleDarkModeChange = async (value: boolean) => {
-    setDarkModeState(value);
+  const handleThemeChange = async (theme: "light" | "dark") => {
+    const isDark = theme === "dark";
 
     dispatch(
       setProfile({
         ...profile,
-        darkMode: value,
+        darkMode: isDark,
       })
     );
 
     await updateUserProfile(profile.uid, {
-      darkMode: value,
+      darkMode: isDark,
     });
   };
 
@@ -71,7 +67,10 @@ export default function ProfileScreen() {
 
       <View style={styles.darkModeContainer}>
         <Text style={styles.darkModeText}>Dark Mode</Text>
-        <Switch value={darkModeState} onValueChange={handleDarkModeChange} />
+        <ThemeToggle
+          value={profile.darkMode ? "dark" : "light"}
+          onChange={handleThemeChange}
+        />
       </View>
 
       <Button
@@ -88,6 +87,7 @@ const createStyles = (colors: ThemeColors) =>
     container: {
       flex: 1,
       padding: 20,
+      paddingTop: 80,
       backgroundColor: colors.background.default,
     },
     name: {
@@ -122,4 +122,3 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.danger[500],
     },
   });
-
