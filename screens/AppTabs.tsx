@@ -33,7 +33,7 @@ export default function AppTabs() {
       iconOutline: "home-outline",
     },
     {
-      name: "Search",
+      name: "SearchTab",
       component: SearchStack,
       icon: "search",
       iconOutline: "search-outline",
