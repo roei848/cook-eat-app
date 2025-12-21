@@ -66,7 +66,7 @@ export default function ProfileScreen() {
       <Text style={styles.email}>{profile.email}</Text>
 
       <View style={styles.darkModeContainer}>
-        <Text style={styles.darkModeText}>Dark Mode</Text>
+        <Text style={styles.darkModeText}>בחירת עיצוב</Text>
         <ThemeToggle
           value={profile.darkMode ? "dark" : "light"}
           onChange={handleThemeChange}

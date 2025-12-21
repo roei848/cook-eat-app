@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
+  I18nManager,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -38,7 +39,7 @@ export default function ThemeToggle({ value, onChange }: Props) {
 
   const indicatorTranslate = translateX.interpolate({
     inputRange: [0, 1],
-    outputRange: [4, 64], // 👈 precise optical alignment
+    outputRange: I18nManager.isRTL ? [64, 4] : [4, 64],
   });
 
   return (
@@ -79,7 +80,7 @@ export default function ThemeToggle({ value, onChange }: Props) {
             },
           ]}
         >
-          Light
+          בהיר
         </Text>
       </TouchableOpacity>
 
@@ -101,7 +102,7 @@ export default function ThemeToggle({ value, onChange }: Props) {
             },
           ]}
         >
-          Dark
+          כהה
         </Text>
       </TouchableOpacity>
     </View>
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     height: 48,
     width: 128,
     borderRadius: 24,
-    flexDirection: "row",
+    flexDirection: I18nManager.isRTL ? "row" : "row-reverse",
     padding: 4,
     overflow: "hidden",
   },
