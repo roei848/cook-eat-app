@@ -1,23 +1,18 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
-import { Provider } from 'react-redux';
-import { store } from './store/store';
-import RootNavigator from './screens/RootNavigator';
+import { Provider } from "react-redux";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { store } from "./store/store";
+import RootNavigator from "./screens/RootNavigator";
 
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
     </Provider>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

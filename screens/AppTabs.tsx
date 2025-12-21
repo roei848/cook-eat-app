@@ -1,6 +1,6 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
 import { View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { ThemeColors } from "../theme/colors";
 import { useThemeColors } from "../theme/useThemeColors";
@@ -118,7 +118,7 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.primary[500],
       justifyContent: "center",
       alignItems: "center",
-      marginBottom: 24, // lifts button up
+      marginBottom: 24,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.3,
