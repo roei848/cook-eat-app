@@ -6,10 +6,10 @@ import { ThemeColors } from "../theme/colors";
 import { useThemeColors } from "../theme/useThemeColors";
 
 import HomeScreen from "../screens/rootScreens/HomeScreen";
-import SearchScreen from "../screens/rootScreens/SearchScreen";
 import AddRecipeScreen from "../screens/rootScreens/AddRecipeScreen";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
 import ProfileStack from "./rootScreens/profile/ProfileStack";
+import SearchStack from "./rootScreens/search/SearchStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +34,7 @@ export default function AppTabs() {
     },
     {
       name: "Search",
-      component: SearchScreen,
+      component: SearchStack,
       icon: "search",
       iconOutline: "search-outline",
     },

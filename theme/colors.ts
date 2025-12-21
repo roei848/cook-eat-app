@@ -4,6 +4,12 @@ export const lightColors = {
     secondary: "#F8F8F8",
   },
 
+  header: {
+    background: "#FFFFFF",
+    text: "#111111",
+    border: "#E5E5E5",
+  },
+
   card: {
     default: "#F0F0F0",
   },
@@ -36,6 +42,12 @@ export const darkColors = {
   background: {
     default: "#0F0F0F",
     secondary: "#1A1A1A",
+  },
+
+  header: {
+    background: "#1A1A1A",
+    text: "#FFFFFF",
+    border: "#2A2A2A",
   },
 
   card: {
