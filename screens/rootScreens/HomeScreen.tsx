@@ -3,29 +3,36 @@ import { StyleSheet, Text, View } from "react-native";
 
 import Screen from "../Screen";
 import Button from "../../components/ui/Button";
-import { logout } from "../../services/firebase/authService";
 import { useThemeColors } from "../../theme/useThemeColors";
+import { recipes } from "../../mocks/recipes";
+import { createRecipe } from "../../services/firebase/recipeService";
 
 export default function HomeScreen() {
   const colors = useThemeColors();
-  const handleLogout = async () => {
-    try {
-      await logout();
-      // RootNavigator will automatically redirect to AuthStack
-    } catch (error: any) {
-      console.log("Logout error:", error.message);
-    }
+  
+
+  const addDummyRecipe = async () => {
+    console.log("Adding dummy recipes...");
+
+    // for (const recipe of recipes) {
+    //   const id = await createRecipe(recipe);
+    //   console.log("Recipe added:", recipe.title, id);
+    // }
+
+    console.log("Recipes added:", recipes.length);
   };
 
   return (
     <Screen>
       <View style={styles.container}>
-        <Text style={[styles.title, { color: colors.text.primary }]}>Home Screen</Text>
+        <Text style={[styles.title, { color: colors.text.primary }]}>
+          Home Screen
+        </Text>
 
         <Button
-          title="Logout"
-          onPress={handleLogout}
-          style={{ marginTop: 20, width: 150 }}
+          title="Add Dummy Recipe"
+          onPress={addDummyRecipe}
+          style={{ marginTop: 20, width: 200 }}
         />
       </View>
     </Screen>

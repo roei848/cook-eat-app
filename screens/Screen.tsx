@@ -19,8 +19,6 @@ export default function Screen({ children }: Props) {
     (state: RootState) => state.user.profile?.darkMode || false
   );
 
-  console.log("isDark", isDark);
-
   return (
     <>
       <StatusBar

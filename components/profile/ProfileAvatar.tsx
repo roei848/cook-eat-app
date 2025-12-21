@@ -35,8 +35,6 @@ export default function ProfileAvatar({ uid, avatarUrl, profile }: Props) {
 
       const newAvatarUrl = await uploadProfileImage(uid, uri);
       
-      console.log("newAvatarUrl", newAvatarUrl);
-
       dispatch(
         setProfile({
           ...profile,
@@ -44,8 +42,6 @@ export default function ProfileAvatar({ uid, avatarUrl, profile }: Props) {
         })
       );
 
-      console.log("newAvatarUrl", newAvatarUrl);
-      
       await updateUserProfile(uid, {
         avatarUrl: newAvatarUrl,
       });

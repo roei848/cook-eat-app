@@ -1,6 +1,6 @@
 import { Category } from "./enums/category";
-import { Difficulty } from "./enums/diffucalty";
 import { Relative } from "./enums/relatives";
+import { Difficulty } from "./enums/diffucalty";
 
 export interface Ingredient {
   name: string;
@@ -13,7 +13,7 @@ export interface Step {
 }
 
 export interface Recipe {
-  id: string;
+  id?: string; // Firestore ID
   title: string;
   description: string;
   ingredients: Ingredient[];
@@ -24,4 +24,5 @@ export interface Recipe {
   difficulty: Difficulty;
   timeInMinutes: number;
   byWho: string;
+  createdAt: number;
 }
