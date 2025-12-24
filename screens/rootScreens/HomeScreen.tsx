@@ -6,18 +6,20 @@ import Button from "../../components/ui/Button";
 import { useThemeColors } from "../../theme/useThemeColors";
 import { recipes } from "../../mocks/recipes";
 import { createRecipe } from "../../services/firebase/recipeService";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 export default function HomeScreen() {
   const colors = useThemeColors();
-  
+  const recipesState = useSelector((state: RootState) => state.recipes);
 
   const addDummyRecipe = async () => {
     console.log("Adding dummy recipes...");
 
-    // for (const recipe of recipes) {
-    //   const id = await createRecipe(recipe);
-    //   console.log("Recipe added:", recipe.title, id);
-    // }
+    for (const recipe of recipes) {
+      const id = await createRecipe(recipe);
+      console.log("Recipe added:", recipe.title, id);
+    }
 
     console.log("Recipes added:", recipes.length);
   };

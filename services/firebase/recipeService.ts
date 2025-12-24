@@ -5,11 +5,42 @@ import {
   getDocs,
   updateDoc,
   collection,
-  serverTimestamp,
+  query,
+  orderBy,
+  onSnapshot,
+  Timestamp,
 } from "firebase/firestore";
 
 import { auth, db } from "./firebaseConfig";
 import { Recipe } from "../../types/recipe";
+
+export function subscribeToRecipes(
+  onChange: (recipes: Recipe[]) => void,
+  onError?: (error: Error) => void
+) {
+  const q = query(collection(db, "recipes"), orderBy("createdAt", "desc"));
+
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const recipes: Recipe[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+
+        return {
+          id: doc.id,
+          createdAt:
+            data.createdAt instanceof Timestamp
+              ? data.createdAt.toDate()
+              : data.createdAt,
+          ...data,
+        } as Recipe;
+      });
+
+      onChange(recipes);
+    },
+    onError
+  );
+}
 
 /**
  * Fetch single recipe by id
@@ -52,7 +83,7 @@ export async function createRecipe(
     await setDoc(ref, {
       ...data,
       authorId: auth.currentUser?.uid,
-      createdAt: serverTimestamp(),
+      createdAt: new Date().getTime(),
     });
 
     return ref.id;

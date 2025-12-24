@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import Screen from "../../Screen";
@@ -10,7 +10,7 @@ import { ThemeColors } from "../../../theme/colors";
 type Props = NativeStackScreenProps<SearchStackParamList, "Category">;
 
 export default function CategoryScreen({ route }: Props) {
-  const { category } = route.params;
+  const { category, recipes } = route.params;
   const colors = useThemeColors();
   const styles = createStyles(colors);
 
@@ -18,6 +18,12 @@ export default function CategoryScreen({ route }: Props) {
     <Screen>
       <View style={styles.container}>
         <Text style={styles.title}>{category}</Text>
+        <FlatList
+          data={recipes}
+          renderItem={({ item }) => (
+            <Text style={{ color: colors.text.primary }}>{item.title}</Text>
+          )}
+        />
       </View>
     </Screen>
   );

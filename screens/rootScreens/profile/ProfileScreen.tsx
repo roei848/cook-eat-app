@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Alert } from "react-native";
 import { signOut } from "firebase/auth";
 import { RootState } from "../../../store/store";
 import { ThemeColors } from "../../../theme/colors";
-import { setProfile } from "../../../store/userSlice";
+import { clearProfile, setProfile } from "../../../store/userSlice";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { auth } from "../../../services/firebase/firebaseConfig";
 import { updateUserProfile } from "../../../services/firebase/userService";
@@ -12,6 +12,8 @@ import { updateUserProfile } from "../../../services/firebase/userService";
 import Button from "../../../components/ui/Button";
 import ThemeToggle from "../../../components/profile/ThemeToggle";
 import ProfileAvatar from "../../../components/profile/ProfileAvatar";
+import { clearRecipes } from "../../../store/recipeSlice";
+import { logout } from "../../../services/firebase/authService";
 
 export default function ProfileScreen() {
   const dispatch = useDispatch();
@@ -46,7 +48,9 @@ export default function ProfileScreen() {
           text: "Log out",
           style: "destructive",
           onPress: async () => {
-            await signOut(auth);
+            await logout();
+            dispatch(clearRecipes());
+            dispatch(clearProfile());
           },
         },
       ],
