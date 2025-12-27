@@ -1,27 +1,32 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import Screen from "../../Screen";
-import { useThemeColors } from "../../../theme/useThemeColors";
 import { SearchStackParamList } from "./SearchStack";
-import { ThemeColors } from "../../../theme/colors";
+import { useThemeColors } from "../../../theme/useThemeColors";
+import Screen from "../../Screen";
+import RecipeCard from "../../../components/recipe/RecipeCard";
 
 type Props = NativeStackScreenProps<SearchStackParamList, "Category">;
 
-export default function CategoryScreen({ route }: Props) {
-  const { category, recipes } = route.params;
+export default function CategoryScreen({ route, navigation }: Props) {
+  const { recipes } = route.params;
   const colors = useThemeColors();
-  const styles = createStyles(colors);
 
   return (
     <Screen>
       <View style={styles.container}>
-        <Text style={styles.title}>{category}</Text>
         <FlatList
           data={recipes}
+          keyExtractor={(item) => item.id?.toString() ?? item.title}
+          contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <Text style={{ color: colors.text.primary }}>{item.title}</Text>
+            <RecipeCard
+              recipe={item}
+              onPress={() => {
+                navigation.navigate("Recipe", { recipe: item });
+              }}
+            />
           )}
         />
       </View>
@@ -29,16 +34,20 @@ export default function CategoryScreen({ route }: Props) {
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    title: {
-      fontSize: 26,
-      fontWeight: "600",
-      color: colors.text.primary,
-    },
-  });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  listContent: {
+    width: "100%",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 12,
+  },
+});

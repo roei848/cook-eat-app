@@ -6,10 +6,12 @@ import CategoryScreen from "./CategoryScreen";
 import { Recipe } from "../../../types/recipe";
 import { Category } from "../../../types/enums/category";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import RecipeScreen from "../sharedScreens/RecipeScreen";
 
 export type SearchStackParamList = {
   Search: undefined;
   Category: { category: Category; recipes: Recipe[] };
+  Recipe: { recipe: Recipe };
 };
 
 const Stack = createNativeStackNavigator<SearchStackParamList>();
@@ -37,6 +39,13 @@ export default function SearchStack() {
         component={CategoryScreen}
         options={({ route }) => ({
           title: route.params.category,
+        })}
+      />
+      <Stack.Screen
+        name="Recipe"
+        component={RecipeScreen}
+        options={({ route }) => ({
+          title: route.params.recipe.title,
         })}
       />
     </Stack.Navigator>

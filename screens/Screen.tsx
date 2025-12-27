@@ -1,12 +1,11 @@
 import React from "react";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
-import { useThemeColors } from "../theme/useThemeColors";
-import { RootState } from "../store/store";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
+import { StatusBar } from "expo-status-bar";
+
+import { RootState } from "../store/store";
+import { useThemeColors } from "../theme/useThemeColors";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   children: React.ReactNode;
@@ -26,16 +25,16 @@ export default function Screen({ children }: Props) {
         backgroundColor={colors.background.default}
       />
 
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           backgroundColor: colors.background.default,
-          paddingTop: insets.top,
+          paddingTop: 20,
           paddingBottom: insets.bottom,
         }}
       >
         {children}
-      </SafeAreaView>
+      </View>
     </>
   );
 }

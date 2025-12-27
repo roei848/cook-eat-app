@@ -25,4 +25,5 @@ export interface Recipe {
   timeInMinutes: number;
   byWho: string;
   createdAt: number;
+  notes?: string[];
 }
