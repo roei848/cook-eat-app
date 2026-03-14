@@ -40,9 +40,6 @@ export default function RootNavigator() {
               darkMode: profile.darkMode,
             })
           );
-        } else {
-          dispatch(logoutUser());
-          dispatch(clearProfile());
         }
       } else {
         // Clear Redux on logout

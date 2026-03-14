@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { ThemeColors } from "../theme/colors";
 import { useThemeColors } from "../theme/useThemeColors";
 
-import HomeScreen from "../screens/rootScreens/HomeScreen";
+import HomeStack from "../screens/rootScreens/home/HomeStack";
 import AddRecipeScreen from "../screens/rootScreens/AddRecipeScreen";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
 import ProfileStack from "./rootScreens/profile/ProfileStack";
@@ -28,7 +28,7 @@ export default function AppTabs() {
   const tabs: TabConfig[] = [
     {
       name: "Home",
-      component: HomeScreen,
+      component: HomeStack,
       icon: "home",
       iconOutline: "home-outline",
     },
@@ -106,23 +106,31 @@ export default function AppTabs() {
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     tabBar: {
-      backgroundColor: colors.background.default,
-      borderTopColor: colors.border.default,
-      height: 64,
+      backgroundColor: colors.card.default,
+      borderTopWidth: 0,
+      borderTopColor: "transparent",
+      height: 70,
       paddingBottom: 8,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: -4 },
+      shadowOpacity: 0.08,
+      shadowRadius: 12,
+      elevation: 12,
     },
     addButton: {
-      width: 56,
-      height: 56,
-      borderRadius: 28,
+      width: 58,
+      height: 58,
+      borderRadius: 29,
       backgroundColor: colors.primary[500],
       justifyContent: "center",
       alignItems: "center",
-      marginBottom: 24,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 4,
-      elevation: 6,
+      marginBottom: 26,
+      shadowColor: colors.primary[500],
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.45,
+      shadowRadius: 8,
+      elevation: 8,
     },
   });

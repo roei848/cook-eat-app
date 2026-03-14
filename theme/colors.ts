@@ -1,17 +1,18 @@
 export const lightColors = {
   background: {
-    default: "#FFFFFF",
-    secondary: "#F8F8F8",
+    default: "#FFFAF5",
+    secondary: "#F5EFE8",
+    warm: "#FFFAF5",
   },
 
   header: {
-    background: "#FFFFFF",
+    background: "#FFFAF5",
     text: "#111111",
-    border: "#E5E5E5",
+    border: "#EDE5DC",
   },
 
   card: {
-    default: "#F0F0F0",
+    default: "#FFFFFF",
   },
 
   text: {
@@ -22,7 +23,7 @@ export const lightColors = {
   },
 
   border: {
-    default: "#E5E5E5",
+    default: "#EDE5DC",
   },
 
   primary: {
@@ -31,6 +32,19 @@ export const lightColors = {
     500: "#FF7A00", // main brand color
     700: "#CC5F00",
     900: "#993F00",
+  },
+
+  accent: {
+    amber: "#F59E0B",
+    amberText: "#FFFFFF",
+    amberBg: "#FEF3C7",
+    coral: "#FF6B6B",
+    coralText: "#FFFFFF",
+    coralBg: "#FFE4E4",
+    mint: "#10B981",
+    mintText: "#FFFFFF",
+    mintBg: "#D1FAE5",
+    blush: "#FFC2A1",
   },
 
   danger: {
@@ -42,6 +56,7 @@ export const darkColors = {
   background: {
     default: "#0F0F0F",
     secondary: "#1A1A1A",
+    warm: "#0F0F0F",
   },
 
   header: {
@@ -51,7 +66,7 @@ export const darkColors = {
   },
 
   card: {
-    default: "#222222",
+    default: "#1E1E1E",
   },
 
   text: {
@@ -71,6 +86,19 @@ export const darkColors = {
     500: "#FF9F43",
     700: "#E67E22",
     900: "#B35C00",
+  },
+
+  accent: {
+    amber: "#92400E",
+    amberText: "#FDE68A",
+    amberBg: "#451A00",
+    coral: "#7F1D1D",
+    coralText: "#FCA5A5",
+    coralBg: "#3A0A0A",
+    mint: "#065F46",
+    mintText: "#6EE7B7",
+    mintBg: "#022C22",
+    blush: "#7A3A20",
   },
 
   danger: {

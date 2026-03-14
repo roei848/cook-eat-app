@@ -13,6 +13,8 @@ export default function CategoryScreen({ route, navigation }: Props) {
   const { recipes } = route.params;
   const colors = useThemeColors();
 
+  console.log(recipes.length);
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -37,17 +39,10 @@ export default function CategoryScreen({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   listContent: {
-    width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
     gap: 12,
   },
 });
