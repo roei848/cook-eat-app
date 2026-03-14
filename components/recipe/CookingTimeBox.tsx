@@ -11,12 +11,10 @@ export default function CookingTimeBox({ minutes }: Props) {
   const colors = useThemeColors();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.icon}>
-        <Ionicons name="time-outline" size={14} color="#fff" />
-      </View>
-      <Text style={[styles.text, { color: colors.text.secondary }]}>
-        {minutes} דקות
+    <View style={[styles.container, { backgroundColor: colors.accent.amberBg }]}>
+      <Ionicons name="time-outline" size={13} color={colors.accent.amber} />
+      <Text style={[styles.text, { color: colors.accent.amber }]}>
+        {minutes} דק׳
       </Text>
     </View>
   );
@@ -26,18 +24,13 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-  },
-  icon: {
-    width: 20,
-    height: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 10,
-    backgroundColor: "#4CAF50", // green
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 6,
+    gap: 4,
   },
   text: {
     fontSize: 12,
-    fontWeight: "500",
+    fontWeight: "600",
   },
 });

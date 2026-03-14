@@ -47,14 +47,14 @@ const createStyles = (colors: ThemeColors) =>
     listContent: {
       paddingHorizontal: 16,
       paddingVertical: 12,
-      backgroundColor: colors.background.secondary,
     },
     row: {
       justifyContent: "space-between",
-      marginBottom: 12,
+      marginBottom: 14,
     },
     item: {
       flex: 1,
-      marginHorizontal: 4,
+      marginHorizontal: 5,
+      minHeight: 100,
     },
   });
