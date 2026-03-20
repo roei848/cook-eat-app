@@ -44,9 +44,13 @@ export default function SearchStack() {
       <Stack.Screen
         name="Recipe"
         component={RecipeScreen}
-        options={({ route }) => ({
-          title: route.params.recipe.title,
-        })}
+        options={{
+          headerTransparent: true,
+          headerBlurEffect: "regular",
+          headerTintColor: "#FFFFFF",
+          headerShadowVisible: false,
+          title: "",
+        }}
       />
     </Stack.Navigator>
   );

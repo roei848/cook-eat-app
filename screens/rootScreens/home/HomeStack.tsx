@@ -32,7 +32,13 @@ export default function HomeStack() {
       <Stack.Screen
         name="Recipe"
         component={RecipeScreen}
-        options={({ route }) => ({ title: route.params.recipe.title })}
+        options={{
+          headerTransparent: true,
+          headerBlurEffect: "regular",
+          headerTintColor: "#FFFFFF",
+          headerShadowVisible: false,
+          title: "",
+        }}
       />
     </Stack.Navigator>
   );

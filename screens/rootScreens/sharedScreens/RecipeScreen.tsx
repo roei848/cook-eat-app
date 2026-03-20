@@ -17,6 +17,7 @@ type Props = NativeStackScreenProps<any, any>; // adapt to your stack later
 
 export default function RecipeScreen({ navigation, route }: Props) {
   const { recipe } = route.params as { recipe: Recipe };
+  const colors = useThemeColors();
 
   const [mode, setMode] = useState<RecipeMode>("view");
   const [draftRecipe, setDraftRecipe] = useState<Recipe | null>(null);
@@ -28,21 +29,22 @@ export default function RecipeScreen({ navigation, route }: Props) {
 
     if (mode === "view") {
       navigation.setOptions({
-        title: recipe.title,
+        title: "",
+        headerTransparent: true,
+        headerTintColor: "#FFFFFF",
+        headerShadowVisible: false,
         headerLeft: () => null,
         headerRight: () => (
           <>
-            {/* Edit */}
             <TextButton
-              label="Edit"
+              label="עריכה"
               onPress={() => {
                 setDraftRecipe({ ...recipe });
                 setMode("edit");
               }}
             />
-            {/* Notes */}
             <TextButton
-              label="Notes"
+              label="הערות"
               onPress={() => {
                 setDraftNotes(recipe.notes ?? []);
                 setMode("notes");
@@ -55,13 +57,16 @@ export default function RecipeScreen({ navigation, route }: Props) {
 
     if (mode === "edit") {
       navigation.setOptions({
-        title: "Edit Recipe",
+        title: "עריכת מתכון",
+        headerTransparent: false,
+        headerTintColor: colors.header.text,
+        headerShadowVisible: true,
         headerLeft: () => (
-          <TextButton label="Cancel" onPress={() => setMode("view")} />
+          <TextButton label="ביטול" onPress={() => setMode("view")} />
         ),
         headerRight: () => (
           <TextButton
-            label="Save"
+            label="שמור"
             onPress={() => {
               // 🔜 dispatch updateRecipe
               setMode("view");
@@ -73,13 +78,16 @@ export default function RecipeScreen({ navigation, route }: Props) {
 
     if (mode === "notes") {
       navigation.setOptions({
-        title: "Notes",
+        title: "הערות",
+        headerTransparent: false,
+        headerTintColor: colors.header.text,
+        headerShadowVisible: true,
         headerLeft: () => (
-          <TextButton label="Cancel" onPress={() => setMode("view")} />
+          <TextButton label="ביטול" onPress={() => setMode("view")} />
         ),
         headerRight: () => (
           <TextButton
-            label="Save"
+            label="שמור"
             onPress={() => {
               // 🔜 dispatch updateRecipeNotes
               setMode("view");
