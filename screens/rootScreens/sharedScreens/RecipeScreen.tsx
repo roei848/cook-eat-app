@@ -1,15 +1,15 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Alert, Pressable, Text } from "react-native";
+import { Pressable } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
-import { RootState } from "../../../store/store";
 import { Recipe } from "../../../types/recipe";
 import { useThemeColors } from "../../../theme/useThemeColors";
 
 import RecipeView from "../../../components/recipe/RecipeView";
 import RecipeEdit from "../../../components/recipe/RecipeEdit";
 import RecipeNotes from "../../../components/recipe/RecipeNotes";
+import HeaderTextButton from "../../../components/ui/HeaderTextButton";
 
 type RecipeMode = "view" | "edit" | "notes";
 
@@ -33,17 +33,21 @@ export default function RecipeScreen({ navigation, route }: Props) {
         headerTransparent: true,
         headerTintColor: "#FFFFFF",
         headerShadowVisible: false,
-        headerLeft: () => null,
+        headerLeft: () => (
+          <Pressable onPress={() => navigation.goBack()} style={{ padding: 8 }}>
+            <Ionicons name="chevron-back-outline" size={28} color={colors.primary[500]} />
+          </Pressable>
+        ),
         headerRight: () => (
           <>
-            <TextButton
+            <HeaderTextButton
               label="עריכה"
               onPress={() => {
                 setDraftRecipe({ ...recipe });
                 setMode("edit");
               }}
             />
-            <TextButton
+            <HeaderTextButton
               label="הערות"
               onPress={() => {
                 setDraftNotes(recipe.notes ?? []);
@@ -62,10 +66,10 @@ export default function RecipeScreen({ navigation, route }: Props) {
         headerTintColor: colors.header.text,
         headerShadowVisible: true,
         headerLeft: () => (
-          <TextButton label="ביטול" onPress={() => setMode("view")} />
+          <HeaderTextButton label="ביטול" onPress={() => setMode("view")} />
         ),
         headerRight: () => (
-          <TextButton
+          <HeaderTextButton
             label="שמור"
             onPress={() => {
               // 🔜 dispatch updateRecipe
@@ -83,10 +87,10 @@ export default function RecipeScreen({ navigation, route }: Props) {
         headerTintColor: colors.header.text,
         headerShadowVisible: true,
         headerLeft: () => (
-          <TextButton label="ביטול" onPress={() => setMode("view")} />
+          <HeaderTextButton label="ביטול" onPress={() => setMode("view")} />
         ),
         headerRight: () => (
-          <TextButton
+          <HeaderTextButton
             label="שמור"
             onPress={() => {
               // 🔜 dispatch updateRecipeNotes
@@ -110,22 +114,4 @@ export default function RecipeScreen({ navigation, route }: Props) {
   }
 
   return <RecipeView recipe={recipe} />;
-}
-
-/** Simple header button */
-function TextButton({
-  label,
-  onPress,
-}: {
-  label: string;
-  onPress: () => void;
-}) {
-  const colors = useThemeColors();
-  return (
-    <Pressable onPress={onPress} style={{ marginHorizontal: 8 }}>
-      <Text style={{ color: colors.primary[500], fontWeight: "600" }}>
-        {label}
-      </Text>
-    </Pressable>
-  );
 }
