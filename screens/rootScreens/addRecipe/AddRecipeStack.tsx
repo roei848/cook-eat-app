@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { Ingredient, Recipe, Step } from "../../../types/recipe";
+import { Ingredient, Recipe } from "../../../types/recipe";
 import { Category } from "../../../types/enums/category";
 import { Difficulty } from "../../../types/enums/diffucalty";
 import { Relative } from "../../../types/enums/relatives";
