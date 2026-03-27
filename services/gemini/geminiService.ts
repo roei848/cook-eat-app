@@ -9,13 +9,16 @@ function getApiKey(): string {
 }
 
 function parseJsonResponse(text: string): Record<string, unknown> {
-  // Strip markdown code fences if Gemini returns them despite instructions
   const cleaned = text
     .replace(/^```json\s*/i, "")
     .replace(/^```\s*/i, "")
     .replace(/\s*```$/, "")
     .trim();
-  return JSON.parse(cleaned);
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    throw new Error(`Gemini response was not valid JSON: ${cleaned.slice(0, 200)}`);
+  }
 }
 
 const IMAGE_PROMPT = `You are a recipe extraction assistant. The image shows a handwritten Hebrew recipe.
