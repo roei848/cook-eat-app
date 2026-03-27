@@ -6,7 +6,7 @@ import { ThemeColors } from "../theme/colors";
 import { useThemeColors } from "../theme/useThemeColors";
 
 import HomeStack from "../screens/rootScreens/home/HomeStack";
-import AddRecipeScreen from "../screens/rootScreens/AddRecipeScreen";
+import AddRecipeStack from "../screens/rootScreens/addRecipe/AddRecipeStack";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
 import ProfileStack from "./rootScreens/profile/ProfileStack";
 import SearchStack from "./rootScreens/search/SearchStack";
@@ -40,7 +40,7 @@ export default function AppTabs() {
     },
     {
       name: "AddRecipe",
-      component: AddRecipeScreen,
+      component: AddRecipeStack,
       icon: "add",
       iconOutline: "add",
       isAction: true,
