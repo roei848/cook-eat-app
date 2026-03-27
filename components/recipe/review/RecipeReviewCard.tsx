@@ -17,8 +17,6 @@ import { Category } from "../../../types/enums/category";
 import { Difficulty } from "../../../types/enums/diffucalty";
 import { Relative } from "../../../types/enums/relatives";
 
-import CategoryPicker from "../form/CategoryPicker";
-import DifficultyPicker from "../form/DifficultyPicker";
 import RelativesPicker from "../form/RelativesPicker";
 import IngredientEditor from "../form/IngredientEditor";
 import StepEditor from "../form/StepEditor";
@@ -271,30 +269,58 @@ export default function RecipeReviewCard({
         </View>
       </Modal>
 
-      {/* ── Category modal ── */}
-      <Modal visible={activeModal === "category"} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <CategoryPicker
-            value={recipe.category ?? Category.MAIN_COURSE}
-            onChange={(cat) => {
-              onUpdateRecipe({ category: cat });
-              setActiveModal(null);
-            }}
-          />
-        </View>
+      {/* ── Category bottom sheet ── */}
+      <Modal visible={activeModal === "category"} transparent animationType="slide">
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setActiveModal(null)}
+        >
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>בחר קטגוריה</Text>
+            {Object.values(Category).map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                style={[styles.pickerOption, cat === recipe.category && styles.pickerOptionSelected]}
+                onPress={() => {
+                  onUpdateRecipe({ category: cat });
+                  setActiveModal(null);
+                }}
+              >
+                <Text style={[styles.pickerOptionText, cat === recipe.category && styles.pickerOptionTextSelected]}>
+                  {cat}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
       </Modal>
 
-      {/* ── Difficulty modal ── */}
-      <Modal visible={activeModal === "difficulty"} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <DifficultyPicker
-            value={recipe.difficulty ?? Difficulty.MEDIUM}
-            onChange={(diff) => {
-              onUpdateRecipe({ difficulty: diff });
-              setActiveModal(null);
-            }}
-          />
-        </View>
+      {/* ── Difficulty bottom sheet ── */}
+      <Modal visible={activeModal === "difficulty"} transparent animationType="slide">
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setActiveModal(null)}
+        >
+          <View style={styles.modalSheet}>
+            <Text style={styles.modalTitle}>בחר רמת קושי</Text>
+            {Object.values(Difficulty).map((diff) => (
+              <TouchableOpacity
+                key={diff}
+                style={[styles.pickerOption, diff === recipe.difficulty && styles.pickerOptionSelected]}
+                onPress={() => {
+                  onUpdateRecipe({ difficulty: diff });
+                  setActiveModal(null);
+                }}
+              >
+                <Text style={[styles.pickerOptionText, diff === recipe.difficulty && styles.pickerOptionTextSelected]}>
+                  {diff}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </TouchableOpacity>
       </Modal>
 
       {/* ── Relatives modal ── */}
@@ -469,5 +495,23 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 15,
       fontWeight: "700",
       color: "#fff",
+    },
+    pickerOption: {
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+      marginBottom: 4,
+    },
+    pickerOptionSelected: {
+      backgroundColor: colors.primary[100],
+    },
+    pickerOptionText: {
+      fontSize: 15,
+      color: colors.text.primary,
+      textAlign: "right",
+    },
+    pickerOptionTextSelected: {
+      color: colors.primary[700],
+      fontWeight: "700",
     },
   });

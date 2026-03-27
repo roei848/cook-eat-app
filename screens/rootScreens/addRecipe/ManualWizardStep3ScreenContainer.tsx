@@ -27,6 +27,11 @@ export default function ManualWizardStep3ScreenContainer() {
       return;
     }
 
+    if (ingredients.every((i) => !i.name.trim())) {
+      Alert.alert("שגיאה", "יש להוסיף לפחות רכיב אחד");
+      return;
+    }
+
     setIsSaving(true);
     try {
       let imageUrl: string | undefined;
@@ -36,7 +41,7 @@ export default function ManualWizardStep3ScreenContainer() {
 
       const id = await createRecipe({
         ...step1Data,
-        ingredients,
+        ingredients: ingredients.filter((i) => i.name.trim()),
         steps: steps.filter((s) => s.text.trim()),
         imageUrl,
         relatives: step1Data.relatives,
