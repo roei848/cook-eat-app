@@ -26,4 +26,6 @@ export interface Recipe {
   byWho: string;
   createdAt: number;
   notes?: string[];
+  recipeLink?: string;
+  handwrittenRecipeImg?: string;
 }
