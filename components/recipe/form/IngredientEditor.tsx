@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -39,43 +38,36 @@ export default function IngredientEditor({ ingredients, onChange }: IngredientEd
 
   return (
     <View>
-      <FlatList
-        data={ingredients}
-        keyExtractor={(_, index) => index.toString()}
-        scrollEnabled={false}
-        renderItem={({ item, index }) => (
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => removeIngredient(index)}
-            >
-              <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
-            </TouchableOpacity>
-            <TextInput
-              style={[styles.input, styles.inputAmount]}
-              value={item.amount}
-              onChangeText={(text) => updateIngredient(index, "amount", text)}
-              placeholder="כמות"
-              placeholderTextColor={colors.text.muted}
-              textAlign="right"
-            />
-            <TextInput
-              style={[styles.input, styles.inputName]}
-              value={item.name}
-              onChangeText={(text) => updateIngredient(index, "name", text)}
-              placeholder="רכיב"
-              placeholderTextColor={colors.text.muted}
-              textAlign="right"
-            />
-          </View>
-        )}
-        ListFooterComponent={
-          <TouchableOpacity style={styles.addButton} onPress={addIngredient}>
-            <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
-            <Text style={styles.addButtonText}>הוסף רכיב</Text>
+      {ingredients.map((item, index) => (
+        <View key={index} style={styles.row}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => removeIngredient(index)}
+          >
+            <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
           </TouchableOpacity>
-        }
-      />
+          <TextInput
+            style={[styles.input, styles.inputAmount]}
+            value={item.amount}
+            onChangeText={(text) => updateIngredient(index, "amount", text)}
+            placeholder="כמות"
+            placeholderTextColor={colors.text.muted}
+            textAlign="right"
+          />
+          <TextInput
+            style={[styles.input, styles.inputName]}
+            value={item.name}
+            onChangeText={(text) => updateIngredient(index, "name", text)}
+            placeholder="רכיב"
+            placeholderTextColor={colors.text.muted}
+            textAlign="right"
+          />
+        </View>
+      ))}
+      <TouchableOpacity style={styles.addButton} onPress={addIngredient}>
+        <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
+        <Text style={styles.addButtonText}>הוסף רכיב</Text>
+      </TouchableOpacity>
     </View>
   );
 }

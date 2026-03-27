@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -42,39 +41,32 @@ export default function StepEditor({ steps, onChange }: StepEditorProps) {
 
   return (
     <View>
-      <FlatList
-        data={steps}
-        keyExtractor={(_, index) => index.toString()}
-        scrollEnabled={false}
-        renderItem={({ item, index }) => (
-          <View style={styles.row}>
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => removeStep(index)}
-            >
-              <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
-            </TouchableOpacity>
-            <TextInput
-              style={styles.input}
-              value={item.text}
-              onChangeText={(text) => updateStep(index, text)}
-              placeholder={`שלב ${item.order}`}
-              placeholderTextColor={colors.text.muted}
-              multiline
-              textAlign="right"
-            />
-            <View style={styles.orderBadge}>
-              <Text style={styles.orderText}>{item.order}</Text>
-            </View>
-          </View>
-        )}
-        ListFooterComponent={
-          <TouchableOpacity style={styles.addButton} onPress={addStep}>
-            <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
-            <Text style={styles.addButtonText}>הוסף שלב</Text>
+      {steps.map((item, index) => (
+        <View key={item.order.toString()} style={styles.row}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => removeStep(index)}
+          >
+            <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
           </TouchableOpacity>
-        }
-      />
+          <TextInput
+            style={styles.input}
+            value={item.text}
+            onChangeText={(text) => updateStep(index, text)}
+            placeholder={`שלב ${item.order}`}
+            placeholderTextColor={colors.text.muted}
+            multiline
+            textAlign="right"
+          />
+          <View style={styles.orderBadge}>
+            <Text style={styles.orderText}>{item.order}</Text>
+          </View>
+        </View>
+      ))}
+      <TouchableOpacity style={styles.addButton} onPress={addStep}>
+        <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
+        <Text style={styles.addButtonText}>הוסף שלב</Text>
+      </TouchableOpacity>
     </View>
   );
 }
