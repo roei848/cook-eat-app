@@ -6,7 +6,6 @@ import {
   Modal,
   TextInput,
   ScrollView,
-  Alert,
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -411,6 +410,7 @@ const createStyles = (colors: ThemeColors) =>
       position: "absolute",
       left: 12,
       top: "50%",
+      marginTop: -8,
     },
     modalOverlay: {
       flex: 1,
