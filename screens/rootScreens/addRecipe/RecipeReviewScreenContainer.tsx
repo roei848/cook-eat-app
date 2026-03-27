@@ -58,7 +58,7 @@ export default function RecipeReviewScreenContainer() {
         imageUrl = await uploadRecipeImage(photoUri);
       }
 
-      await createRecipe({
+      const id = await createRecipe({
         title: recipe.title!,
         description: recipe.description ?? "",
         category: recipe.category!,
@@ -72,6 +72,7 @@ export default function RecipeReviewScreenContainer() {
         recipeLink,
         handwrittenRecipeImg,
       });
+      if (!id) throw new Error("createRecipe returned null");
 
       navigation.reset({ index: 0, routes: [{ name: "MethodPicker" }] });
     } catch (error) {

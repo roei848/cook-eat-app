@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,17 +18,17 @@ export default function ImageCaptureScreenContainer() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
-  useEffect(() => {
-    showActionSheet();
-  }, []);
-
-  function showActionSheet() {
+  const showActionSheet = useCallback(() => {
     Alert.alert("הוסף תמונת מתכון", "", [
       { text: "צלם תמונה", onPress: launchCamera },
       { text: "בחר מגלריה", onPress: launchGallery },
       { text: "ביטול", style: "cancel", onPress: () => navigation.goBack() },
     ]);
-  }
+  }, [navigation]);
+
+  useEffect(() => {
+    showActionSheet();
+  }, [showActionSheet]);
 
   async function launchCamera() {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();

@@ -29,6 +29,7 @@ export default ({ config }) => ({
   androidNavigationBar: {
     visible: "sticky-immersive",
   },
+  newArchEnabled: true,
   plugins: [
     "expo-web-browser",
     [
