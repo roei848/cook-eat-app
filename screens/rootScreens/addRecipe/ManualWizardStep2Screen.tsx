@@ -16,7 +16,6 @@ import { Ingredient } from "../../../types/recipe";
 import WizardProgressBar from "../../../components/recipe/form/WizardProgressBar";
 import IngredientEditor from "../../../components/recipe/form/IngredientEditor";
 import Button from "../../../components/ui/Button";
-import FlatButton from "../../../components/ui/FlatButton";
 
 interface ManualWizardStep2ScreenProps {
   ingredients: Ingredient[];
@@ -40,7 +39,7 @@ export default function ManualWizardStep2Screen({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
-        <WizardProgressBar currentStep={2} />
+        <WizardProgressBar currentStep={2} onBack={onBack} />
         <Text style={styles.stepLabel}>שלב 2 מתוך 3 — רכיבים</Text>
 
         <ScrollView
@@ -55,8 +54,7 @@ export default function ManualWizardStep2Screen({
         </ScrollView>
 
         <View style={styles.footer}>
-          <FlatButton title="‹ חזור" onPress={onBack} />
-          <Button title="הבא ›" onPress={onNext} style={styles.nextButton} />
+          <Button title="הבא ›" onPress={onNext} />
         </View>
       </KeyboardAvoidingView>
     </Screen>
@@ -77,13 +75,7 @@ const createStyles = (colors: ThemeColors) =>
       paddingBottom: 24,
     },
     footer: {
-      flexDirection: "row",
       padding: 16,
       paddingBottom: 24,
-      gap: 12,
-      alignItems: "center",
-    },
-    nextButton: {
-      flex: 1,
     },
   });
