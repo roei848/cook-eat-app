@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, useWindowDimensions } from "react-native";
 import { useSelector } from "react-redux";
 
 import { ThemeColors } from "../../../theme/colors";
@@ -27,17 +27,15 @@ const CATEGORY_EMOJI: Record<Category, string> = {
   [Category.OTHER]: "📦",
 };
 
-// 4 columns, 8px gap, 16px horizontal padding each side = 32px total
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CARD_WIDTH = (SCREEN_WIDTH - 32 - 8 * 3) / 4;
-
 export default function CategoryPicker({
   label = "קטגוריה",
   value,
   onChange,
 }: CategoryPickerProps) {
   const colors = useThemeColors();
-  const styles = createStyles(colors);
+  const { width: screenWidth } = useWindowDimensions();
+  const cardWidth = (screenWidth - 32 - 8 * 3) / 4;
+  const styles = createStyles(colors, cardWidth);
   const isDark = useSelector(
     (state: RootState) => state.user.profile?.darkMode ?? false
   );
@@ -77,7 +75,7 @@ export default function CategoryPicker({
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
+const createStyles = (colors: ThemeColors, cardWidth: number) =>
   StyleSheet.create({
     container: {
       marginBottom: 16,
@@ -95,16 +93,11 @@ const createStyles = (colors: ThemeColors) =>
       gap: 8,
     },
     card: {
-      width: CARD_WIDTH,
+      width: cardWidth,
       borderRadius: 14,
       paddingVertical: 10,
       paddingHorizontal: 4,
       alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0,
-      shadowRadius: 0,
-      elevation: 0,
     },
     emoji: {
       fontSize: 20,
