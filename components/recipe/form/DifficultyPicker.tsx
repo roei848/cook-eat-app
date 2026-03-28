@@ -1,12 +1,5 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import React from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
@@ -20,6 +13,34 @@ interface DifficultyPickerProps {
 
 const DIFFICULTIES = Object.values(Difficulty);
 
+type DifficultyEntry = {
+  emoji: string;
+  getBg: (c: ThemeColors) => string;
+  getBorder: (c: ThemeColors) => string;
+  getTextColor: (c: ThemeColors) => string;
+};
+
+const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyEntry> = {
+  [Difficulty.EASY]: {
+    emoji: "☀️",
+    getBg: (c) => c.accent.mintBg,
+    getBorder: (c) => c.accent.mint,
+    getTextColor: (c) => c.accent.mint,
+  },
+  [Difficulty.MEDIUM]: {
+    emoji: "⚡",
+    getBg: (c) => c.accent.amberBg,
+    getBorder: (c) => c.accent.amber,
+    getTextColor: (c) => c.accent.amber,
+  },
+  [Difficulty.HARD]: {
+    emoji: "🔥",
+    getBg: (c) => c.accent.coralBg,
+    getBorder: (c) => c.accent.coral,
+    getTextColor: (c) => c.accent.coral,
+  },
+};
+
 export default function DifficultyPicker({
   label = "רמת קושי",
   value,
@@ -27,112 +48,81 @@ export default function DifficultyPicker({
 }: DifficultyPickerProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
-  const [visible, setVisible] = useState(false);
 
   return (
-    <>
-      <TouchableOpacity style={styles.trigger} onPress={() => setVisible(true)}>
-        <Text style={styles.triggerValue}>{value}</Text>
-        <Text style={styles.triggerLabel}>{label}</Text>
-      </TouchableOpacity>
-
-      <Modal visible={visible} transparent animationType="fade">
-        <TouchableOpacity
-          style={styles.overlay}
-          activeOpacity={1}
-          onPress={() => setVisible(false)}
-        >
-          <View style={styles.sheet}>
-            <Text style={styles.sheetTitle}>בחר רמת קושי</Text>
-            <FlatList
-              data={DIFFICULTIES}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.option,
-                    item === value && styles.optionSelected,
-                  ]}
-                  onPress={() => {
-                    onChange(item);
-                    setVisible(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      item === value && styles.optionTextSelected,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.label}>{label}</Text>
+      <View style={styles.row}>
+        {DIFFICULTIES.map((diff) => {
+          const isSelected = diff === value;
+          const config = DIFFICULTY_CONFIG[diff];
+          return (
+            <TouchableOpacity
+              key={diff}
+              style={[
+                styles.card,
+                isSelected && {
+                  backgroundColor: config.getBg(colors),
+                  borderColor: config.getBorder(colors),
+                  borderWidth: 2,
+                },
+              ]}
+              onPress={() => onChange(diff)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.emoji}>{config.emoji}</Text>
+              <Text
+                style={[
+                  styles.cardLabel,
+                  isSelected && {
+                    color: config.getTextColor(colors),
+                    fontWeight: "700",
+                  },
+                ]}
+              >
+                {diff}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    </View>
   );
 }
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
-    trigger: {
-      backgroundColor: colors.card.default,
-      borderWidth: 1,
-      borderColor: colors.border.default,
-      borderRadius: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 12,
-    },
-    triggerLabel: {
-      fontSize: 14,
-      color: colors.text.secondary,
-    },
-    triggerValue: {
-      fontSize: 15,
-      fontWeight: "600",
-      color: colors.text.primary,
-    },
-    overlay: {
-      flex: 1,
-      backgroundColor: "rgba(0,0,0,0.45)",
-      justifyContent: "flex-end",
-    },
-    sheet: {
-      backgroundColor: colors.card.default,
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
-      padding: 20,
-      maxHeight: "50%",
-    },
-    sheetTitle: {
-      fontSize: 17,
-      fontWeight: "700",
-      color: colors.text.primary,
-      textAlign: "center",
+    container: {
       marginBottom: 16,
     },
-    option: {
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      borderRadius: 10,
+    label: {
+      fontSize: 12,
+      color: colors.text.muted,
+      marginBottom: 8,
+      textAlign: "right",
+      fontWeight: "500",
+    },
+    row: {
+      flexDirection: "row",
+      gap: 8,
+    },
+    card: {
+      flex: 1,
+      borderRadius: 14,
+      paddingVertical: 12,
+      paddingHorizontal: 8,
+      alignItems: "center",
+      backgroundColor: colors.card.default,
+      borderWidth: 1.5,
+      borderColor: colors.border.default,
+    },
+    emoji: {
+      fontSize: 20,
       marginBottom: 4,
     },
-    optionSelected: {
-      backgroundColor: colors.primary[100],
-    },
-    optionText: {
-      fontSize: 15,
-      color: colors.text.primary,
-    },
-    optionTextSelected: {
-      color: colors.primary[700],
-      fontWeight: "700",
+    cardLabel: {
+      fontSize: 12,
+      color: colors.text.secondary,
+      textAlign: "center",
     },
   });
