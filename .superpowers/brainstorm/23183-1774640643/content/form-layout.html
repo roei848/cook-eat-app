@@ -1,0 +1,112 @@
+<h2>Manual Form Layout</h2>
+<p class="subtitle">How should the recipe form be structured?</p>
+
+<div class="cards">
+  <!-- Option A: Multi-step wizard -->
+  <div class="card" data-choice="wizard" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1a1a2e;">
+      <div style="font-family: monospace; color: #e0e0e0; font-size: 13px; line-height: 1.6;">
+        <!-- Phone frame -->
+        <div style="background: #fff; border-radius: 20px; padding: 12px 16px; max-width: 260px; margin: 0 auto; color: #333;">
+          <!-- Progress bar -->
+          <div style="display: flex; gap: 6px; margin-bottom: 14px;">
+            <div style="flex:1; height: 4px; background: #FF7A00; border-radius: 2px;"></div>
+            <div style="flex:1; height: 4px; background: #FF7A00; border-radius: 2px;"></div>
+            <div style="flex:1; height: 4px; background: #e0e0e0; border-radius: 2px;"></div>
+          </div>
+          <div style="font-size: 11px; color: #FF7A00; font-weight: 600; margin-bottom: 10px; text-align: right; direction: rtl;">שלב 2 מתוך 3 - מצרכים</div>
+
+          <!-- Ingredient inputs -->
+          <div style="direction: rtl; text-align: right;">
+            <div style="background: #f5f5f5; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between;">
+              <span>2 כוסות</span>
+              <span style="font-weight:600;">קמח</span>
+            </div>
+            <div style="background: #f5f5f5; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between;">
+              <span>3 כפות</span>
+              <span style="font-weight:600;">סוכר</span>
+            </div>
+            <div style="background: #f5f5f5; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 11px; display: flex; justify-content: space-between;">
+              <span>1</span>
+              <span style="font-weight:600;">ביצה</span>
+            </div>
+            <div style="border: 2px dashed #ccc; border-radius: 8px; padding: 8px; text-align: center; font-size: 11px; color: #999; margin-bottom: 10px;">+ הוסף מצרך</div>
+          </div>
+
+          <!-- Navigation buttons -->
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <div style="flex:1; background: #f0f0f0; border-radius: 8px; padding: 8px; text-align: center; font-size: 11px; color: #666;">חזרה</div>
+            <div style="flex:1; background: #FF7A00; border-radius: 8px; padding: 8px; text-align: center; font-size: 11px; color: #fff; font-weight: 600;">הבא</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Multi-Step Wizard</h3>
+      <p>3 focused steps with progress bar:<br>
+        <strong>Step 1:</strong> Title, description, category, difficulty, time<br>
+        <strong>Step 2:</strong> Ingredients list<br>
+        <strong>Step 3:</strong> Preparation steps + photo
+      </p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Clean, focused UX</li><li>Less overwhelming</li><li>Guides the user</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>More navigation</li><li>Can't see all at once</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Single scrollable -->
+  <div class="card" data-choice="single" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1a1a2e;">
+      <div style="font-family: monospace; color: #e0e0e0; font-size: 13px; line-height: 1.6;">
+        <!-- Phone frame -->
+        <div style="background: #fff; border-radius: 20px; padding: 12px 16px; max-width: 260px; margin: 0 auto; color: #333;">
+          <div style="font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 10px; direction: rtl;">מתכון חדש</div>
+
+          <div style="direction: rtl; text-align: right;">
+            <!-- Title -->
+            <div style="font-size: 10px; color: #888; margin-bottom: 2px;">שם המתכון</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; font-size: 11px;">עוגת שוקולד</div>
+
+            <!-- Description -->
+            <div style="font-size: 10px; color: #888; margin-bottom: 2px;">תיאור</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 6px 8px; margin-bottom: 6px; font-size: 11px; height: 28px;">עוגה עשירה...</div>
+
+            <!-- Category + Difficulty inline -->
+            <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+              <div style="flex:1;">
+                <div style="font-size: 10px; color: #888; margin-bottom: 2px;">קטגוריה</div>
+                <div style="background: #f5f5f5; border-radius: 6px; padding: 6px 8px; font-size: 10px;">קינוח ▾</div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-size: 10px; color: #888; margin-bottom: 2px;">דרגת קושי</div>
+                <div style="background: #f5f5f5; border-radius: 6px; padding: 6px 8px; font-size: 10px;">בינוני ▾</div>
+              </div>
+            </div>
+
+            <!-- Ingredients header -->
+            <div style="font-size: 11px; font-weight: 600; margin: 8px 0 4px; border-top: 1px solid #eee; padding-top: 8px;">מצרכים</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 5px 8px; margin-bottom: 4px; font-size: 10px;">קמח - 2 כוסות</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 5px 8px; margin-bottom: 4px; font-size: 10px;">סוכר - 3 כפות</div>
+
+            <!-- Steps header -->
+            <div style="font-size: 11px; font-weight: 600; margin: 8px 0 4px; border-top: 1px solid #eee; padding-top: 8px;">שלבי הכנה</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 5px 8px; margin-bottom: 4px; font-size: 10px;">1. מחממים תנור...</div>
+            <div style="background: #f5f5f5; border-radius: 6px; padding: 5px 8px; margin-bottom: 4px; font-size: 10px;">2. מערבבים...</div>
+
+            <!-- Scroll indicator -->
+            <div style="text-align: center; color: #ccc; font-size: 18px; margin-top: 4px;">⋮</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Single Scrollable Form</h3>
+      <p>Everything on one long page — title, description, category, difficulty, time, ingredients, steps, photo, and dietary tags all visible by scrolling.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>See everything at once</li><li>Simpler navigation</li><li>Faster for power users</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Can feel overwhelming</li><li>Long scroll distance</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

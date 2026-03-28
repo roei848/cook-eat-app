@@ -29,8 +29,8 @@ export default function Screen({ children }: Props) {
         style={{
           flex: 1,
           backgroundColor: colors.background.default,
-          paddingTop: 20,
-          paddingBottom: insets.bottom,
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 10,
         }}
       >
         {children}

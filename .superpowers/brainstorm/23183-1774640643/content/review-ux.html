@@ -1,0 +1,124 @@
+<h2>Review Screen After AI Parsing</h2>
+<p class="subtitle">How should the user review and edit the AI-generated recipe?</p>
+
+<div class="cards">
+  <!-- Option A: Summary + inline edit -->
+  <div class="card" data-choice="summary" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1a1a2e;">
+      <div style="background: #fff; border-radius: 20px; padding: 12px 16px; max-width: 260px; margin: 0 auto; color: #333; direction: rtl; text-align: right;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 10px; color: #FF7A00; font-weight: 600;">✓ נסרק בהצלחה</span>
+          <span style="font-size: 13px; font-weight: 700;">סקירת מתכון</span>
+        </div>
+
+        <!-- Title section - editable -->
+        <div style="background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 10px; color: #FF7A00;">✏️</span>
+            <span style="font-size: 12px; font-weight: 600;">עוגת שוקולד של סבתא</span>
+          </div>
+          <div style="font-size: 10px; color: #666; margin-top: 2px;">עוגה עשירה ולחה עם ציפוי שוקולד</div>
+        </div>
+
+        <!-- Meta row -->
+        <div style="display: flex; gap: 4px; margin-bottom: 6px;">
+          <div style="flex:1; background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 6px; padding: 5px; text-align: center;">
+            <div style="font-size: 8px; color: #888;">קטגוריה</div>
+            <div style="font-size: 10px; font-weight: 600;">קינוח ✏️</div>
+          </div>
+          <div style="flex:1; background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 6px; padding: 5px; text-align: center;">
+            <div style="font-size: 8px; color: #888;">קושי</div>
+            <div style="font-size: 10px; font-weight: 600;">בינוני ✏️</div>
+          </div>
+          <div style="flex:1; background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 6px; padding: 5px; text-align: center;">
+            <div style="font-size: 8px; color: #888;">זמן</div>
+            <div style="font-size: 10px; font-weight: 600;">45 ד׳ ✏️</div>
+          </div>
+        </div>
+
+        <!-- Ingredients section -->
+        <div style="background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 10px; color: #FF7A00;">✏️</span>
+            <span style="font-size: 11px; font-weight: 600;">מצרכים (6)</span>
+          </div>
+          <div style="font-size: 10px; color: #555;">קמח · סוכר · ביצים · חמאה · שוקולד · קקאו</div>
+        </div>
+
+        <!-- Steps section -->
+        <div style="background: #FFF8F0; border: 1px solid #FFE0B2; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-size: 10px; color: #FF7A00;">✏️</span>
+            <span style="font-size: 11px; font-weight: 600;">שלבי הכנה (5)</span>
+          </div>
+          <div style="font-size: 10px; color: #555;">1. מחממים תנור · 2. מערבבים... · +3</div>
+        </div>
+
+        <!-- Save button -->
+        <div style="background: #FF7A00; border-radius: 10px; padding: 10px; text-align: center; color: #fff; font-weight: 600; font-size: 12px;">שמור מתכון</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Summary + Inline Edit</h3>
+      <p>Full recipe shown as a summary card. Every section is tappable (highlighted in warm orange) — tap to expand and edit. One-page overview, fix only what's wrong.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Quick to scan & verify</li><li>Edit only what's wrong</li><li>Feels like a preview</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>New component to build</li><li>Inline editing can be tricky</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Pre-filled wizard -->
+  <div class="card" data-choice="wizard" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 16px; background: #1a1a2e;">
+      <div style="background: #fff; border-radius: 20px; padding: 12px 16px; max-width: 260px; margin: 0 auto; color: #333; direction: rtl; text-align: right;">
+        <!-- Progress bar -->
+        <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+          <div style="flex:1; height: 4px; background: #4CAF50; border-radius: 2px;"></div>
+          <div style="flex:1; height: 4px; background: #e0e0e0; border-radius: 2px;"></div>
+          <div style="flex:1; height: 4px; background: #e0e0e0; border-radius: 2px;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 9px; color: #4CAF50; background: #E8F5E9; padding: 2px 6px; border-radius: 4px;">מולא אוטומטית ✓</span>
+          <span style="font-size: 11px; color: #FF7A00; font-weight: 600;">שלב 1 - פרטים בסיסיים</span>
+        </div>
+
+        <!-- Pre-filled fields -->
+        <div style="font-size: 10px; color: #888; margin-bottom: 2px;">שם המתכון</div>
+        <div style="background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px; font-size: 11px;">עוגת שוקולד של סבתא</div>
+
+        <div style="font-size: 10px; color: #888; margin-bottom: 2px;">תיאור</div>
+        <div style="background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px; font-size: 11px; min-height: 32px;">עוגה עשירה ולחה עם ציפוי שוקולד מריר</div>
+
+        <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+          <div style="flex:1;">
+            <div style="font-size: 10px; color: #888; margin-bottom: 2px;">קטגוריה</div>
+            <div style="background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 6px; padding: 6px 8px; font-size: 10px;">קינוח ▾</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size: 10px; color: #888; margin-bottom: 2px;">דרגת קושי</div>
+            <div style="background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 6px; padding: 6px 8px; font-size: 10px;">בינוני ▾</div>
+          </div>
+        </div>
+
+        <div style="font-size: 10px; color: #888; margin-bottom: 2px;">זמן הכנה (דקות)</div>
+        <div style="background: #E8F5E9; border: 1px solid #A5D6A7; border-radius: 6px; padding: 6px 8px; margin-bottom: 10px; font-size: 11px;">45</div>
+
+        <!-- Navigation buttons -->
+        <div style="display: flex; gap: 8px;">
+          <div style="flex:1; background: #f0f0f0; border-radius: 8px; padding: 8px; text-align: center; font-size: 11px; color: #666;">ביטול</div>
+          <div style="flex:1; background: #FF7A00; border-radius: 8px; padding: 8px; text-align: center; font-size: 11px; color: #fff; font-weight: 600;">הבא →</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Pre-filled Wizard</h3>
+      <p>Same 3-step wizard as manual flow, but all fields come pre-filled (shown in green). User walks through each step to verify and edit. Consistent experience.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Reuses manual form</li><li>Consistent UX</li><li>Familiar navigation</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Slower to review</li><li>Must click through all steps</li><li>Tedious if only 1 fix needed</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

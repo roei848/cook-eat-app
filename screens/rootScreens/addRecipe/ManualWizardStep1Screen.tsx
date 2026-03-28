@@ -80,7 +80,6 @@ export default function ManualWizardStep1Screen({
             onChangeText={onTitleChange}
             placeholder="שם המתכון *"
             placeholderTextColor={colors.text.muted}
-            textAlign="right"
           />
 
           <TextInput
@@ -90,7 +89,6 @@ export default function ManualWizardStep1Screen({
             placeholder="תיאור קצר *"
             placeholderTextColor={colors.text.muted}
             multiline
-            textAlign="right"
           />
 
           <CategoryPicker value={category} onChange={onCategoryChange} />
@@ -128,11 +126,12 @@ export default function ManualWizardStep1Screen({
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
-    flex: { flex: 1 },
+    flex: {
+      flex: 1,
+    },
     stepLabel: {
       fontSize: 13,
       color: colors.text.muted,
-      textAlign: "right",
       paddingHorizontal: 16,
       marginBottom: 12,
     },

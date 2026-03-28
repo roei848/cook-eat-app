@@ -52,7 +52,6 @@ export default function IngredientEditor({ ingredients, onChange }: IngredientEd
             onChangeText={(text) => updateIngredient(index, "amount", text)}
             placeholder="כמות"
             placeholderTextColor={colors.text.muted}
-            textAlign="right"
           />
           <TextInput
             style={[styles.input, styles.inputName]}

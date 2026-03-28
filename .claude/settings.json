@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(.env)"
+    ],
+    "allow": [
+      "Bash(node -e \"const pkg=require\\(''/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/package.json''\\); console.log\\(''generative-ai:'', pkg.dependencies[''@google/generative-ai'']\\); console.log\\(''dotenv:'', pkg.devDependencies[''dotenv'']\\);\")",
+      "Bash(node -e \"const m=require\\(''/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/node_modules/@google/generative-ai/package.json''\\); console.log\\(m.version\\);\")",
+      "Bash(git -C /Users/roeicohen/my-projects/mobile-apps/cook-eat-app show HEAD~1:app.json)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "frontend-design@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "context7@claude-plugins-official": true
+  }
+}

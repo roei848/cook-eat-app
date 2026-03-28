@@ -130,7 +130,6 @@ const createStyles = (colors: ThemeColors) =>
     optionText: {
       fontSize: 15,
       color: colors.text.primary,
-      textAlign: "right",
     },
     optionTextSelected: {
       color: colors.primary[700],

@@ -56,7 +56,6 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 14,
       color: colors.text.secondary,
       marginBottom: 8,
-      textAlign: "right",
     },
     chips: {
       flexDirection: "row",

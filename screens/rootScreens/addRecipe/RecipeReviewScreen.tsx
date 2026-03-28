@@ -84,12 +84,10 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 24,
       fontWeight: "800",
       color: colors.text.primary,
-      textAlign: "right",
     },
     subtitle: {
       fontSize: 13,
       color: colors.text.muted,
-      textAlign: "right",
       marginTop: 4,
       lineHeight: 18,
     },

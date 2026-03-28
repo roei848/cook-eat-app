@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
-    textAlign: "right",
   },
   badgeContainer: {
     position: "absolute",

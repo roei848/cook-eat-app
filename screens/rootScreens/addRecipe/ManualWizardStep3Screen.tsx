@@ -81,7 +81,6 @@ const createStyles = (colors: ThemeColors) =>
     stepLabel: {
       fontSize: 13,
       color: colors.text.muted,
-      textAlign: "right",
       paddingHorizontal: 16,
       marginBottom: 12,
     },
@@ -93,7 +92,6 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 15,
       fontWeight: "600",
       color: colors.text.primary,
-      textAlign: "right",
       marginTop: 20,
       marginBottom: 10,
     },

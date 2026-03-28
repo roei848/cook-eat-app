@@ -410,17 +410,14 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 12,
       color: colors.text.muted,
       marginBottom: 4,
-      textAlign: "right",
     },
     fieldValue: {
       fontSize: 15,
       color: colors.text.primary,
-      textAlign: "right",
     },
     placeholder: {
       fontSize: 15,
       color: colors.text.muted,
-      textAlign: "right",
       fontStyle: "italic",
     },
     metaRow: {
@@ -508,7 +505,6 @@ const createStyles = (colors: ThemeColors) =>
     pickerOptionText: {
       fontSize: 15,
       color: colors.text.primary,
-      textAlign: "right",
     },
     pickerOptionTextSelected: {
       color: colors.primary[700],

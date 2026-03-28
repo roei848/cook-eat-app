@@ -30,9 +30,7 @@ npm install
 ### Running the App
 
 ```bash
-npx expo start           # Start dev server (scan QR with Expo Go)
-npx expo start --ios     # Open in iOS simulator
-npx expo start --android # Open in Android emulator
+npx expo start --tunnel         # Start dev server (scan QR with Expo Go)
 ```
 
 ## Project Structure

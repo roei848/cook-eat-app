@@ -131,7 +131,6 @@ const createStyles = (colors: ThemeColors) =>
     errorText: {
       fontSize: 13,
       color: colors.danger[500],
-      textAlign: "right",
       marginBottom: 16,
     },
     loadingContainer: {

@@ -20,15 +20,20 @@ App.tsx          → Redux Provider > AppBootstrap > NavigationContainer > RootN
 RootNavigator    → Watches Firebase auth state → AppTabs (authed) or AuthStack (unauthed)
 AppTabs          → Bottom tabs: Home | SearchTab | AddRecipe | Grocery | Profile
 SearchStack      → Search → Category → RecipeScreen (shared)
+AddRecipeStack   → MethodPicker → (Manual: Step1 → Step2 → Step3) | ImageCapture | UrlInput → RecipeReview
 ProfileStack     → Profile
 AuthStack        → Login → Register → ForgotPassword
 ```
 
 **Key directories:**
-- `screens/` — Navigation screens (18 files)
-- `components/` — Reusable UI components (category, profile, recipe, search, ui)
+- `screens/` — Navigation screens
+- `screens/rootScreens/addRecipe/` — Full add-recipe wizard (Container/Presenter pairs per screen)
+- `components/recipe/form/` — Wizard form inputs (CategoryPicker, IngredientEditor, StepEditor, etc.)
+- `components/recipe/review/` — RecipeReviewCard shown before saving
+- `components/` — Other reusable UI (category, profile, search, ui)
 - `store/` — Redux slices (auth, user, recipes)
 - `services/firebase/` — Firebase services (auth, recipes, users, storage)
+- `services/gemini/` — Gemini AI service: `analyzeRecipeImage()` and `parseRecipeFromUrl()`
 - `theme/` — Light/dark color system + `useThemeColors()` hook
 - `types/` — TypeScript interfaces + enums (Hebrew values)
 - `mocks/` — Hebrew seed data for Firebase
@@ -58,6 +63,29 @@ Use `useThemeColors()` hook ([theme/useThemeColors.ts](theme/useThemeColors.ts))
 ### Shared RecipeScreen
 [screens/rootScreens/sharedScreens/RecipeScreen.tsx](screens/rootScreens/sharedScreens/RecipeScreen.tsx) is reused across SearchStack and other stacks.
 
+## AI Integration (Gemini)
+
+`services/gemini/geminiService.ts` uses `@google/generative-ai` with model `gemini-2.5-flash`:
+- `analyzeRecipeImage(base64)` — extracts a Hebrew recipe from a handwritten photo
+- `parseRecipeFromUrl(url)` — fetches and parses a recipe from a URL (uses `urlContext` tool)
+
+Both return `Partial<Recipe>` passed to `RecipeReview` for user confirmation before saving.
+
+**API key**: set `GEMINI_API_KEY` in `.env` → read via `app.config.js` `extra.geminiApiKey` → accessed with `Constants.expoConfig.extra.geminiApiKey`. Never hardcoded.
+
+## Plugins
+
+Active plugins in `.claude/settings.json`:
+
+| Plugin | Purpose |
+|--------|---------|
+| `superpowers` | Brainstorming, TDD, planning, debugging, code review skills |
+| `ui-ux-pro-max` | 50 UI styles, design system, component generation |
+| `frontend-design` | Distinctive production-grade React Native UI |
+| `typescript-lsp` | TypeScript language server integration |
+| `claude-md-management` | Audit and update CLAUDE.md files |
+| `context7` | Live library/framework documentation lookup |
+
 ## Agents
 
 Project agents live in `.claude/agents/`:
@@ -71,6 +99,7 @@ Project agents live in `.claude/agents/`:
 
 - **RTL forced**: `App.tsx` calls `I18nManager.forceRTL(true)` — all layouts are right-to-left for Hebrew
 - **Firebase credentials**: Hardcoded in `services/firebase/firebaseConfig.ts` — not environment-controlled
+- **Gemini API key**: Must be in `.env` as `GEMINI_API_KEY` and exposed via `app.config.js` `extra` — throws at runtime if missing
 - **Hebrew everywhere**: Enums in `types/enums/` (category, difficulty, relatives) use Hebrew values; mock data in `mocks/recipes.ts` is Hebrew
 - **New Architecture**: `app.json` has `newArchEnabled: true` — use Expo SDK 54+ compatible libraries only
 - **No tests**: No testing framework configured

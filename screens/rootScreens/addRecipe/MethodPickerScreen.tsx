@@ -83,20 +83,18 @@ const createStyles = (colors: ThemeColors) =>
     container: {
       flex: 1,
       paddingHorizontal: 20,
-      paddingTop: 12,
+      paddingTop: 40,
     },
     title: {
       fontSize: 28,
       fontWeight: "800",
       color: colors.text.primary,
-      textAlign: "right",
     },
     subtitle: {
       fontSize: 15,
       color: colors.text.secondary,
       marginTop: 4,
       marginBottom: 32,
-      textAlign: "right",
     },
     cards: {
       gap: 16,
@@ -130,12 +128,10 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 17,
       fontWeight: "700",
       color: colors.text.primary,
-      textAlign: "right",
     },
     cardSubtitle: {
       fontSize: 13,
       color: colors.text.secondary,
       marginTop: 2,
-      textAlign: "right",
     },
   });
