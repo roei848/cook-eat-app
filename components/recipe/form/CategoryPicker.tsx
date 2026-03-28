@@ -84,7 +84,6 @@ const createStyles = (colors: ThemeColors, cardWidth: number) =>
       fontSize: 12,
       color: colors.text.muted,
       marginBottom: 8,
-      textAlign: "right",
       fontWeight: "500",
     },
     grid: {
