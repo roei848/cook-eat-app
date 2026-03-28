@@ -23,7 +23,7 @@ export default function WizardProgressBar({
     <View style={styles.container}>
       {onBack && (
         <TouchableOpacity style={styles.backButton} onPress={onBack} hitSlop={8}>
-          <Ionicons name="chevron-back" size={20} color={colors.primary[500]} />
+          <Ionicons name="chevron-forward" size={20} color={colors.primary[500]} />
         </TouchableOpacity>
       )}
       <View style={styles.segments}>
