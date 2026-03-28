@@ -37,6 +37,7 @@ interface ManualWizardStep1ScreenProps {
   onTimeChange: (v: string) => void;
   onByWhoChange: (v: string) => void;
   onRelativesChange: (v: Relative[]) => void;
+  onBack: () => void;
   onNext: () => void;
 }
 
@@ -55,6 +56,7 @@ export default function ManualWizardStep1Screen({
   onTimeChange,
   onByWhoChange,
   onRelativesChange,
+  onBack,
   onNext,
 }: ManualWizardStep1ScreenProps) {
   const colors = useThemeColors();
@@ -66,7 +68,7 @@ export default function ManualWizardStep1Screen({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
-        <WizardProgressBar currentStep={1} />
+        <WizardProgressBar currentStep={1} onBack={onBack} />
         <Text style={styles.stepLabel}>שלב 1 מתוך 3 — פרטים בסיסיים</Text>
 
         <ScrollView

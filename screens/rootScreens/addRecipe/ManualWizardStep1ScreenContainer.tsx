@@ -27,6 +27,10 @@ export default function ManualWizardStep1ScreenContainer() {
   const [byWho, setByWho] = useState(userName);
   const [relatives, setRelatives] = useState<Relative[]>([]);
 
+  function handleBack() {
+    navigation.goBack();
+  }
+
   function handleNext() {
     if (!title.trim()) {
       Alert.alert("שגיאה", "יש להזין שם מתכון");
@@ -71,6 +75,7 @@ export default function ManualWizardStep1ScreenContainer() {
       onTimeChange={setTimeInMinutes}
       onByWhoChange={setByWho}
       onRelativesChange={setRelatives}
+      onBack={handleBack}
       onNext={handleNext}
     />
   );
