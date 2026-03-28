@@ -94,15 +94,21 @@ export default function ManualWizardStep1Screen({
           <CategoryPicker value={category} onChange={onCategoryChange} />
           <DifficultyPicker value={difficulty} onChange={onDifficultyChange} />
 
-          <TextInput
-            style={styles.input}
-            value={timeInMinutes}
-            onChangeText={onTimeChange}
-            placeholder="זמן הכנה (דקות) *"
-            placeholderTextColor={colors.text.muted}
-            keyboardType="number-pad"
-            textAlign="right"
-          />
+          <View style={styles.timeWrapper}>
+            <View style={styles.timeIconBadge}>
+              <Text style={styles.timeEmoji}>⏱️</Text>
+            </View>
+            <TextInput
+              style={styles.timeTextInput}
+              value={timeInMinutes}
+              onChangeText={onTimeChange}
+              placeholder="זמן הכנה (דקות) *"
+              placeholderTextColor={colors.text.muted}
+              keyboardType="number-pad"
+              textAlign="right"
+            />
+            <Text style={styles.timeUnit}>דקות</Text>
+          </View>
 
           <TextInput
             style={styles.input}
@@ -153,6 +159,39 @@ const createStyles = (colors: ThemeColors) =>
     inputMultiline: {
       minHeight: 80,
       textAlignVertical: "top",
+    },
+    timeWrapper: {
+      backgroundColor: colors.card.default,
+      borderWidth: 1,
+      borderColor: colors.border.default,
+      borderRadius: 12,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+      marginBottom: 12,
+    },
+    timeIconBadge: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      backgroundColor: colors.accent.amberBg,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    timeEmoji: {
+      fontSize: 18,
+    },
+    timeTextInput: {
+      flex: 1,
+      fontSize: 15,
+      color: colors.text.primary,
+      paddingVertical: 6,
+    },
+    timeUnit: {
+      fontSize: 13,
+      color: colors.text.muted,
     },
     footer: {
       padding: 16,
