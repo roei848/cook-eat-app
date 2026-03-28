@@ -1,14 +1,17 @@
 {
   "permissions": {
-    "deny": [
-      "Read(.env)"
-    ],
     "allow": [
       "Bash(node -e \"const pkg=require\\(''/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/package.json''\\); console.log\\(''generative-ai:'', pkg.dependencies[''@google/generative-ai'']\\); console.log\\(''dotenv:'', pkg.devDependencies[''dotenv'']\\);\")",
       "Bash(node -e \"const m=require\\(''/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/node_modules/@google/generative-ai/package.json''\\); console.log\\(m.version\\);\")",
       "Bash(git -C /Users/roeicohen/my-projects/mobile-apps/cook-eat-app show HEAD~1:app.json)",
       "Bash(git add:*)",
       "Bash(git commit:*)"
+    ],
+    "deny": [
+      "Read(.env)"
+    ],
+    "additionalDirectories": [
+      "/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/docs/superpowers/specs"
     ]
   },
   "enabledPlugins": {
