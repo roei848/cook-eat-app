@@ -36,13 +36,13 @@ export const lightColors = {
 
   accent: {
     amber: "#F59E0B",
-    amberText: "#FFFFFF",
+    amberText: "#92400E",
     amberBg: "#FEF3C7",
     coral: "#FF6B6B",
-    coralText: "#FFFFFF",
+    coralText: "#991B1B",
     coralBg: "#FFE4E4",
     mint: "#10B981",
-    mintText: "#FFFFFF",
+    mintText: "#065F46",
     mintBg: "#D1FAE5",
     blush: "#FFC2A1",
   },
