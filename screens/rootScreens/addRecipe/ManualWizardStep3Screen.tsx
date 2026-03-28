@@ -17,7 +17,6 @@ import WizardProgressBar from "../../../components/recipe/form/WizardProgressBar
 import StepEditor from "../../../components/recipe/form/StepEditor";
 import RecipePhotoInput from "../../../components/recipe/form/RecipePhotoInput";
 import Button from "../../../components/ui/Button";
-import FlatButton from "../../../components/ui/FlatButton";
 
 interface ManualWizardStep3ScreenProps {
   steps: Step[];
@@ -47,7 +46,7 @@ export default function ManualWizardStep3Screen({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
-        <WizardProgressBar currentStep={3} />
+        <WizardProgressBar currentStep={3} onBack={onBack} />
         <Text style={styles.stepLabel}>שלב 3 מתוך 3 — שלבי הכנה ותמונה</Text>
 
         <ScrollView
@@ -62,13 +61,7 @@ export default function ManualWizardStep3Screen({
         </ScrollView>
 
         <View style={styles.footer}>
-          <FlatButton title="‹ חזור" onPress={onBack} />
-          <Button
-            title="שמור"
-            onPress={onSave}
-            loading={isSaving}
-            style={styles.saveButton}
-          />
+          <Button title="שמור" onPress={onSave} loading={isSaving} />
         </View>
       </KeyboardAvoidingView>
     </Screen>
@@ -96,13 +89,7 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 10,
     },
     footer: {
-      flexDirection: "row",
       padding: 16,
       paddingBottom: 24,
-      gap: 12,
-      alignItems: "center",
-    },
-    saveButton: {
-      flex: 1,
     },
   });
