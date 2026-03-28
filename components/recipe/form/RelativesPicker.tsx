@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
@@ -11,6 +11,14 @@ interface RelativesPickerProps {
 }
 
 const ALL_RELATIVES = Object.values(Relative);
+
+const RELATIVE_EMOJI: Record<Relative, string> = {
+  [Relative.VEGETARIAN]: "🌱",
+  [Relative.VEGAN]: "🌿",
+  [Relative.GLUTEN_FREE]: "🌾",
+  [Relative.DAIRY_FREE]: "🥛",
+  [Relative.DIET]: "🍃",
+};
 
 export default function RelativesPicker({ value, onChange }: RelativesPickerProps) {
   const colors = useThemeColors();
@@ -27,7 +35,7 @@ export default function RelativesPicker({ value, onChange }: RelativesPickerProp
   return (
     <View style={styles.container}>
       <Text style={styles.label}>תגיות תזונה (אופציונלי)</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+      <View style={styles.chips}>
         {ALL_RELATIVES.map((relative) => {
           const isSelected = value.includes(relative);
           return (
@@ -35,14 +43,16 @@ export default function RelativesPicker({ value, onChange }: RelativesPickerProp
               key={relative}
               style={[styles.chip, isSelected && styles.chipSelected]}
               onPress={() => toggleRelative(relative)}
+              activeOpacity={0.7}
             >
               <Text style={[styles.chipText, isSelected && styles.chipTextSelected]}>
-                {relative}
+                {isSelected ? "✓ " : ""}
+                {relative} {RELATIVE_EMOJI[relative]}
               </Text>
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -53,33 +63,36 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 12,
     },
     label: {
-      fontSize: 14,
-      color: colors.text.secondary,
+      fontSize: 12,
+      color: colors.text.muted,
       marginBottom: 8,
+      textAlign: "right",
+      fontWeight: "500",
     },
     chips: {
       flexDirection: "row",
+      flexWrap: "wrap",
       gap: 8,
-      paddingVertical: 4,
     },
     chip: {
-      paddingVertical: 8,
+      paddingVertical: 9,
       paddingHorizontal: 14,
       borderRadius: 20,
       backgroundColor: colors.background.secondary,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: colors.border.default,
     },
     chipSelected: {
-      backgroundColor: colors.primary[100],
-      borderColor: colors.primary[500],
+      backgroundColor: colors.accent.mintBg,
+      borderWidth: 2,
+      borderColor: colors.accent.mint,
     },
     chipText: {
       fontSize: 13,
       color: colors.text.secondary,
     },
     chipTextSelected: {
-      color: colors.primary[700],
+      color: colors.accent.mint,
       fontWeight: "600",
     },
   });
