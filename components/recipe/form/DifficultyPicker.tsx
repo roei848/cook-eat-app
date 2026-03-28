@@ -25,19 +25,19 @@ const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyEntry> = {
     emoji: "☀️",
     getBg: (c) => c.accent.mintBg,
     getBorder: (c) => c.accent.mint,
-    getTextColor: (c) => c.accent.mint,
+    getTextColor: (c) => c.accent.mintText,
   },
   [Difficulty.MEDIUM]: {
     emoji: "⚡",
     getBg: (c) => c.accent.amberBg,
     getBorder: (c) => c.accent.amber,
-    getTextColor: (c) => c.accent.amber,
+    getTextColor: (c) => c.accent.amberText,
   },
   [Difficulty.HARD]: {
     emoji: "🔥",
     getBg: (c) => c.accent.coralBg,
     getBorder: (c) => c.accent.coral,
-    getTextColor: (c) => c.accent.coral,
+    getTextColor: (c) => c.accent.coralText,
   },
 };
 
