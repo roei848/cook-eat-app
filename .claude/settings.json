@@ -5,7 +5,8 @@
       "Bash(node -e \"const m=require\\(''/Users/roeicohen/my-projects/mobile-apps/cook-eat-app/node_modules/@google/generative-ai/package.json''\\); console.log\\(m.version\\);\")",
       "Bash(git -C /Users/roeicohen/my-projects/mobile-apps/cook-eat-app show HEAD~1:app.json)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__plugin_context7_context7__query-docs"
     ],
     "deny": [
       "Read(.env)"

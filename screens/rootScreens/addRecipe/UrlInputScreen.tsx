@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -15,6 +14,7 @@ import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import Button from "../../../components/ui/Button";
 import FlatButton from "../../../components/ui/FlatButton";
+import Loader from "../../../components/shared/Loader";
 
 interface UrlInputScreenProps {
   url: string;
@@ -70,8 +70,7 @@ export default function UrlInputScreen({
 
           {isLoading ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={colors.primary[500]} />
-              <Text style={styles.loadingText}>מנתח מתכון עם AI...</Text>
+              <Loader size={160} text="מנתח מתכון עם AI..." />
             </View>
           ) : (
             <View style={styles.actions}>
@@ -134,13 +133,8 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 16,
     },
     loadingContainer: {
-      marginTop: 32,
+      marginTop: 16,
       alignItems: "center",
-      gap: 12,
-    },
-    loadingText: {
-      fontSize: 15,
-      color: colors.text.secondary,
     },
     actions: {
       flexDirection: "row",

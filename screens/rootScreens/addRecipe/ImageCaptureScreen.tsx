@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
@@ -12,6 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import Loader from "../../../components/shared/Loader";
 
 interface ImageCaptureScreenProps {
   imageUri?: string;
@@ -44,8 +44,7 @@ export default function ImageCaptureScreen({
 
         {isLoading && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={colors.primary[500]} />
-            <Text style={styles.loadingText}>מנתח מתכון עם AI...</Text>
+            <Loader size={180} text="מנתח מתכון עם AI..." />
           </View>
         )}
 
@@ -93,11 +92,6 @@ const createStyles = (colors: ThemeColors) =>
     },
     loadingContainer: {
       alignItems: "center",
-      gap: 12,
-    },
-    loadingText: {
-      fontSize: 16,
-      color: colors.text.secondary,
     },
     errorContainer: {
       alignItems: "center",
