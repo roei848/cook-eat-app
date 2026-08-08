@@ -1,6 +1,9 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
 
+import { useThemeColors } from "../../theme/useThemeColors";
+import { fonts, typography } from "../../theme/typography";
+
 interface FlatButtonProps {
   title: string;
   onPress: () => void;
@@ -16,6 +19,8 @@ export default function FlatButton({
   style,
   textStyle,
 }: FlatButtonProps) {
+  const colors = useThemeColors();
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -23,7 +28,11 @@ export default function FlatButton({
       style={[styles.container, style]}
       activeOpacity={0.6}
     >
-      <Text style={[styles.text, textStyle]}>{title}</Text>
+      <Text
+        style={[styles.text, { color: colors.primary[500] }, textStyle]}
+      >
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -33,8 +42,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   text: {
-    color: "#007AFF",
-    fontSize: 15,
-    fontWeight: "500",
+    ...typography.body,
+    fontFamily: fonts.bodyMedium,
   },
 });

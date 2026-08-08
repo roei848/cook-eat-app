@@ -1,15 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { View, Text, StyleSheet, Alert } from "react-native";
 
-import { signOut } from "firebase/auth";
 import { RootState } from "../../../store/store";
 import { ThemeColors } from "../../../theme/colors";
 import { clearProfile, setProfile } from "../../../store/userSlice";
 import { useThemeColors } from "../../../theme/useThemeColors";
-import { auth } from "../../../services/firebase/firebaseConfig";
 import { updateUserProfile } from "../../../services/firebase/userService";
+import { typography } from "../../../theme/typography";
+import { SCREEN_PADDING_H, spacing } from "../../../theme/spacing";
 
+import Screen from "../../Screen";
 import Button from "../../../components/ui/Button";
+import Loader from "../../../components/shared/Loader";
 import ThemeToggle from "../../../components/profile/ThemeToggle";
 import ProfileAvatar from "../../../components/profile/ProfileAvatar";
 import { clearRecipes } from "../../../store/recipeSlice";
@@ -21,7 +23,15 @@ export default function ProfileScreen() {
   const styles = createStyles(colors);
   const profile = useSelector((state: RootState) => state.user.profile);
 
-  if (!profile) return <Text>Loading...</Text>;
+  if (!profile) {
+    return (
+      <Screen>
+        <View style={styles.loading}>
+          <Loader size={140} />
+        </View>
+      </Screen>
+    );
+  }
 
   const handleThemeChange = async (theme: "light" | "dark") => {
     const isDark = theme === "dark";
@@ -40,12 +50,12 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      "Log out",
-      "Are you sure you want to log out?",
+      "התנתקות",
+      "האם להתנתק מהחשבון?",
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "ביטול", style: "cancel" },
         {
-          text: "Log out",
+          text: "התנתקות",
           style: "destructive",
           onPress: async () => {
             await logout();
@@ -59,30 +69,32 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ProfileAvatar
-        uid={profile.uid}
-        avatarUrl={profile.avatarUrl || null}
-        profile={profile}
-      />
+    <Screen>
+      <View style={styles.container}>
+        <ProfileAvatar
+          uid={profile.uid}
+          avatarUrl={profile.avatarUrl || null}
+          profile={profile}
+        />
 
-      <Text style={styles.name}>{profile.name}</Text>
-      <Text style={styles.email}>{profile.email}</Text>
+        <Text style={styles.name}>{profile.name}</Text>
+        <Text style={styles.email}>{profile.email}</Text>
 
-      <View style={styles.darkModeContainer}>
-        <Text style={styles.darkModeText}>בחירת עיצוב</Text>
-        <ThemeToggle
-          value={profile.darkMode ? "dark" : "light"}
-          onChange={handleThemeChange}
+        <View style={styles.darkModeContainer}>
+          <Text style={styles.darkModeText}>בחירת עיצוב</Text>
+          <ThemeToggle
+            value={profile.darkMode ? "dark" : "light"}
+            onChange={handleThemeChange}
+          />
+        </View>
+
+        <Button
+          title="התנתקות"
+          onPress={handleLogout}
+          style={styles.logoutButton}
         />
       </View>
-
-      <Button
-        title="Log out"
-        onPress={handleLogout}
-        style={styles.logoutButton}
-      />
-    </View>
+    </Screen>
   );
 }
 
@@ -90,38 +102,42 @@ const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      padding: 20,
-      paddingTop: 80,
-      backgroundColor: colors.background.default,
+      padding: SCREEN_PADDING_H,
+    },
+    loading: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
     },
     name: {
-      fontSize: 22,
-      fontWeight: "600",
+      ...typography.displayM,
       textAlign: "center",
-      marginTop: 10,
+      marginTop: spacing.md,
       color: colors.text.primary,
     },
     email: {
+      ...typography.bodySmall,
       textAlign: "center",
-      marginBottom: 30,
+      marginBottom: spacing.xxl,
       color: colors.text.secondary,
     },
     darkModeContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      paddingVertical: 16,
-      marginTop: 20,
+      paddingVertical: spacing.lg,
+      marginTop: spacing.xl,
       borderTopWidth: 1,
       borderTopColor: colors.border.default,
     },
     darkModeText: {
+      ...typography.body,
       fontSize: 16,
       color: colors.text.primary,
     },
     logoutButton: {
-      marginTop: 30,
-      width: 160,
+      marginTop: spacing.xxxl,
+      width: 180,
       alignSelf: "center",
       backgroundColor: colors.danger[500],
     },

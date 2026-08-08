@@ -1,5 +1,11 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle } from "react-native";
+import { Text, StyleSheet, ActivityIndicator, ViewStyle } from "react-native";
+
+import ScalePressable from "./ScalePressable";
+import { useThemeColors } from "../../theme/useThemeColors";
+import { withAlpha } from "../../theme/categoryColors";
+import { typography } from "../../theme/typography";
+import { radius } from "../../theme/spacing";
 
 interface ButtonProps {
   title: string;
@@ -9,40 +15,52 @@ interface ButtonProps {
   style?: ViewStyle;
 }
 
-export default function Button({ title, onPress, loading = false, disabled = false, style }: ButtonProps) {
+export default function Button({
+  title,
+  onPress,
+  loading = false,
+  disabled = false,
+  style,
+}: ButtonProps) {
+  const colors = useThemeColors();
   const isDisabled = disabled || loading;
 
   return (
-    <TouchableOpacity
-      style={[styles.button, isDisabled && styles.disabled, style]}
+    <ScalePressable
       onPress={onPress}
-      activeOpacity={0.8}
       disabled={isDisabled}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      style={[
+        styles.button,
+        {
+          backgroundColor: isDisabled
+            ? withAlpha(colors.primary[500], 0.4)
+            : colors.primary[500],
+        },
+        style,
+      ]}
     >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={colors.text.inverse} />
       ) : (
-        <Text style={styles.text}>{title}</Text>
+        <Text style={[styles.text, { color: colors.text.inverse }]}>
+          {title}
+        </Text>
       )}
-    </TouchableOpacity>
+    </ScalePressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
     width: "100%",
-    backgroundColor: "#007AFF",
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: radius.sm,
     alignItems: "center",
     justifyContent: "center",
   },
-  disabled: {
-    backgroundColor: "#9cc7ff",
-  },
   text: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
+    ...typography.button,
   },
 });
