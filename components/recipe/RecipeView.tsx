@@ -19,7 +19,11 @@ export default function RecipeView({ recipe }: { recipe: Recipe }) {
     >
       <RecipeHeroImage recipe={recipe} insetTop={insets.top} />
       <RecipeInfoCard recipe={recipe} />
-      <RecipeIngredients ingredients={recipe.ingredients} />
+      <RecipeIngredients
+        ingredients={recipe.ingredients}
+        recipeId={recipe.id}
+        recipeTitle={recipe.title}
+      />
       <RecipeSteps steps={recipe.steps} />
       <View style={{ height: 20 }} />
     </ScrollView>

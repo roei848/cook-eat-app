@@ -1,14 +1,33 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useSelector } from "react-redux";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { Ingredient } from "../../../types/recipe";
+import { RootState } from "../../../store/store";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { ThemeColors } from "../../../theme/colors";
+import AddToGrocerySheet from "../../grocery/AddToGrocerySheet";
 
-export default function RecipeIngredients({ ingredients }: { ingredients: Ingredient[] }) {
+interface Props {
+  ingredients: Ingredient[];
+  recipeId?: string;
+  recipeTitle?: string;
+}
+
+export default function RecipeIngredients({
+  ingredients,
+  recipeId,
+  recipeTitle,
+}: Props) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+
+  const uid = useSelector((state: RootState) => state.auth.user?.uid);
+
+  const [sheetVisible, setSheetVisible] = useState(false);
+
+  const groceryEnabled = Boolean(recipeId && uid);
 
   return (
     <Animated.View entering={FadeInUp.delay(300)} style={styles.card}>
@@ -16,6 +35,15 @@ export default function RecipeIngredients({ ingredients }: { ingredients: Ingred
       <View style={styles.header}>
         <Ionicons name="basket-outline" size={20} color={colors.primary[500]} />
         <Text style={styles.headerText}>מצרכים</Text>
+        {groceryEnabled && (
+          <Pressable
+            onPress={() => setSheetVisible(true)}
+            hitSlop={8}
+            style={styles.cartButton}
+          >
+            <Ionicons name="cart-outline" size={22} color={colors.primary[500]} />
+          </Pressable>
+        )}
       </View>
 
       {/* Ingredient rows */}
@@ -29,6 +57,16 @@ export default function RecipeIngredients({ ingredients }: { ingredients: Ingred
           {idx < ingredients.length - 1 && <View style={styles.separator} />}
         </View>
       ))}
+
+      {groceryEnabled && recipeId && (
+        <AddToGrocerySheet
+          visible={sheetVisible}
+          onClose={() => setSheetVisible(false)}
+          ingredients={ingredients}
+          recipeId={recipeId}
+          recipeTitle={recipeTitle}
+        />
+      )}
     </Animated.View>
   );
 }
@@ -57,6 +95,9 @@ const createStyles = (colors: ThemeColors) =>
       fontSize: 20,
       fontWeight: "700",
       color: colors.text.primary,
+    },
+    cartButton: {
+      marginStart: "auto",
     },
     row: {
       flexDirection: "row",

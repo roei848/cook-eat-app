@@ -8,12 +8,20 @@ import { RootState, store } from "./store/store";
 import RootNavigator from "./screens/RootNavigator";
 import { setRecipes, setSubscribed } from "./store/recipeSlice";
 import { subscribeToRecipes } from "./services/firebase/recipeService";
+import {
+  setGroceryItems,
+  setGrocerySubscribed,
+  setGroceryError,
+  clearGrocery,
+} from "./store/grocerySlice";
+import { subscribeToGrocery } from "./services/firebase/groceryService";
 
 function AppBootstrap() {
   const dispatch = useDispatch();
   const subscribed = useSelector(
     (state: RootState) => state.recipes.subscribed
   );
+  const uid = useSelector((state: RootState) => state.auth.user?.uid);
 
   useEffect(() => {
     // Only subscribe if we haven't already
@@ -31,6 +39,29 @@ function AppBootstrap() {
 
     return () => unsubscribe();
   }, [dispatch, subscribed]);
+
+  useEffect(() => {
+    if (!uid) {
+      dispatch(clearGrocery());
+      return;
+    }
+
+    const unsubscribe = subscribeToGrocery(
+      uid,
+      (items) => {
+        dispatch(setGroceryItems(items));
+        dispatch(setGrocerySubscribed(true));
+        dispatch(setGroceryError(null));
+      },
+      (error) => {
+        console.error("❌ Grocery snapshot error:", error);
+        dispatch(setGrocerySubscribed(true));
+        dispatch(setGroceryError(error.message));
+      }
+    );
+
+    return () => unsubscribe();
+  }, [dispatch, uid]);
 
   useEffect(() => {
     if (!I18nManager.isRTL) {
