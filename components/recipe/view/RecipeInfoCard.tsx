@@ -8,6 +8,8 @@ import { ThemeColors } from "../../../theme/colors";
 import CookingTimeBox from "../CookingTimeBox";
 import DifficultyBox from "../DifficultyBox";
 import RecipeRelativesTags from "./RecipeRelativesTags";
+import { typography } from "../../../theme/typography";
+import { radius } from "../../../theme/spacing";
 
 export default function RecipeInfoCard({ recipe }: { recipe: Recipe }) {
   const colors = useThemeColors();
@@ -42,7 +44,7 @@ const createStyles = (colors: ThemeColors) =>
       marginTop: -30,
       marginHorizontal: 16,
       backgroundColor: colors.card.default,
-      borderRadius: 24,
+      borderRadius: radius.lg,
       padding: 20,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
@@ -61,19 +63,17 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: "center",
       gap: 4,
       backgroundColor: colors.background.secondary,
-      borderRadius: 10,
+      borderRadius: radius.sm,
       paddingHorizontal: 8,
       paddingVertical: 4,
     },
     byWhoText: {
-      fontSize: 12,
-      fontWeight: "600",
+      ...typography.caption,
       color: colors.text.muted,
     },
     description: {
       marginTop: 14,
-      fontSize: 15,
-      lineHeight: 22,
+      ...typography.body,
       color: colors.text.secondary,
     },
   });

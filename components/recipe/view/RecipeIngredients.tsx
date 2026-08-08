@@ -8,6 +8,8 @@ import { RootState } from "../../../store/store";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { ThemeColors } from "../../../theme/colors";
 import AddToGrocerySheet from "../../grocery/AddToGrocerySheet";
+import { fonts, typography } from "../../../theme/typography";
+import { radius } from "../../../theme/spacing";
 
 interface Props {
   ingredients: Ingredient[];
@@ -77,7 +79,7 @@ const createStyles = (colors: ThemeColors) =>
       marginHorizontal: 16,
       marginTop: 20,
       backgroundColor: colors.card.default,
-      borderRadius: 20,
+      borderRadius: radius.lg,
       padding: 20,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -92,8 +94,7 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 16,
     },
     headerText: {
-      fontSize: 20,
-      fontWeight: "700",
+      ...typography.titleL,
       color: colors.text.primary,
     },
     cartButton: {
@@ -112,12 +113,12 @@ const createStyles = (colors: ThemeColors) =>
       backgroundColor: colors.primary[300],
     },
     amount: {
-      fontSize: 15,
-      fontWeight: "600",
+      ...typography.body,
+      fontFamily: fonts.bodySemiBold,
       color: colors.text.primary,
     },
     name: {
-      fontSize: 15,
+      ...typography.body,
       color: colors.text.primary,
       flex: 1,
     },

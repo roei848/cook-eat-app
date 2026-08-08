@@ -5,6 +5,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Step } from "../../../types/recipe";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { ThemeColors } from "../../../theme/colors";
+import { fonts, typography } from "../../../theme/typography";
+import { radius } from "../../../theme/spacing";
 
 export default function RecipeSteps({ steps }: { steps: Step[] }) {
   const colors = useThemeColors();
@@ -50,7 +52,7 @@ const createStyles = (colors: ThemeColors) =>
       marginHorizontal: 16,
       marginTop: 20,
       backgroundColor: colors.card.default,
-      borderRadius: 20,
+      borderRadius: radius.lg,
       padding: 20,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -65,8 +67,7 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: 20,
     },
     headerText: {
-      fontSize: 20,
-      fontWeight: "700",
+      ...typography.titleL,
       color: colors.text.primary,
     },
     stepRow: {
@@ -86,8 +87,8 @@ const createStyles = (colors: ThemeColors) =>
       alignItems: "center",
     },
     circleNumber: {
+      fontFamily: fonts.bodyExtraBold,
       fontSize: 16,
-      fontWeight: "800",
       color: colors.primary[500],
     },
     connector: {
@@ -99,8 +100,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     stepText: {
       flex: 1,
-      fontSize: 15,
-      lineHeight: 22,
+      ...typography.body,
       color: colors.text.primary,
       paddingTop: 7,
       paddingBottom: 20,

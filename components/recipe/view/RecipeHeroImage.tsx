@@ -1,9 +1,11 @@
 import React from "react";
 import { View, Image, Text, StyleSheet, Dimensions } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { Recipe } from "../../../types/recipe";
 import { CATEGORY_COLORS } from "../../../theme/categoryColors";
+import { typography } from "../../../theme/typography";
 import RecipeCategoryBadge from "./RecipeCategoryBadge";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -31,7 +33,13 @@ export default function RecipeHeroImage({
       {!hasImage && <View style={styles.fallbackOverlay} />}
 
       {/* Gradient overlay at bottom */}
-      <View style={styles.gradient} />
+      <LinearGradient
+        colors={["transparent", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.8)"]}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={styles.gradient}
+      />
 
       {/* Title on gradient */}
       <Text style={styles.title}>{recipe.title}</Text>
@@ -74,16 +82,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: "42%",
-    backgroundColor: "rgba(0,0,0,0.55)",
+    height: "55%",
   },
   title: {
     position: "absolute",
-    bottom: 36,
-    left: 20,
-    right: 20,
-    fontSize: 28,
-    fontWeight: "800",
+    bottom: 32,
+    start: 20,
+    end: 20,
+    ...typography.displayL,
     color: "#FFFFFF",
     textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 1 },
@@ -91,7 +97,7 @@ const styles = StyleSheet.create({
   },
   badgeContainer: {
     position: "absolute",
-    left: 16,
+    start: 16,
   },
   fallbackIcon: {
     ...StyleSheet.absoluteFillObject,
