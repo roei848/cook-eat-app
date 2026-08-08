@@ -3,6 +3,7 @@ import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Recipe } from "../../types/recipe";
 import { useTabBarClearance } from "../../theme/layout";
+import { useThemeColors } from "../../theme/useThemeColors";
 
 import RecipeHeroImage from "./view/RecipeHeroImage";
 import RecipeInfoCard from "./view/RecipeInfoCard";
@@ -12,10 +13,14 @@ import RecipeSteps from "./view/RecipeSteps";
 export default function RecipeView({ recipe }: { recipe: Recipe }) {
   const insets = useSafeAreaInsets();
   const tabBarClearance = useTabBarClearance();
+  const colors = useThemeColors();
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      // The navigator's scene background is light by default; without an
+      // explicit themed background the area between cards stays light in
+      // dark mode.
+      style={{ flex: 1, backgroundColor: colors.background.default }}
       contentContainerStyle={{ paddingBottom: tabBarClearance }}
       showsVerticalScrollIndicator={false}
     >
