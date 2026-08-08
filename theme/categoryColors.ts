@@ -6,6 +6,17 @@ export type CategoryColorEntry = {
   icon: string;
 };
 
+/**
+ * Append an alpha channel to a 6-digit hex color (all CATEGORY_COLORS
+ * values are 6-digit). Used for the "demoted rainbow" treatment: category
+ * colors appear only as soft tints on badges/chips/fallback tiles, never
+ * as full-saturation surfaces.
+ */
+export const withAlpha = (hex: string, alpha: number): string => {
+  const clamped = Math.round(Math.min(Math.max(alpha, 0), 1) * 255);
+  return hex + clamped.toString(16).padStart(2, "0").toUpperCase();
+};
+
 export const CATEGORY_COLORS: Record<Category, CategoryColorEntry> = {
   [Category.SOUP]: {
     light: "#FF8C42",
