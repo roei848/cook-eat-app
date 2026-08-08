@@ -1,16 +1,12 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from "react-native-reanimated";
+import { View, Text, Image, StyleSheet } from "react-native";
 
 import { Recipe } from "../../types/recipe";
 import { useThemeColors } from "../../theme/useThemeColors";
 import { ThemeColors } from "../../theme/colors";
 import CookingTimeBox from "./CookingTimeBox";
 import DifficultyBox from "./DifficultyBox";
+import ScalePressable from "../ui/ScalePressable";
 
 type Props = {
   recipe: Recipe;
@@ -20,23 +16,9 @@ type Props = {
 export default function RecipeCard({ recipe, onPress }: Props) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
-  const scale = useSharedValue(1);
-
-  const animStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
 
   return (
-    <Pressable
-      onPressIn={() => {
-        scale.value = withSpring(0.96, { damping: 15, stiffness: 300 });
-      }}
-      onPressOut={() => {
-        scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-      }}
-      onPress={onPress}
-    >
-      <Animated.View style={[styles.card, animStyle]}>
+    <ScalePressable onPress={onPress} style={styles.card}>
         {/* Accent bar */}
         <View style={styles.accentBar} />
 
@@ -66,8 +48,7 @@ export default function RecipeCard({ recipe, onPress }: Props) {
             <DifficultyBox difficulty={recipe.difficulty} />
           </View>
         </View>
-      </Animated.View>
-    </Pressable>
+    </ScalePressable>
   );
 }
 
