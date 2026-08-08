@@ -10,6 +10,7 @@ import { useThemeColors } from "../../../theme/useThemeColors";
 import { ThemeColors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
 import { spacing } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import { CATEGORY_COLORS } from "../../../theme/categoryColors";
 import Screen from "../../Screen";
 import RecipeCard from "../../../components/recipe/RecipeCard";
@@ -20,6 +21,7 @@ export default function CategoryScreen({ route, navigation }: Props) {
   const { category } = route.params;
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
   const allRecipes = useSelector((state: RootState) => state.recipes.items);
 
   // Selecting from Redux (rather than receiving a params array) keeps the
@@ -35,7 +37,10 @@ export default function CategoryScreen({ route, navigation }: Props) {
         <FlatList
           data={recipes}
           keyExtractor={(item) => item.id ?? item.title}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[
+            styles.listContent,
+            { paddingBottom: tabBarClearance },
+          ]}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <RecipeCard
@@ -72,7 +77,6 @@ const createStyles = (colors: ThemeColors) =>
     listContent: {
       paddingHorizontal: 16,
       paddingVertical: spacing.md,
-      paddingBottom: 100,
     },
     empty: {
       flex: 1,

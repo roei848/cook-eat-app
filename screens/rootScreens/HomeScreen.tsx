@@ -21,6 +21,7 @@ import { HomeStackParamList } from "./home/HomeStack";
 import { recipes as mockRecipes } from "../../mocks/recipes";
 import { createRecipe } from "../../services/firebase/recipeService";
 import { logout } from "../../services/firebase/authService";
+import { useTabBarClearance } from "../../theme/layout";
 
 const ALL_CATEGORIES = Object.values(Category);
 
@@ -29,6 +30,7 @@ export default function HomeScreen({
 }: NativeStackScreenProps<HomeStackParamList, "HomeMain">) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
   const isDark = useSelector(
     (state: RootState) => state.user.profile?.darkMode ?? false,
   );
@@ -50,7 +52,10 @@ export default function HomeScreen({
       <ScrollView
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: tabBarClearance },
+        ]}
       >
         {/* Header */}
         <View style={styles.header}>

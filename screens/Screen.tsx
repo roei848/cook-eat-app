@@ -31,12 +31,14 @@ export default function Screen({ children, withTopInset = true }: Props) {
         backgroundColor={colors.background.default}
       />
 
+      {/* No baked-in bottom padding: the tab bar floats, and content is
+          expected to scroll underneath it. Screens pad their scrollables
+          with useTabBarClearance(). */}
       <View
         style={{
           flex: 1,
           backgroundColor: colors.background.default,
           paddingTop: withTopInset ? insets.top + 20 : 0,
-          paddingBottom: insets.bottom + 10,
         }}
       >
         {children}

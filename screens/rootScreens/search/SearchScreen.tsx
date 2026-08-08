@@ -17,6 +17,7 @@ import { useThemeColors } from "../../../theme/useThemeColors";
 import { ThemeColors } from "../../../theme/colors";
 import { typography } from "../../../theme/typography";
 import { SCREEN_PADDING_H, spacing } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 
 const matchesQuery = (recipe: Recipe, query: string): boolean => {
   const q = query.toLowerCase();
@@ -33,6 +34,7 @@ export default function SearchScreen({
 }: NativeStackScreenProps<SearchStackParamList, "Search">) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
   const recipes = useSelector((state: RootState) => state.recipes.items);
   const subscribed = useSelector(
     (state: RootState) => state.recipes.subscribed
@@ -75,7 +77,10 @@ export default function SearchScreen({
             data={results}
             keyExtractor={(item) => item.id ?? item.title}
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={styles.resultsContent}
+            contentContainerStyle={[
+              styles.resultsContent,
+              { paddingBottom: tabBarClearance },
+            ]}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={
               <Text style={styles.resultsCount}>
@@ -108,7 +113,10 @@ export default function SearchScreen({
         )
       ) : (
         <ScrollView
-          contentContainerStyle={styles.gridContent}
+          contentContainerStyle={[
+            styles.gridContent,
+            { paddingBottom: tabBarClearance },
+          ]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
@@ -138,11 +146,9 @@ const createStyles = (colors: ThemeColors) =>
     gridContent: {
       paddingHorizontal: SCREEN_PADDING_H,
       paddingTop: spacing.xs,
-      paddingBottom: 100,
     },
     resultsContent: {
       paddingHorizontal: SCREEN_PADDING_H,
-      paddingBottom: 100,
       gap: spacing.sm + 2,
     },
     resultsCount: {

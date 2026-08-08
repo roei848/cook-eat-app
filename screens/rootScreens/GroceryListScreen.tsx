@@ -18,6 +18,7 @@ import { RootState } from "../../store/store";
 import { GroceryItem } from "../../types/grocery";
 import { useThemeColors } from "../../theme/useThemeColors";
 import { ThemeColors } from "../../theme/colors";
+import { useTabBarClearance } from "../../theme/layout";
 import {
   addGroceryItem,
   setGroceryItemChecked,
@@ -28,6 +29,7 @@ import {
 export default function GroceryListScreen() {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
 
   const uid = useSelector((state: RootState) => state.auth.user?.uid);
   const items = useSelector((state: RootState) => state.grocery.items);
@@ -149,7 +151,10 @@ export default function GroceryListScreen() {
         <SectionList
           sections={sections}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[
+            styles.listContent,
+            { paddingBottom: tabBarClearance },
+          ]}
           showsVerticalScrollIndicator={false}
           stickySectionHeadersEnabled={false}
           renderItem={({ item }) => (
