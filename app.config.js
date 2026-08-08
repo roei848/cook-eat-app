@@ -11,7 +11,7 @@ export default ({ config }) => ({
   splash: {
     image: "./assets/splash-icon.png",
     resizeMode: "contain",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#FFFAF5",
   },
   ios: {
     supportsTablet: true,
@@ -31,6 +31,7 @@ export default ({ config }) => ({
   },
   newArchEnabled: true,
   plugins: [
+    "expo-font",
     "expo-web-browser",
     [
       "expo-image-picker",
