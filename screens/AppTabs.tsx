@@ -1,13 +1,24 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigatorScreenParams } from "@react-navigation/native";
 
 import HomeStack from "../screens/rootScreens/home/HomeStack";
 import AddRecipeStack from "../screens/rootScreens/addRecipe/AddRecipeStack";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
 import ProfileStack from "./rootScreens/profile/ProfileStack";
-import SearchStack from "./rootScreens/search/SearchStack";
+import SearchStack, {
+  SearchStackParamList,
+} from "./rootScreens/search/SearchStack";
 import FloatingTabBar from "../components/navigation/FloatingTabBar";
 
-const Tab = createBottomTabNavigator();
+export type AppTabsParamList = {
+  Home: undefined;
+  SearchTab: NavigatorScreenParams<SearchStackParamList>;
+  AddRecipe: undefined;
+  Grocery: undefined;
+  Profile: undefined;
+};
+
+const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export default function AppTabs() {
   return (

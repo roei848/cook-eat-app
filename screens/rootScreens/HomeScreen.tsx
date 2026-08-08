@@ -1,26 +1,21 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView, FlatList } from "react-native";
 import { useSelector } from "react-redux";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 import Screen from "../Screen";
 import RecipeCardHorizontal from "../../components/recipe/RecipeCardHorizontal";
+import CategoryBadge from "../../components/category/CategoryBadge";
+import ScalePressable from "../../components/ui/ScalePressable";
 import { useThemeColors } from "../../theme/useThemeColors";
 import { ThemeColors } from "../../theme/colors";
 import { RootState } from "../../store/store";
-import { CATEGORY_COLORS } from "../../theme/categoryColors";
 import { Category } from "../../types/enums/category";
 import { HomeStackParamList } from "./home/HomeStack";
-import { recipes as mockRecipes } from "../../mocks/recipes";
-import { createRecipe } from "../../services/firebase/recipeService";
-import { logout } from "../../services/firebase/authService";
+import { AppTabsParamList } from "../AppTabs";
+import { typography } from "../../theme/typography";
+import { SCREEN_PADDING_H, spacing } from "../../theme/spacing";
 import { useTabBarClearance } from "../../theme/layout";
 
 const ALL_CATEGORIES = Object.values(Category);
@@ -31,20 +26,19 @@ export default function HomeScreen({
   const colors = useThemeColors();
   const styles = createStyles(colors);
   const tabBarClearance = useTabBarClearance();
-  const isDark = useSelector(
-    (state: RootState) => state.user.profile?.darkMode ?? false,
-  );
   const profile = useSelector((state: RootState) => state.user.profile);
   const recipeItems = useSelector((state: RootState) => state.recipes.items);
 
   const recentRecipes = recipeItems.slice(0, 10);
 
-  const addDummyRecipe = async () => {
-    for (const recipe of mockRecipes) {
-      await createRecipe(recipe);
-      console.log(`added recipe: ${recipe.title}`);
-    }
-    console.log("adding dummy recipe");
+  const openCategory = (category: Category) => {
+    navigation
+      .getParent<BottomTabNavigationProp<AppTabsParamList>>()
+      ?.navigate("SearchTab", {
+        screen: "Category",
+        params: { category },
+        initial: false,
+      });
   };
 
   return (
@@ -95,30 +89,18 @@ export default function HomeScreen({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.chipsContainer}
           >
-            {ALL_CATEGORIES.map((cat) => {
-              const entry = CATEGORY_COLORS[cat];
-              const chipColor = isDark ? entry.dark : entry.light;
-              return (
-                <TouchableOpacity
-                  key={cat}
-                  style={[styles.chip, { backgroundColor: chipColor }]}
-                  activeOpacity={0.75}
-                >
-                  <Text style={styles.chipText}>{cat}</Text>
-                </TouchableOpacity>
-              );
-            })}
+            {ALL_CATEGORIES.map((category) => (
+              <ScalePressable
+                key={category}
+                onPress={() => openCategory(category)}
+                accessibilityRole="button"
+                accessibilityLabel={`קטגוריית ${category}`}
+              >
+                <CategoryBadge category={category} size="md" />
+              </ScalePressable>
+            ))}
           </ScrollView>
         </View>
-
-        {/* Dev utility */}
-        <TouchableOpacity
-          style={styles.devButton}
-          onPress={addDummyRecipe}
-          activeOpacity={0.7}
-        >
-          <Text style={styles.devButtonText}>+ הוסף מתכונים לדוגמה</Text>
-        </TouchableOpacity>
       </ScrollView>
     </Screen>
   );
@@ -130,64 +112,36 @@ const createStyles = (colors: ThemeColors) =>
       flex: 1,
     },
     scrollContent: {
-      paddingBottom: 32,
+      paddingBottom: spacing.xxxl,
     },
     header: {
-      paddingHorizontal: 20,
-      paddingTop: 16,
-      paddingBottom: 24,
+      paddingHorizontal: SCREEN_PADDING_H,
+      paddingTop: spacing.lg,
+      paddingBottom: spacing.xxl,
     },
     greeting: {
-      fontSize: 16,
-      fontWeight: "500",
+      ...typography.body,
       color: colors.text.secondary,
-      marginBottom: 4,
+      marginBottom: spacing.xs,
     },
     headline: {
-      fontSize: 30,
-      fontWeight: "800",
+      ...typography.displayXL,
       color: colors.text.primary,
-      letterSpacing: -0.5,
     },
     section: {
       marginBottom: 28,
     },
     sectionTitle: {
-      fontSize: 18,
-      fontWeight: "700",
+      ...typography.titleL,
       color: colors.text.primary,
-      paddingHorizontal: 20,
-      marginBottom: 14,
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.md + 2,
     },
     horizontalList: {
-      paddingRight: 20,
+      paddingStart: SCREEN_PADDING_H,
     },
     chipsContainer: {
-      paddingHorizontal: 20,
-      gap: 8,
-    },
-    chip: {
-      paddingHorizontal: 16,
-      paddingVertical: 8,
-      borderRadius: 20,
-    },
-    chipText: {
-      fontSize: 13,
-      fontWeight: "600",
-      color: "#FFFFFF",
-    },
-    devButton: {
-      marginHorizontal: 20,
-      marginTop: 8,
-      paddingVertical: 10,
-      paddingHorizontal: 16,
-      borderRadius: 12,
-      backgroundColor: colors.background.secondary,
-      alignItems: "center",
-    },
-    devButtonText: {
-      fontSize: 13,
-      color: colors.text.muted,
-      fontWeight: "500",
+      paddingHorizontal: SCREEN_PADDING_H,
+      gap: spacing.sm,
     },
   });

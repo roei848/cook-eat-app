@@ -13,6 +13,11 @@ type Props = {
   category: Category;
   /** Show the category icon before the label. Default true. */
   withIcon?: boolean;
+  /**
+   * "sm" — static badge (radius.sm, tight padding).
+   * "md" — pressable chip (pill radius, comfortable tap padding).
+   */
+  size?: "sm" | "md";
 };
 
 /**
@@ -20,7 +25,11 @@ type Props = {
  * never a full-saturation surface. Light mode tints the light shade and
  * uses the dark shade for text; dark mode inverts that.
  */
-export default function CategoryBadge({ category, withIcon = true }: Props) {
+export default function CategoryBadge({
+  category,
+  withIcon = true,
+  size = "sm",
+}: Props) {
   const isDark = useSelector(
     (state: RootState) => state.user.profile?.darkMode ?? false
   );
@@ -31,9 +40,19 @@ export default function CategoryBadge({ category, withIcon = true }: Props) {
   const foreground = isDark ? entry.light : entry.dark;
 
   return (
-    <View style={[styles.badge, { backgroundColor: background }]}>
+    <View
+      style={[
+        styles.badge,
+        size === "md" && styles.chip,
+        { backgroundColor: background },
+      ]}
+    >
       {withIcon && (
-        <Ionicons name={entry.icon as any} size={13} color={foreground} />
+        <Ionicons
+          name={entry.icon as any}
+          size={size === "md" ? 15 : 13}
+          color={foreground}
+        />
       )}
       <Text style={[typography.label, { color: foreground }]}>{category}</Text>
     </View>
@@ -49,5 +68,11 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 4,
+  },
+  chip: {
+    borderRadius: radius.pill,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    gap: 6,
   },
 });

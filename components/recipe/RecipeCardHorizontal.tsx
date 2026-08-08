@@ -1,10 +1,13 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { Recipe } from "../../types/recipe";
 import { useThemeColors } from "../../theme/useThemeColors";
 import { ThemeColors } from "../../theme/colors";
 import ScalePressable from "../ui/ScalePressable";
+import { typography } from "../../theme/typography";
+import { radius } from "../../theme/spacing";
 
 type Props = {
   recipe: Recipe;
@@ -25,8 +28,13 @@ export default function RecipeCardHorizontal({ recipe, onPress }: Props) {
           }
           style={styles.image}
         />
-        {/* Gradient-like overlay at bottom */}
-        <View style={styles.overlay} />
+        <LinearGradient
+          colors={["transparent", "rgba(0,0,0,0.35)", "rgba(0,0,0,0.72)"]}
+          locations={[0, 0.45, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.overlay}
+        />
         <View style={styles.textContainer}>
           <Text style={styles.title} numberOfLines={2}>
             {recipe.title}
@@ -42,9 +50,9 @@ const createStyles = (colors: ThemeColors) =>
     card: {
       width: 160,
       height: 200,
-      borderRadius: 20,
+      borderRadius: radius.md,
       overflow: "hidden",
-      marginLeft: 14,
+      marginEnd: 14,
       backgroundColor: colors.card.default,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 4 },
@@ -62,8 +70,7 @@ const createStyles = (colors: ThemeColors) =>
       bottom: 0,
       left: 0,
       right: 0,
-      height: 90,
-      backgroundColor: "rgba(0,0,0,0.52)",
+      height: 100,
     },
     textContainer: {
       position: "absolute",
@@ -73,14 +80,14 @@ const createStyles = (colors: ThemeColors) =>
       padding: 12,
     },
     title: {
+      ...typography.title,
       fontSize: 14,
-      fontWeight: "700",
+      lineHeight: 19,
       color: "#FFFFFF",
-      lineHeight: 18,
     },
     time: {
-      fontSize: 12,
-      color: "rgba(255,255,255,0.8)",
-      marginTop: 4,
+      ...typography.caption,
+      color: "rgba(255,255,255,0.85)",
+      marginTop: 2,
     },
   });
