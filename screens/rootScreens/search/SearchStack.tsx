@@ -10,7 +10,7 @@ import RecipeScreen from "../sharedScreens/RecipeScreen";
 
 export type SearchStackParamList = {
   Search: undefined;
-  Category: { category: Category; recipes: Recipe[] };
+  Category: { category: Category };
   Recipe: { recipe: Recipe };
 };
 

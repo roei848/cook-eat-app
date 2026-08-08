@@ -9,9 +9,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
   children: React.ReactNode;
+  /**
+   * Pass false on stack screens that render a native header — the header
+   * already clears the status bar, so the wrapper's top inset would
+   * double the spacing.
+   */
+  withTopInset?: boolean;
 }
 
-export default function Screen({ children }: Props) {
+export default function Screen({ children, withTopInset = true }: Props) {
   const insets = useSafeAreaInsets();
   const colors = useThemeColors();
   const isDark = useSelector(
@@ -29,7 +35,7 @@ export default function Screen({ children }: Props) {
         style={{
           flex: 1,
           backgroundColor: colors.background.default,
-          paddingTop: insets.top + 20,
+          paddingTop: withTopInset ? insets.top + 20 : 0,
           paddingBottom: insets.bottom + 10,
         }}
       >
