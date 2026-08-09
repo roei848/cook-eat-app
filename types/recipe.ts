@@ -2,6 +2,20 @@ import { Category } from "./enums/category";
 import { Relative } from "./enums/relatives";
 import { Difficulty } from "./enums/diffucalty";
 
+export interface RecipeNote {
+  id: string;
+  text: string;
+  authorUid: string;
+  authorName: string;
+  createdAt: number;
+}
+
+/**
+ * Firestore holds legacy plain-string notes alongside new note objects.
+ * Both shapes coexist permanently — there is no backfill.
+ */
+export type StoredNote = string | RecipeNote;
+
 export interface Ingredient {
   name: string;
   amount: string;
@@ -25,7 +39,7 @@ export interface Recipe {
   timeInMinutes: number;
   byWho: string;
   createdAt: number;
-  notes?: string[];
+  notes?: StoredNote[];
   recipeLink?: string;
   handwrittenRecipeImg?: string;
 }
