@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Alert } from "react-native";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -9,6 +9,7 @@ import { RootState } from "../../../store/store";
 import { AddRecipeStackParamList } from "./AddRecipeStack";
 import { createRecipe } from "../../../services/firebase/recipeService";
 import { uploadRecipeImage } from "../../../services/firebase/storageService";
+import { validateRecipe } from "../../../utils/recipeValidation";
 import RecipeReviewScreen from "./RecipeReviewScreen";
 
 type Nav = NativeStackNavigationProp<AddRecipeStackParamList>;
@@ -29,25 +30,23 @@ export default function RecipeReviewScreenContainer() {
   });
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Danger highlighting only after a failed save attempt, live until fixed
+  const errors = useMemo(
+    () => (submitted ? validateRecipe(recipe).errors : undefined),
+    [submitted, recipe]
+  );
 
   function handleUpdateRecipe(updates: Partial<Recipe>) {
     setRecipe((prev) => ({ ...prev, ...updates }));
   }
 
   async function handleSave() {
-    if (
-      !recipe.title?.trim() ||
-      !recipe.category ||
-      !recipe.difficulty ||
-      !recipe.timeInMinutes ||
-      !recipe.byWho?.trim() ||
-      !recipe.ingredients?.length ||
-      !recipe.steps?.length
-    ) {
-      Alert.alert(
-        "שדות חסרים",
-        "יש למלא: שם, קטגוריה, קושי, זמן הכנה, מאת, לפחות רכיב אחד ושלב אחד"
-      );
+    const { valid, errors: validationErrors } = validateRecipe(recipe);
+    if (!valid) {
+      setSubmitted(true);
+      Alert.alert("שדות חסרים", Object.values(validationErrors).join("\n"));
       return;
     }
 
@@ -87,6 +86,7 @@ export default function RecipeReviewScreenContainer() {
       recipe={recipe}
       isSaving={isSaving}
       photoUri={photoUri}
+      errors={errors}
       onUpdateRecipe={handleUpdateRecipe}
       onPhotoSelected={setPhotoUri}
       onSave={handleSave}

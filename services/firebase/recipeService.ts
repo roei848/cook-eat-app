@@ -4,6 +4,7 @@ import {
   setDoc,
   getDocs,
   updateDoc,
+  deleteDoc,
   collection,
   query,
   orderBy,
@@ -97,6 +98,17 @@ export async function createRecipe(
  * Update recipe
  */
 export async function updateRecipe(recipeId: string, data: Partial<Recipe>) {
+  // Firestore updateDoc throws on undefined values (e.g. a recipe without imageUrl)
+  const clean = Object.fromEntries(
+    Object.entries(data).filter(([, value]) => value !== undefined)
+  );
   const ref = doc(db, "recipes", recipeId);
-  await updateDoc(ref, data);
+  await updateDoc(ref, clean);
+}
+
+/**
+ * Delete recipe permanently
+ */
+export async function deleteRecipe(recipeId: string) {
+  await deleteDoc(doc(db, "recipes", recipeId));
 }

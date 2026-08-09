@@ -8,6 +8,7 @@ import { RootState } from "../../../store/store";
 import { Category } from "../../../types/enums/category";
 import { Difficulty } from "../../../types/enums/diffucalty";
 import { Relative } from "../../../types/enums/relatives";
+import { validateRecipeFields } from "../../../utils/recipeValidation";
 import { AddRecipeStackParamList, ManualStep1Data } from "./AddRecipeStack";
 import ManualWizardStep1Screen from "./ManualWizardStep1Screen";
 
@@ -32,17 +33,13 @@ export default function ManualWizardStep1ScreenContainer() {
   }
 
   function handleNext() {
-    if (!title.trim()) {
-      Alert.alert("שגיאה", "יש להזין שם מתכון");
-      return;
-    }
-    if (!description.trim()) {
-      Alert.alert("שגיאה", "יש להזין תיאור");
-      return;
-    }
     const time = parseInt(timeInMinutes, 10);
-    if (isNaN(time) || time <= 0) {
-      Alert.alert("שגיאה", "יש להזין זמן הכנה תקין");
+    const errors = validateRecipeFields(
+      { title, description, timeInMinutes: isNaN(time) ? undefined : time },
+      ["title", "description", "timeInMinutes"]
+    );
+    if (Object.keys(errors).length > 0) {
+      Alert.alert("שגיאה", Object.values(errors).join("\n"));
       return;
     }
 

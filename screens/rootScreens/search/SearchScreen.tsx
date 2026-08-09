@@ -90,7 +90,7 @@ export default function SearchScreen({
             renderItem={({ item }) => (
               <SearchResultRow
                 recipe={item}
-                onPress={() => navigation.navigate("Recipe", { recipe: item })}
+                onPress={() => navigation.navigate("Recipe", { recipeId: item.id! })}
               />
             )}
           />

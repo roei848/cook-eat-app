@@ -1,17 +1,15 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  Alert,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Image, Alert, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { radius, spacing } from "../../../theme/spacing";
+import ScalePressable from "../../ui/ScalePressable";
 
 interface RecipePhotoInputProps {
   imageUri?: string;
@@ -44,57 +42,93 @@ export default function RecipePhotoInput({
 
   if (imageUri) {
     return (
-      <TouchableOpacity onPress={handlePress}>
-        <Image source={{ uri: imageUri }} style={styles.preview} />
-        <View style={styles.changeOverlay}>
-          <Text style={styles.changeText}>שנה תמונה</Text>
-        </View>
-      </TouchableOpacity>
+      <ScalePressable
+        onPress={handlePress}
+        scaleTo={0.98}
+        accessibilityRole="button"
+        accessibilityLabel="החלפת תמונה"
+      >
+        <Animated.View entering={FadeIn.duration(400)} style={styles.previewWrapper}>
+          <Image source={{ uri: imageUri }} style={styles.preview} />
+          <LinearGradient
+            colors={["transparent", "rgba(0,0,0,0.4)", "rgba(0,0,0,0.75)"]}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.scrim}
+          />
+          <View style={styles.changeChip}>
+            <Ionicons name="camera-reverse-outline" size={14} color="#FFFFFF" />
+            <Text style={styles.changeText}>החלפת תמונה</Text>
+          </View>
+        </Animated.View>
+      </ScalePressable>
     );
   }
 
   return (
-    <TouchableOpacity style={styles.placeholder} onPress={handlePress}>
+    <ScalePressable
+      onPress={handlePress}
+      scaleTo={0.98}
+      style={styles.placeholder}
+      accessibilityRole="button"
+      accessibilityLabel="הוספת תמונה"
+    >
       <Ionicons name="camera-outline" size={28} color={colors.text.muted} />
-      <Text style={styles.placeholderText}>הוסף תמונה</Text>
-    </TouchableOpacity>
+      <Text style={styles.placeholderText}>הוספת תמונה</Text>
+    </ScalePressable>
   );
 }
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
+    previewWrapper: {
+      width: "100%",
+      aspectRatio: 16 / 9,
+      borderRadius: radius.md,
+      overflow: "hidden",
+    },
     preview: {
       width: "100%",
-      height: 180,
-      borderRadius: 16,
+      height: "100%",
     },
-    changeOverlay: {
+    scrim: {
       position: "absolute",
-      bottom: 8,
-      right: 8,
+      bottom: 0,
+      start: 0,
+      end: 0,
+      height: "45%",
+    },
+    changeChip: {
+      position: "absolute",
+      bottom: spacing.sm,
+      start: spacing.sm,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
       backgroundColor: "rgba(0,0,0,0.55)",
-      borderRadius: 8,
-      paddingHorizontal: 10,
-      paddingVertical: 4,
+      borderRadius: radius.pill,
+      paddingHorizontal: 12,
+      paddingVertical: 6,
     },
     changeText: {
-      color: "#fff",
-      fontSize: 13,
+      ...typography.label,
+      color: "#FFFFFF",
     },
     placeholder: {
       width: "100%",
-      height: 140,
+      aspectRatio: 16 / 9,
       backgroundColor: colors.background.secondary,
-      borderRadius: 16,
+      borderRadius: radius.md,
       borderWidth: 1.5,
       borderColor: colors.border.default,
       borderStyle: "dashed",
       justifyContent: "center",
       alignItems: "center",
-      gap: 8,
+      gap: spacing.sm,
     },
     placeholderText: {
-      fontSize: 14,
-      color: colors.text.muted,
+      ...typography.title,
+      color: colors.text.secondary,
     },
   });

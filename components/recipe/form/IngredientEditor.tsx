@@ -1,16 +1,14 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, StyleSheet } from "react-native";
+import Animated, { FadeInDown, LinearTransition } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { Ingredient } from "../../../types/recipe";
+import { typography } from "../../../theme/typography";
+import { radius, spacing } from "../../../theme/spacing";
+import ScalePressable from "../../ui/ScalePressable";
 
 interface IngredientEditorProps {
   ingredients: Ingredient[];
@@ -39,13 +37,12 @@ export default function IngredientEditor({ ingredients, onChange }: IngredientEd
   return (
     <View>
       {ingredients.map((item, index) => (
-        <View key={index} style={styles.row}>
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => removeIngredient(index)}
-          >
-            <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
-          </TouchableOpacity>
+        <Animated.View
+          key={index}
+          entering={FadeInDown.springify().damping(18)}
+          layout={LinearTransition}
+          style={styles.row}
+        >
           <TextInput
             style={[styles.input, styles.inputAmount]}
             value={item.amount}
@@ -59,14 +56,28 @@ export default function IngredientEditor({ ingredients, onChange }: IngredientEd
             onChangeText={(text) => updateIngredient(index, "name", text)}
             placeholder="רכיב"
             placeholderTextColor={colors.text.muted}
-            textAlign="right"
           />
-        </View>
+          <ScalePressable
+            onPress={() => removeIngredient(index)}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="הסרת רכיב"
+          >
+            <Ionicons name="remove-circle" size={22} color={colors.danger[500]} />
+          </ScalePressable>
+        </Animated.View>
       ))}
-      <TouchableOpacity style={styles.addButton} onPress={addIngredient}>
-        <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
-        <Text style={styles.addButtonText}>הוסף רכיב</Text>
-      </TouchableOpacity>
+
+      <Animated.View layout={LinearTransition}>
+        <ScalePressable
+          onPress={addIngredient}
+          style={styles.addButton}
+          accessibilityRole="button"
+        >
+          <Ionicons name="add-circle-outline" size={20} color={colors.primary[500]} />
+          <Text style={styles.addButtonText}>הוספת רכיב</Text>
+        </ScalePressable>
+      </Animated.View>
     </View>
   );
 }
@@ -76,38 +87,34 @@ const createStyles = (colors: ThemeColors) =>
     row: {
       flexDirection: "row",
       alignItems: "center",
-      marginBottom: 10,
-      gap: 8,
-    },
-    deleteButton: {
-      padding: 2,
+      marginBottom: spacing.sm,
+      gap: spacing.sm,
     },
     input: {
       backgroundColor: colors.card.default,
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: colors.border.default,
-      borderRadius: 10,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-      fontSize: 15,
+      borderRadius: radius.sm,
+      paddingVertical: 12,
+      paddingHorizontal: 14,
+      ...typography.body,
       color: colors.text.primary,
-    },
-    inputName: {
-      flex: 2,
     },
     inputAmount: {
       flex: 1,
     },
+    inputName: {
+      flex: 2,
+    },
     addButton: {
       flexDirection: "row",
       alignItems: "center",
-      gap: 6,
-      paddingVertical: 10,
       justifyContent: "center",
+      gap: 6,
+      paddingVertical: spacing.md,
     },
     addButtonText: {
-      fontSize: 15,
+      ...typography.title,
       color: colors.primary[500],
-      fontWeight: "600",
     },
   });

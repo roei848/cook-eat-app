@@ -1,9 +1,12 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { withAlpha } from "../../../theme/categoryColors";
+import { radius, spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import ScalePressable from "../../ui/ScalePressable";
 
 interface WizardProgressBarProps {
   currentStep: number;
@@ -22,9 +25,16 @@ export default function WizardProgressBar({
   return (
     <View style={styles.container}>
       {onBack && (
-        <TouchableOpacity style={styles.backButton} onPress={onBack} hitSlop={8}>
+        <ScalePressable
+          onPress={onBack}
+          hitSlop={8}
+          style={styles.backButton}
+          accessibilityRole="button"
+          accessibilityLabel="חזרה"
+        >
+          {/* chevron-forward = back under forced RTL */}
           <Ionicons name="chevron-forward" size={20} color={colors.primary[500]} />
-        </TouchableOpacity>
+        </ScalePressable>
       )}
       <View style={styles.segments}>
         {Array.from({ length: totalSteps }, (_, i) => (
@@ -43,15 +53,15 @@ const createStyles = (colors: ThemeColors) =>
     container: {
       flexDirection: "row",
       alignItems: "center",
-      paddingHorizontal: 16,
-      marginBottom: 20,
-      gap: 10,
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.lg,
+      gap: spacing.md,
     },
     backButton: {
       width: 36,
       height: 36,
-      borderRadius: 18,
-      backgroundColor: `${colors.primary[500]}1A`,
+      borderRadius: radius.pill,
+      backgroundColor: withAlpha(colors.primary[500], 0.1),
       alignItems: "center",
       justifyContent: "center",
     },

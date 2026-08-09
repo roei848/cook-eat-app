@@ -1,17 +1,16 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
+import Animated, { FadeIn, FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { radius, spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
 import Loader from "../../../components/shared/Loader";
+import Button from "../../../components/ui/Button";
+import ScalePressable from "../../../components/ui/ScalePressable";
 
 interface ImageCaptureScreenProps {
   imageUri?: string;
@@ -35,7 +34,9 @@ export default function ImageCaptureScreen({
     <Screen>
       <View style={styles.container}>
         {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.preview} />
+          <Animated.View entering={FadeIn.duration(400)} style={styles.previewWrapper}>
+            <Image source={{ uri: imageUri }} style={styles.preview} />
+          </Animated.View>
         ) : (
           <View style={styles.placeholder}>
             <Ionicons name="camera-outline" size={48} color={colors.text.muted} />
@@ -49,18 +50,17 @@ export default function ImageCaptureScreen({
         )}
 
         {errorMessage && (
-          <View style={styles.errorContainer}>
+          <Animated.View entering={FadeInUp.delay(200)} style={styles.errorContainer}>
             <Text style={styles.errorText}>{errorMessage}</Text>
-            <TouchableOpacity style={styles.button} onPress={onRetry}>
-              <Text style={styles.buttonText}>נסה שוב</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonSecondary]}
+            <Button title="נסה שוב" onPress={onRetry} />
+            <ScalePressable
               onPress={onFillManually}
+              style={styles.secondaryButton}
+              accessibilityRole="button"
             >
-              <Text style={styles.buttonTextSecondary}>מלא ידנית</Text>
-            </TouchableOpacity>
-          </View>
+              <Text style={styles.secondaryButtonText}>מלא ידנית</Text>
+            </ScalePressable>
+          </Animated.View>
         )}
       </View>
     </Screen>
@@ -71,57 +71,51 @@ const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 20,
+      paddingHorizontal: SCREEN_PADDING_H,
       alignItems: "center",
       justifyContent: "center",
+    },
+    previewWrapper: {
+      width: "100%",
+      marginBottom: spacing.xxl,
     },
     preview: {
       width: "100%",
       height: 320,
-      borderRadius: 20,
-      marginBottom: 24,
+      borderRadius: radius.lg,
     },
     placeholder: {
       width: "100%",
       height: 320,
       backgroundColor: colors.background.secondary,
-      borderRadius: 20,
+      borderRadius: radius.lg,
       justifyContent: "center",
       alignItems: "center",
-      marginBottom: 24,
+      marginBottom: spacing.xxl,
     },
     loadingContainer: {
       alignItems: "center",
     },
     errorContainer: {
       alignItems: "center",
-      gap: 12,
+      gap: spacing.md,
       width: "100%",
     },
     errorText: {
-      fontSize: 15,
+      ...typography.body,
       color: colors.danger[500],
       textAlign: "center",
-      marginBottom: 8,
+      marginBottom: spacing.sm,
     },
-    button: {
+    secondaryButton: {
       width: "100%",
       paddingVertical: 14,
-      borderRadius: 12,
-      backgroundColor: colors.primary[500],
+      borderRadius: radius.sm,
+      backgroundColor: colors.background.secondary,
       alignItems: "center",
     },
-    buttonText: {
-      fontSize: 15,
-      fontWeight: "700",
-      color: "#fff",
-    },
-    buttonSecondary: {
-      backgroundColor: colors.background.secondary,
-    },
-    buttonTextSecondary: {
-      fontSize: 15,
-      fontWeight: "600",
+    secondaryButtonText: {
+      ...typography.button,
       color: colors.text.primary,
     },
   });

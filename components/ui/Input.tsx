@@ -1,5 +1,6 @@
 import React from "react";
 import { TextInput, View, Text, StyleSheet, TextInputProps } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { useThemeColors } from "../../theme/useThemeColors";
 import { ThemeColors } from "../../theme/colors";
@@ -9,9 +10,11 @@ import { radius } from "../../theme/spacing";
 interface InputProps extends TextInputProps {
   label?: string;
   error?: string;
+  /** Amber "needs completion" state (AI review flow). Error wins over it. */
+  missing?: boolean;
 }
 
-export default function Input({ label, error, style, ...rest }: InputProps) {
+export default function Input({ label, error, missing, style, ...rest }: InputProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
 
@@ -20,12 +23,24 @@ export default function Input({ label, error, style, ...rest }: InputProps) {
       {label && <Text style={styles.label}>{label}</Text>}
 
       <TextInput
-        style={[styles.input, error ? styles.errorInput : null, style]}
+        style={[
+          styles.input,
+          missing && !error ? styles.missingInput : null,
+          error ? styles.errorInput : null,
+          style,
+        ]}
         placeholderTextColor={colors.text.muted}
         {...rest}
       />
 
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error ? (
+        <Text style={styles.error}>{error}</Text>
+      ) : missing ? (
+        <View style={styles.missingRow}>
+          <Ionicons name="alert-circle-outline" size={14} color={colors.accent.amberText} />
+          <Text style={styles.missingText}>שדה חובה</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -43,7 +58,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     input: {
       width: "100%",
-      borderWidth: 1,
+      borderWidth: 1.5,
       borderColor: colors.border.default,
       borderRadius: radius.sm,
       padding: 14,
@@ -52,6 +67,10 @@ const createStyles = (colors: ThemeColors) =>
       color: colors.text.primary,
       backgroundColor: colors.card.default,
     },
+    missingInput: {
+      backgroundColor: colors.accent.amberBg,
+      borderColor: colors.accent.amber,
+    },
     errorInput: {
       borderColor: colors.danger[500],
     },
@@ -59,5 +78,15 @@ const createStyles = (colors: ThemeColors) =>
       ...typography.bodySmall,
       color: colors.danger[500],
       marginTop: 4,
+    },
+    missingRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      marginTop: 4,
+    },
+    missingText: {
+      ...typography.caption,
+      color: colors.accent.amberText,
     },
   });

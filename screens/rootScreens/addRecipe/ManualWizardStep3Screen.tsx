@@ -1,21 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
 } from "react-native";
+// RNGH ScrollView so the StepEditor drag gesture can block scrolling
+import { ScrollView } from "react-native-gesture-handler";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import { Step } from "../../../types/recipe";
 
 import WizardProgressBar from "../../../components/recipe/form/WizardProgressBar";
+import FormSection from "../../../components/recipe/form/FormSection";
 import StepEditor from "../../../components/recipe/form/StepEditor";
 import RecipePhotoInput from "../../../components/recipe/form/RecipePhotoInput";
+import { ScrollLockContext } from "../../../components/recipe/form/scrollLockContext";
 import Button from "../../../components/ui/Button";
 
 interface ManualWizardStep3ScreenProps {
@@ -39,6 +46,9 @@ export default function ManualWizardStep3Screen({
 }: ManualWizardStep3ScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
+  // Frozen while a StepEditor row is being drag-reordered
+  const [scrollLocked, setScrollLocked] = useState(false);
 
   return (
     <Screen>
@@ -47,22 +57,34 @@ export default function ManualWizardStep3Screen({
         style={styles.flex}
       >
         <WizardProgressBar currentStep={3} onBack={onBack} />
-        <Text style={styles.stepLabel}>שלב 3 מתוך 3 — שלבי הכנה ותמונה</Text>
 
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-        >
-          <StepEditor steps={steps} onChange={onStepsChange} />
-
-          <Text style={styles.sectionTitle}>תמונה (אופציונלי)</Text>
-          <RecipePhotoInput imageUri={photoUri} onImageSelected={onPhotoSelected} />
-        </ScrollView>
-
-        <View style={styles.footer}>
-          <Button title="שמור" onPress={onSave} loading={isSaving} />
+        <View style={styles.headerBlock}>
+          <Text style={styles.stepTitle}>שלבי הכנה</Text>
+          <Text style={styles.stepCounter}>שלב 3 מתוך 3</Text>
         </View>
+
+        <ScrollLockContext.Provider value={setScrollLocked}>
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
+            keyboardShouldPersistTaps="handled"
+            scrollEnabled={!scrollLocked}
+          >
+            <Animated.View entering={FadeInUp.delay(200)}>
+              <FormSection icon="list-outline" title="שלבי הכנה">
+                <StepEditor steps={steps} onChange={onStepsChange} />
+              </FormSection>
+            </Animated.View>
+
+            <Animated.View entering={FadeInUp.delay(300)}>
+              <FormSection icon="image-outline" title="תמונה" optionalHint="אופציונלי">
+                <RecipePhotoInput imageUri={photoUri} onImageSelected={onPhotoSelected} />
+              </FormSection>
+            </Animated.View>
+
+            <Button title="שמור" onPress={onSave} loading={isSaving} style={styles.cta} />
+          </ScrollView>
+        </ScrollLockContext.Provider>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -71,25 +93,23 @@ export default function ManualWizardStep3Screen({
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     flex: { flex: 1 },
-    stepLabel: {
-      fontSize: 13,
+    headerBlock: {
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.lg,
+    },
+    stepTitle: {
+      ...typography.displayM,
+      color: colors.text.primary,
+    },
+    stepCounter: {
+      ...typography.caption,
       color: colors.text.muted,
-      paddingHorizontal: 16,
-      marginBottom: 12,
+      marginTop: 2,
     },
     content: {
-      paddingHorizontal: 16,
-      paddingBottom: 24,
+      paddingHorizontal: SCREEN_PADDING_H,
     },
-    sectionTitle: {
-      fontSize: 15,
-      fontWeight: "600",
-      color: colors.text.primary,
-      marginTop: 20,
-      marginBottom: 10,
-    },
-    footer: {
-      padding: 16,
-      paddingBottom: 24,
+    cta: {
+      marginTop: spacing.sm,
     },
   });

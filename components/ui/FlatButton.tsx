@@ -1,8 +1,9 @@
 import React from "react";
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import { Text, StyleSheet, ViewStyle } from "react-native";
 
 import { useThemeColors } from "../../theme/useThemeColors";
 import { fonts, typography } from "../../theme/typography";
+import ScalePressable from "./ScalePressable";
 
 interface FlatButtonProps {
   title: string;
@@ -22,18 +23,20 @@ export default function FlatButton({
   const colors = useThemeColors();
 
   return (
-    <TouchableOpacity
+    <ScalePressable
       onPress={onPress}
       disabled={disabled}
+      scaleTo={0.97}
       style={[styles.container, style]}
-      activeOpacity={0.6}
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
     >
       <Text
         style={[styles.text, { color: colors.primary[500] }, textStyle]}
       >
         {title}
       </Text>
-    </TouchableOpacity>
+    </ScalePressable>
   );
 }
 

@@ -1,20 +1,25 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { Difficulty } from "../../../types/enums/diffucalty";
+import { typography } from "../../../theme/typography";
+import { radius, spacing } from "../../../theme/spacing";
+import ScalePressable from "../../ui/ScalePressable";
 
 interface DifficultyPickerProps {
   label?: string;
-  value: Difficulty;
+  /** Undefined renders no selection (AI review flow). */
+  value?: Difficulty;
   onChange: (difficulty: Difficulty) => void;
 }
 
 const DIFFICULTIES = Object.values(Difficulty);
 
 type DifficultyEntry = {
-  emoji: string;
+  icon: string;
   getBg: (c: ThemeColors) => string;
   getBorder: (c: ThemeColors) => string;
   getTextColor: (c: ThemeColors) => string;
@@ -22,19 +27,19 @@ type DifficultyEntry = {
 
 const DIFFICULTY_CONFIG: Record<Difficulty, DifficultyEntry> = {
   [Difficulty.EASY]: {
-    emoji: "☀️",
+    icon: "sunny",
     getBg: (c) => c.accent.mintBg,
     getBorder: (c) => c.accent.mint,
     getTextColor: (c) => c.accent.mintText,
   },
   [Difficulty.MEDIUM]: {
-    emoji: "⚡",
+    icon: "flash",
     getBg: (c) => c.accent.amberBg,
     getBorder: (c) => c.accent.amber,
     getTextColor: (c) => c.accent.amberText,
   },
   [Difficulty.HARD]: {
-    emoji: "🔥",
+    icon: "flame",
     getBg: (c) => c.accent.coralBg,
     getBorder: (c) => c.accent.coral,
     getTextColor: (c) => c.accent.coralText,
@@ -57,32 +62,33 @@ export default function DifficultyPicker({
           const isSelected = diff === value;
           const config = DIFFICULTY_CONFIG[diff];
           return (
-            <TouchableOpacity
+            <ScalePressable
               key={diff}
+              onPress={() => onChange(diff)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isSelected }}
               style={[
-                styles.card,
+                styles.tile,
                 isSelected && {
                   backgroundColor: config.getBg(colors),
                   borderColor: config.getBorder(colors),
-                  borderWidth: 2,
                 },
               ]}
-              onPress={() => onChange(diff)}
-              activeOpacity={0.7}
             >
-              <Text style={styles.emoji}>{config.emoji}</Text>
+              <Ionicons
+                name={(isSelected ? config.icon : `${config.icon}-outline`) as any}
+                size={22}
+                color={isSelected ? config.getBorder(colors) : colors.text.muted}
+              />
               <Text
                 style={[
-                  styles.cardLabel,
-                  isSelected && {
-                    color: config.getTextColor(colors),
-                    fontWeight: "700",
-                  },
+                  styles.tileLabel,
+                  isSelected && { color: config.getTextColor(colors) },
                 ]}
               >
                 {diff}
               </Text>
-            </TouchableOpacity>
+            </ScalePressable>
           );
         })}
       </View>
@@ -93,34 +99,30 @@ export default function DifficultyPicker({
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
-      marginBottom: 16,
+      marginBottom: spacing.lg,
     },
     label: {
-      fontSize: 12,
-      color: colors.text.muted,
-      marginBottom: 8,
-      fontWeight: "500",
+      ...typography.label,
+      color: colors.text.secondary,
+      marginBottom: 6,
     },
     row: {
       flexDirection: "row",
-      gap: 8,
+      gap: spacing.sm,
     },
-    card: {
+    tile: {
       flex: 1,
-      borderRadius: 14,
-      paddingVertical: 12,
-      paddingHorizontal: 8,
+      borderRadius: radius.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.sm,
       alignItems: "center",
+      gap: spacing.xs,
       backgroundColor: colors.card.default,
       borderWidth: 1.5,
       borderColor: colors.border.default,
     },
-    emoji: {
-      fontSize: 20,
-      marginBottom: 4,
-    },
-    cardLabel: {
-      fontSize: 12,
+    tileLabel: {
+      ...typography.label,
       color: colors.text.secondary,
       textAlign: "center",
     },

@@ -2,7 +2,6 @@ import React from "react";
 import {
   View,
   Text,
-  TextInput,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -12,6 +11,9 @@ import { Ionicons } from "@expo/vector-icons";
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
 import FlatButton from "../../../components/ui/FlatButton";
 import Loader from "../../../components/shared/Loader";
@@ -51,22 +53,18 @@ export default function UrlInputScreen({
             </Text>
           </View>
 
-          <TextInput
-            style={[styles.input, errorMessage ? styles.inputError : null]}
+          <Input
             value={url}
             onChangeText={onUrlChange}
+            error={errorMessage}
             placeholder="https://www.example.com/recipe"
-            placeholderTextColor={colors.text.muted}
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="url"
+            // URL content is Latin/LTR by nature — the one legitimate LTR input
             textAlign="left"
             editable={!isLoading}
           />
-
-          {errorMessage && (
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          )}
 
           {isLoading ? (
             <View style={styles.loadingContainer}>
@@ -74,7 +72,7 @@ export default function UrlInputScreen({
             </View>
           ) : (
             <View style={styles.actions}>
-              <FlatButton title="‹ חזור" onPress={onBack} />
+              <FlatButton title="חזור" onPress={onBack} />
               <Button
                 title="נתח"
                 onPress={onAnalyze}
@@ -94,52 +92,31 @@ const createStyles = (colors: ThemeColors) =>
     flex: { flex: 1 },
     container: {
       flex: 1,
-      paddingHorizontal: 20,
-      paddingTop: 24,
+      paddingHorizontal: SCREEN_PADDING_H,
+      paddingTop: spacing.xxl,
     },
     header: {
       alignItems: "center",
-      marginBottom: 32,
-      gap: 8,
+      marginBottom: spacing.xxxl,
+      gap: spacing.sm,
     },
     title: {
-      fontSize: 22,
-      fontWeight: "700",
+      ...typography.displayM,
       color: colors.text.primary,
       textAlign: "center",
     },
     subtitle: {
-      fontSize: 14,
+      ...typography.body,
       color: colors.text.secondary,
       textAlign: "center",
     },
-    input: {
-      backgroundColor: colors.card.default,
-      borderWidth: 1,
-      borderColor: colors.border.default,
-      borderRadius: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      fontSize: 15,
-      color: colors.text.primary,
-      marginBottom: 8,
-    },
-    inputError: {
-      borderColor: colors.danger[500],
-    },
-    errorText: {
-      fontSize: 13,
-      color: colors.danger[500],
-      marginBottom: 16,
-    },
     loadingContainer: {
-      marginTop: 16,
+      marginTop: spacing.lg,
       alignItems: "center",
     },
     actions: {
       flexDirection: "row",
-      gap: 12,
-      marginTop: 16,
+      gap: spacing.md,
       alignItems: "center",
     },
     analyzeButton: {

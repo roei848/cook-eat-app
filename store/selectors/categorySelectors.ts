@@ -37,10 +37,9 @@ export type BentoRow =
   | { type: "pair"; items: [CategorySummary, CategorySummary] };
 
 /**
- * Deterministic bento pattern for the 8 categories:
- * [full], [half, half], [half, half], [full], [half, half].
- * The two most-populated categories get the full-width photo tiles; the
- * rest fill the half rows in count order (canonical order breaks ties).
+ * Two-column grid in count order (canonical order breaks ties). When the
+ * category count is odd, the most-populated category leads with a
+ * full-width tile so no row is left with a gap.
  */
 export const selectBentoRows = createSelector(
   [selectCategorySummaries],
@@ -50,13 +49,15 @@ export const selectBentoRows = createSelector(
         b.count - a.count ||
         CANONICAL_ORDER.indexOf(a.category) - CANONICAL_ORDER.indexOf(b.category)
     );
-    const [first, second, ...rest] = sorted;
-    return [
-      { type: "full", items: [first] },
-      { type: "pair", items: [rest[0], rest[1]] },
-      { type: "pair", items: [rest[2], rest[3]] },
-      { type: "full", items: [second] },
-      { type: "pair", items: [rest[4], rest[5]] },
-    ];
+    const rows: BentoRow[] = [];
+    let i = 0;
+    if (sorted.length % 2 === 1) {
+      rows.push({ type: "full", items: [sorted[0]] });
+      i = 1;
+    }
+    for (; i < sorted.length; i += 2) {
+      rows.push({ type: "pair", items: [sorted[i], sorted[i + 1]] });
+    }
+    return rows;
   }
 );

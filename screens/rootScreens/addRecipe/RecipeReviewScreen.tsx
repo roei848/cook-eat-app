@@ -1,23 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
 } from "react-native";
+// RNGH ScrollView so the StepEditor drag gesture can block scrolling
+import { ScrollView } from "react-native-gesture-handler";
 
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import { Recipe } from "../../../types/recipe";
+import { RecipeValidationErrors } from "../../../utils/recipeValidation";
 
-import RecipeReviewCard from "../../../components/recipe/review/RecipeReviewCard";
+import RecipeForm from "../../../components/recipe/form/RecipeForm";
+import { ScrollLockContext } from "../../../components/recipe/form/scrollLockContext";
+import Button from "../../../components/ui/Button";
 
 interface RecipeReviewScreenProps {
   recipe: Partial<Recipe>;
   isSaving: boolean;
   photoUri?: string;
+  errors?: RecipeValidationErrors;
   onUpdateRecipe: (updates: Partial<Recipe>) => void;
   onPhotoSelected: (uri: string) => void;
   onSave: () => void;
@@ -27,91 +36,77 @@ export default function RecipeReviewScreen({
   recipe,
   isSaving,
   photoUri,
+  errors,
   onUpdateRecipe,
   onPhotoSelected,
   onSave,
 }: RecipeReviewScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
+  // Frozen while a StepEditor row is being drag-reordered
+  const [scrollLocked, setScrollLocked] = useState(false);
 
   return (
     <Screen>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>בדוק ועדכן</Text>
-          <Text style={styles.subtitle}>
-            שדות עם מסגרת כתומה ניתנים לעריכה בלחיצה. שדות עם רקע צהוב דורשים
-            השלמה.
-          </Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.flex}
+      >
+        <View style={styles.headerBlock}>
+          <Text style={styles.title}>בדיקה ועדכון</Text>
+          <Text style={styles.subtitle}>שדות מסומנים דורשים השלמה לפני השמירה</Text>
         </View>
 
-        <RecipeReviewCard
-          recipe={recipe}
-          onUpdateRecipe={onUpdateRecipe}
-          photoUri={photoUri}
-          onPhotoSelected={onPhotoSelected}
-        />
-
-        <View style={styles.footer}>
-          <TouchableOpacity
-            style={[styles.saveButton, isSaving && styles.saveButtonDisabled]}
-            onPress={onSave}
-            disabled={isSaving}
-            activeOpacity={0.85}
+        <ScrollLockContext.Provider value={setScrollLocked}>
+          <ScrollView
+            style={styles.flex}
+            contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
+            keyboardShouldPersistTaps="handled"
+            scrollEnabled={!scrollLocked}
           >
-            {isSaving ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.saveButtonText}>שמור מתכון</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
+            <RecipeForm
+              value={recipe}
+              onChange={onUpdateRecipe}
+              photoUri={photoUri}
+              onPhotoSelected={onPhotoSelected}
+              highlightMissing
+              errors={errors}
+            />
+
+            <Button
+              title="שמור מתכון"
+              onPress={onSave}
+              loading={isSaving}
+              style={styles.cta}
+            />
+          </ScrollView>
+        </ScrollLockContext.Provider>
+      </KeyboardAvoidingView>
     </Screen>
   );
 }
 
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingHorizontal: 16,
-    },
-    header: {
-      marginBottom: 16,
+    flex: { flex: 1 },
+    headerBlock: {
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.lg,
     },
     title: {
-      fontSize: 24,
-      fontWeight: "800",
+      ...typography.displayM,
       color: colors.text.primary,
     },
     subtitle: {
-      fontSize: 13,
+      ...typography.bodySmall,
       color: colors.text.muted,
-      marginTop: 4,
-      lineHeight: 18,
+      marginTop: 2,
     },
-    footer: {
-      paddingTop: 12,
-      paddingBottom: 8,
+    content: {
+      paddingHorizontal: SCREEN_PADDING_H,
     },
-    saveButton: {
-      backgroundColor: colors.primary[500],
-      paddingVertical: 16,
-      borderRadius: 14,
-      alignItems: "center",
-      shadowColor: colors.primary[500],
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.4,
-      shadowRadius: 8,
-      elevation: 6,
-    },
-    saveButtonDisabled: {
-      opacity: 0.6,
-    },
-    saveButtonText: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: "#fff",
+    cta: {
+      marginTop: spacing.sm,
     },
   });

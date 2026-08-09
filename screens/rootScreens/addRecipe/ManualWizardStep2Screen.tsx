@@ -7,13 +7,18 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import { Ingredient } from "../../../types/recipe";
 
 import WizardProgressBar from "../../../components/recipe/form/WizardProgressBar";
+import FormSection from "../../../components/recipe/form/FormSection";
 import IngredientEditor from "../../../components/recipe/form/IngredientEditor";
 import Button from "../../../components/ui/Button";
 
@@ -32,6 +37,7 @@ export default function ManualWizardStep2Screen({
 }: ManualWizardStep2ScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
 
   return (
     <Screen>
@@ -40,22 +46,28 @@ export default function ManualWizardStep2Screen({
         style={styles.flex}
       >
         <WizardProgressBar currentStep={2} onBack={onBack} />
-        <Text style={styles.stepLabel}>שלב 2 מתוך 3 — רכיבים</Text>
+
+        <View style={styles.headerBlock}>
+          <Text style={styles.stepTitle}>מצרכים</Text>
+          <Text style={styles.stepCounter}>שלב 2 מתוך 3</Text>
+        </View>
 
         <ScrollView
           style={styles.flex}
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
           keyboardShouldPersistTaps="handled"
         >
-          <IngredientEditor
-            ingredients={ingredients}
-            onChange={onIngredientsChange}
-          />
-        </ScrollView>
+          <Animated.View entering={FadeInUp.delay(200)}>
+            <FormSection icon="basket-outline" title="מצרכים">
+              <IngredientEditor
+                ingredients={ingredients}
+                onChange={onIngredientsChange}
+              />
+            </FormSection>
+          </Animated.View>
 
-        <View style={styles.footer}>
-          <Button title="הבא ›" onPress={onNext} />
-        </View>
+          <Button title="הבא" onPress={onNext} style={styles.cta} />
+        </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -64,18 +76,23 @@ export default function ManualWizardStep2Screen({
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     flex: { flex: 1 },
-    stepLabel: {
-      fontSize: 13,
+    headerBlock: {
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.lg,
+    },
+    stepTitle: {
+      ...typography.displayM,
+      color: colors.text.primary,
+    },
+    stepCounter: {
+      ...typography.caption,
       color: colors.text.muted,
-      paddingHorizontal: 16,
-      marginBottom: 12,
+      marginTop: 2,
     },
     content: {
-      paddingHorizontal: 16,
-      paddingBottom: 24,
+      paddingHorizontal: SCREEN_PADDING_H,
     },
-    footer: {
-      padding: 16,
-      paddingBottom: 24,
+    cta: {
+      marginTop: spacing.sm,
     },
   });

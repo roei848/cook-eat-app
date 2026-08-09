@@ -3,13 +3,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import HomeScreen from "../HomeScreen";
 import RecipeScreen from "../sharedScreens/RecipeScreen";
-import { Recipe } from "../../../types/recipe";
+import EditRecipeScreenContainer from "../sharedScreens/EditRecipeScreenContainer";
+import { SharedRecipeParams } from "../sharedScreens/sharedRecipeRoutes";
 import { useThemeColors } from "../../../theme/useThemeColors";
 
 export type HomeStackParamList = {
   HomeMain: undefined;
-  Recipe: { recipe: Recipe };
-};
+} & SharedRecipeParams;
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -39,6 +39,11 @@ export default function HomeStack() {
           headerShadowVisible: false,
           title: "",
         }}
+      />
+      <Stack.Screen
+        name="EditRecipe"
+        component={EditRecipeScreenContainer}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

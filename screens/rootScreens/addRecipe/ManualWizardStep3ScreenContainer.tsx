@@ -7,6 +7,7 @@ import { Step } from "../../../types/recipe";
 import { AddRecipeStackParamList } from "./AddRecipeStack";
 import { uploadRecipeImage } from "../../../services/firebase/storageService";
 import { createRecipe } from "../../../services/firebase/recipeService";
+import { validateRecipeFields } from "../../../utils/recipeValidation";
 import ManualWizardStep3Screen from "./ManualWizardStep3Screen";
 
 type Nav = NativeStackNavigationProp<AddRecipeStackParamList>;
@@ -22,13 +23,12 @@ export default function ManualWizardStep3ScreenContainer() {
   const [isSaving, setIsSaving] = useState(false);
 
   async function handleSave() {
-    if (steps.length === 0 || steps.every((s) => !s.text.trim())) {
-      Alert.alert("שגיאה", "יש להוסיף לפחות שלב הכנה אחד");
-      return;
-    }
-
-    if (ingredients.every((i) => !i.name.trim())) {
-      Alert.alert("שגיאה", "יש להוסיף לפחות רכיב אחד");
+    const errors = validateRecipeFields({ ingredients, steps }, [
+      "ingredients",
+      "steps",
+    ]);
+    if (Object.keys(errors).length > 0) {
+      Alert.alert("שגיאה", Object.values(errors).join("\n"));
       return;
     }
 

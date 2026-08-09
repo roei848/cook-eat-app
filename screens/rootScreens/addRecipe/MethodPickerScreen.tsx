@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
 import Screen from "../../Screen";
 import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
+import { typography } from "../../../theme/typography";
+import { radius, spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import ScalePressable from "../../../components/ui/ScalePressable";
 
 interface MethodPickerScreenProps {
   onSelectManual: () => void;
@@ -51,26 +55,31 @@ export default function MethodPickerScreen({
   return (
     <Screen>
       <View style={styles.container}>
-        <Text style={styles.title}>הוסף מתכון</Text>
+        <Text style={styles.title}>הוספת מתכון</Text>
         <Text style={styles.subtitle}>בחר את שיטת ההוספה</Text>
 
         <View style={styles.cards}>
-          {methods.map((method) => (
-            <TouchableOpacity
+          {methods.map((method, index) => (
+            <Animated.View
               key={method.title}
-              style={styles.card}
-              onPress={method.onPress}
-              activeOpacity={0.8}
+              entering={FadeInUp.delay(200 + index * 100)}
             >
-              <View style={styles.iconContainer}>
-                <Ionicons name={method.icon} size={32} color={colors.primary[500]} />
-              </View>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{method.title}</Text>
-                <Text style={styles.cardSubtitle}>{method.subtitle}</Text>
-              </View>
-              <Ionicons name="chevron-back" size={20} color={colors.text.muted} />
-            </TouchableOpacity>
+              <ScalePressable
+                onPress={method.onPress}
+                style={styles.card}
+                accessibilityRole="button"
+              >
+                <View style={styles.iconContainer}>
+                  <Ionicons name={method.icon} size={28} color={colors.primary[500]} />
+                </View>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{method.title}</Text>
+                  <Text style={styles.cardSubtitle}>{method.subtitle}</Text>
+                </View>
+                {/* chevron-back = forward disclosure under forced RTL */}
+                <Ionicons name="chevron-back" size={20} color={colors.text.muted} />
+              </ScalePressable>
+            </Animated.View>
           ))}
         </View>
       </View>
@@ -82,55 +91,52 @@ const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      paddingHorizontal: 20,
-      paddingTop: 40,
+      paddingHorizontal: SCREEN_PADDING_H,
+      paddingTop: spacing.lg,
     },
     title: {
-      fontSize: 28,
-      fontWeight: "800",
+      ...typography.displayL,
       color: colors.text.primary,
     },
     subtitle: {
-      fontSize: 15,
+      ...typography.body,
       color: colors.text.secondary,
-      marginTop: 4,
-      marginBottom: 32,
+      marginTop: spacing.xs,
+      marginBottom: spacing.xxxl,
     },
     cards: {
-      gap: 16,
+      gap: spacing.lg,
     },
     card: {
       flexDirection: "row",
       alignItems: "center",
+      gap: spacing.lg,
       backgroundColor: colors.card.default,
-      borderRadius: 20,
-      padding: 18,
+      borderRadius: radius.md,
+      padding: spacing.xl,
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.07,
       shadowRadius: 8,
-      elevation: 3,
+      elevation: 4,
     },
     iconContainer: {
       width: 56,
       height: 56,
-      borderRadius: 16,
+      borderRadius: radius.sm,
       backgroundColor: colors.primary[100],
       justifyContent: "center",
       alignItems: "center",
-      marginStart: 12,
     },
     cardContent: {
       flex: 1,
-      marginHorizontal: 14,
     },
     cardTitle: {
-      fontSize: 17,
-      fontWeight: "700",
+      ...typography.titleL,
       color: colors.text.primary,
     },
     cardSubtitle: {
-      fontSize: 13,
+      ...typography.bodySmall,
       color: colors.text.secondary,
       marginTop: 2,
     },

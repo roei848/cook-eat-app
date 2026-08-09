@@ -12,8 +12,8 @@ type Props = {
 };
 
 /**
- * Mixed-size category grid: [full], [half, half], [half, half], [full],
- * [half, half]. Plain Views rather than a FlatList — eight tiles are cheap,
+ * Two-column category grid; an odd tile count promotes the first tile to a
+ * full-width row. Plain Views rather than a FlatList — eight tiles are cheap,
  * mixed spans don't fit numColumns, and `entering` staggers are only
  * reliable on non-virtualized mounts. Rows auto-mirror under forced RTL.
  */

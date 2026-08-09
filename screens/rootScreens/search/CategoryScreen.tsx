@@ -46,7 +46,7 @@ export default function CategoryScreen({ route, navigation }: Props) {
             <RecipeCard
               recipe={item}
               onPress={() => {
-                navigation.navigate("Recipe", { recipe: item });
+                navigation.navigate("Recipe", { recipeId: item.id! });
               }}
             />
           )}

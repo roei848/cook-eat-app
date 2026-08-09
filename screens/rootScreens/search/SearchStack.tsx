@@ -3,16 +3,16 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import SearchScreen from "./SearchScreen";
 import CategoryScreen from "./CategoryScreen";
-import { Recipe } from "../../../types/recipe";
 import { Category } from "../../../types/enums/category";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import RecipeScreen from "../sharedScreens/RecipeScreen";
+import EditRecipeScreenContainer from "../sharedScreens/EditRecipeScreenContainer";
+import { SharedRecipeParams } from "../sharedScreens/sharedRecipeRoutes";
 
 export type SearchStackParamList = {
   Search: undefined;
   Category: { category: Category };
-  Recipe: { recipe: Recipe };
-};
+} & SharedRecipeParams;
 
 const Stack = createNativeStackNavigator<SearchStackParamList>();
 
@@ -51,6 +51,11 @@ export default function SearchStack() {
           headerShadowVisible: false,
           title: "",
         }}
+      />
+      <Stack.Screen
+        name="EditRecipe"
+        component={EditRecipeScreenContainer}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
