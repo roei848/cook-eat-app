@@ -10,10 +10,12 @@ import {
   orderBy,
   onSnapshot,
   Timestamp,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 
 import { auth, db } from "./firebaseConfig";
-import { Recipe } from "../../types/recipe";
+import { Recipe, RecipeNote, StoredNote } from "../../types/recipe";
 
 export function subscribeToRecipes(
   onChange: (recipes: Recipe[]) => void,
@@ -111,4 +113,25 @@ export async function updateRecipe(recipeId: string, data: Partial<Recipe>) {
  */
 export async function deleteRecipe(recipeId: string) {
   await deleteDoc(doc(db, "recipes", recipeId));
+}
+
+/**
+ * Append a note. arrayUnion is atomic server-side, so two family members
+ * adding notes at the same moment cannot clobber each other — which a
+ * read-modify-write through updateRecipe() would.
+ *
+ * Deliberately does not catch: the caller rolls back its optimistic insert
+ * on rejection.
+ */
+export async function addRecipeNote(recipeId: string, note: RecipeNote) {
+  await updateDoc(doc(db, "recipes", recipeId), { notes: arrayUnion(note) });
+}
+
+/**
+ * Remove a note. `raw` must be the exact value stored in Firestore —
+ * arrayRemove matches by deep equality, so a rebuilt object will not match.
+ * Pass DisplayNote.raw, never a reconstructed note.
+ */
+export async function removeRecipeNote(recipeId: string, raw: StoredNote) {
+  await updateDoc(doc(db, "recipes", recipeId), { notes: arrayRemove(raw) });
 }
