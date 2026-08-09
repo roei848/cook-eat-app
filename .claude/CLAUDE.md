@@ -42,7 +42,7 @@ AuthStack        → Login → Register → ForgotPassword
 
 Three slices in `store/`:
 - `authSlice` — `{ user: { uid, email } | null }` — actions: `setUser`, `logoutUser`
-- `userSlice` — `{ profile: UserProfile | null }` — actions: `setProfile`, `clearProfile`, `setDarkMode`
+- `userSlice` — `{ profile: UserProfile | null }` — actions: `setProfile`, `clearProfile`, `setDarkMode`, `setFavorites`
 - `recipeSlice` — `{ items: Recipe[], subscribed: boolean }` — actions: `setRecipes`, `setSubscribed`, `clearRecipes`
 
 ## Firebase

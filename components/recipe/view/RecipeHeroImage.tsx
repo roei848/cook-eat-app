@@ -1,12 +1,13 @@
 import React from "react";
-import { View, Image, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { Recipe } from "../../../types/recipe";
-import { CATEGORY_COLORS } from "../../../theme/categoryColors";
 import { typography } from "../../../theme/typography";
+import { radius } from "../../../theme/spacing";
 import RecipeCategoryBadge from "./RecipeCategoryBadge";
+import RecipePhotoBackdrop from "./RecipePhotoBackdrop";
+import ScalePressable from "../../ui/ScalePressable";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 const HERO_HEIGHT = SCREEN_HEIGHT * 0.45;
@@ -14,31 +15,20 @@ const HERO_HEIGHT = SCREEN_HEIGHT * 0.45;
 export default function RecipeHeroImage({
   recipe,
   insetTop,
+  isFavorite,
+  onToggleFavorite,
 }: {
   recipe: Recipe;
   insetTop: number;
+  isFavorite?: boolean;
+  /** Heart button renders only when provided. */
+  onToggleFavorite?: () => void;
 }) {
-  const imageSource = recipe.imageUrl
-    ? { uri: recipe.imageUrl }
-    : require("../../../assets/arthur.png");
-
-  const hasImage = !!recipe.imageUrl;
-  const categoryEntry = CATEGORY_COLORS[recipe.category];
-
   return (
     <Animated.View entering={FadeIn.duration(400)} style={styles.container}>
-      <Image source={imageSource} style={styles.image} resizeMode="cover" />
-
-      {/* Warm tint overlay for fallback image */}
-      {!hasImage && <View style={styles.fallbackOverlay} />}
-
-      {/* Gradient overlay at bottom */}
-      <LinearGradient
-        colors={["transparent", "rgba(0,0,0,0.45)", "rgba(0,0,0,0.8)"]}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={styles.gradient}
+      <RecipePhotoBackdrop
+        imageUrl={recipe.imageUrl}
+        category={recipe.category}
       />
 
       {/* Title on gradient */}
@@ -49,14 +39,25 @@ export default function RecipeHeroImage({
         <RecipeCategoryBadge category={recipe.category} />
       </View>
 
-      {/* Centered icon for fallback */}
-      {!hasImage && (
-        <View style={styles.fallbackIcon}>
-          <Ionicons
-            name={categoryEntry.icon as any}
-            size={52}
-            color="rgba(255,255,255,0.6)"
-          />
+      {/* Favorite heart — mirror position of the category badge. Like the
+          badge, it sits on the photo, so its colors are theme-independent. */}
+      {onToggleFavorite && (
+        <View style={[styles.heartContainer, { top: insetTop + 54 }]}>
+          <ScalePressable
+            onPress={onToggleFavorite}
+            scaleTo={0.9}
+            style={styles.heartButton}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isFavorite ? "הסר מהמועדפים" : "הוסף למועדפים"
+            }
+          >
+            <Ionicons
+              name={isFavorite ? "heart" : "heart-outline"}
+              size={22}
+              color={isFavorite ? "#FF6B6B" : "#FFFFFF"}
+            />
+          </ScalePressable>
         </View>
       )}
     </Animated.View>
@@ -68,21 +69,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: HERO_HEIGHT,
     overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  fallbackOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 122, 0, 0.12)",
-  },
-  gradient: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: "55%",
   },
   title: {
     position: "absolute",
@@ -99,9 +85,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     start: 16,
   },
-  fallbackIcon: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
+  heartContainer: {
+    position: "absolute",
+    end: 16,
+  },
+  heartButton: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.pill,
     alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.45)",
   },
 });

@@ -1,35 +1,68 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, FlatList } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 import Screen from "../Screen";
-import RecipeCardHorizontal from "../../components/recipe/RecipeCardHorizontal";
 import CategoryBadge from "../../components/category/CategoryBadge";
 import ScalePressable from "../../components/ui/ScalePressable";
-import { useThemeColors } from "../../theme/useThemeColors";
-import { ThemeColors } from "../../theme/colors";
+import Loader from "../../components/shared/Loader";
+import HomeMasthead from "../../components/home/HomeMasthead";
+import HomeEmptyState from "../../components/home/HomeEmptyState";
+import SectionHeader from "../../components/home/SectionHeader";
+import DailyHeroCard from "../../components/home/DailyHeroCard";
+import RecipeRail from "../../components/home/RecipeRail";
 import { RootState } from "../../store/store";
+import {
+  selectDailyHero,
+  selectFamilySpotlight,
+  selectFavoriteRecipes,
+  selectQuickPicks,
+  selectRecentRecipes,
+} from "../../store/selectors/homeSelectors";
+import { useHomeClock } from "../../hooks/useHomeClock";
+import { Recipe } from "../../types/recipe";
 import { Category } from "../../types/enums/category";
 import { HomeStackParamList } from "./home/HomeStack";
 import { AppTabsParamList } from "../AppTabs";
-import { typography } from "../../theme/typography";
 import { SCREEN_PADDING_H, spacing } from "../../theme/spacing";
 import { useTabBarClearance } from "../../theme/layout";
 
 const ALL_CATEGORIES = Object.values(Category);
 
+type HomeSection = { key: string; node: React.ReactNode };
+
 export default function HomeScreen({
   navigation,
 }: NativeStackScreenProps<HomeStackParamList, "HomeMain">) {
-  const colors = useThemeColors();
-  const styles = createStyles(colors);
   const tabBarClearance = useTabBarClearance();
-  const profile = useSelector((state: RootState) => state.user.profile);
-  const recipeItems = useSelector((state: RootState) => state.recipes.items);
+  const { now, dateKey } = useHomeClock();
 
-  const recentRecipes = recipeItems.slice(0, 10);
+  const profile = useSelector((state: RootState) => state.user.profile);
+  const subscribed = useSelector(
+    (state: RootState) => state.recipes.subscribed
+  );
+  const recipeCount = useSelector(
+    (state: RootState) => state.recipes.items.length
+  );
+  const hero = useSelector((state: RootState) =>
+    selectDailyHero(state, dateKey)
+  );
+  const quickPicks = useSelector((state: RootState) =>
+    selectQuickPicks(state, dateKey)
+  );
+  const favorites = useSelector(selectFavoriteRecipes);
+  const spotlight = useSelector((state: RootState) =>
+    selectFamilySpotlight(state, dateKey)
+  );
+  const recent = useSelector((state: RootState) =>
+    selectRecentRecipes(state, dateKey)
+  );
+
+  const openRecipe = (recipe: Recipe) =>
+    navigation.navigate("Recipe", { recipeId: recipe.id! });
 
   const openCategory = (category: Category) => {
     navigation
@@ -41,49 +74,87 @@ export default function HomeScreen({
       });
   };
 
-  return (
-    <Screen>
-      <ScrollView
-        style={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          styles.scrollContent,
-          { paddingBottom: tabBarClearance },
-        ]}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.greeting}>
-            {profile?.name ? `שלום, ${profile.name} 👋` : "שלום!"}
-          </Text>
-          <Text style={styles.headline}>מה נבשל היום?</Text>
+  const openAddRecipe = () => {
+    navigation
+      .getParent<BottomTabNavigationProp<AppTabsParamList>>()
+      ?.navigate("AddRecipe");
+  };
+
+  if (!subscribed) {
+    return (
+      <Screen>
+        <View style={styles.centered}>
+          <Loader size={140} />
         </View>
+      </Screen>
+    );
+  }
 
-        {/* Recent recipes horizontal scroll */}
-        {recentRecipes.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>מתכונים אחרונים</Text>
-            <FlatList
-              data={recentRecipes}
-              keyExtractor={(item) => item.id ?? item.title}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalList}
-              renderItem={({ item }) => (
-                <RecipeCardHorizontal
-                  recipe={item}
-                  onPress={() =>
-                    navigation.navigate("Recipe", { recipeId: item.id! })
-                  }
-                />
-              )}
-            />
-          </View>
-        )}
+  if (recipeCount === 0) {
+    return (
+      <Screen>
+        <HomeMasthead userName={profile?.name} now={now} />
+        <HomeEmptyState onAddRecipe={openAddRecipe} />
+      </Screen>
+    );
+  }
 
-        {/* Category chips */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>קטגוריות</Text>
+  // Visible sections only — hidden ones must not leave stagger gaps.
+  const sections: HomeSection[] = [
+    {
+      key: "masthead",
+      node: <HomeMasthead userName={profile?.name} now={now} />,
+    },
+    hero && {
+      key: "hero",
+      node: (
+        <>
+          <SectionHeader title="המתכון של היום" />
+          <DailyHeroCard recipe={hero} onPress={() => openRecipe(hero)} />
+        </>
+      ),
+    },
+    quickPicks.length > 0 && {
+      key: "quickPicks",
+      node: (
+        <>
+          <SectionHeader title="מהיר על השולחן" />
+          <RecipeRail recipes={quickPicks} onPressRecipe={openRecipe} />
+        </>
+      ),
+    },
+    favorites.length > 0 && {
+      key: "favorites",
+      node: (
+        <>
+          <SectionHeader title="המועדפים שלך" />
+          <RecipeRail recipes={favorites} onPressRecipe={openRecipe} />
+        </>
+      ),
+    },
+    spotlight && {
+      key: "spotlight",
+      node: (
+        <>
+          <SectionHeader title={`מהמטבח של ${spotlight.contributor}`} />
+          <RecipeRail recipes={spotlight.recipes} onPressRecipe={openRecipe} />
+        </>
+      ),
+    },
+    recent.length > 0 && {
+      key: "recent",
+      node: (
+        <>
+          <SectionHeader title="נוספו לאחרונה" />
+          <RecipeRail recipes={recent} onPressRecipe={openRecipe} />
+        </>
+      ),
+    },
+    {
+      key: "categories",
+      node: (
+        <>
+          <SectionHeader title="קטגוריות" />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -100,48 +171,48 @@ export default function HomeScreen({
               </ScalePressable>
             ))}
           </ScrollView>
-        </View>
+        </>
+      ),
+    },
+  ].filter(Boolean) as HomeSection[];
+
+  return (
+    <Screen>
+      <ScrollView
+        style={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: tabBarClearance }}
+      >
+        {sections.map((section, index) => (
+          <Animated.View
+            key={section.key}
+            entering={FadeInDown.delay(index * 70)
+              .springify()
+              .damping(18)}
+            style={styles.section}
+          >
+            {section.node}
+          </Animated.View>
+        ))}
       </ScrollView>
     </Screen>
   );
 }
 
-const createStyles = (colors: ThemeColors) =>
-  StyleSheet.create({
-    scroll: {
-      flex: 1,
-    },
-    scrollContent: {
-      paddingBottom: spacing.xxxl,
-    },
-    header: {
-      paddingHorizontal: SCREEN_PADDING_H,
-      paddingTop: spacing.lg,
-      paddingBottom: spacing.xxl,
-    },
-    greeting: {
-      ...typography.body,
-      color: colors.text.secondary,
-      marginBottom: spacing.xs,
-    },
-    headline: {
-      ...typography.displayXL,
-      color: colors.text.primary,
-    },
-    section: {
-      marginBottom: 28,
-    },
-    sectionTitle: {
-      ...typography.titleL,
-      color: colors.text.primary,
-      paddingHorizontal: SCREEN_PADDING_H,
-      marginBottom: spacing.md + 2,
-    },
-    horizontalList: {
-      paddingStart: SCREEN_PADDING_H,
-    },
-    chipsContainer: {
-      paddingHorizontal: SCREEN_PADDING_H,
-      gap: spacing.sm,
-    },
-  });
+const styles = StyleSheet.create({
+  scroll: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  section: {
+    marginBottom: spacing.xxl + 4,
+  },
+  chipsContainer: {
+    paddingHorizontal: SCREEN_PADDING_H,
+    gap: spacing.sm,
+  },
+});

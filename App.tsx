@@ -46,6 +46,9 @@ function AppBootstrap() {
       },
       (error) => {
         console.error("❌ Snapshot Error:", error);
+        // Screens gate their loaders on `subscribed`; without this a listen
+        // error (rules/network) would leave them spinning forever.
+        dispatch(setSubscribed(true));
       }
     );
 

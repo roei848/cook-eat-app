@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserProfile } from "../types/user";
 
 interface UserState {
@@ -22,8 +22,12 @@ export const userSlice = createSlice({
     setDarkMode: (state, action) => {
       state.profile!.darkMode = action.payload;
     },
+    setFavorites: (state, action: PayloadAction<string[]>) => {
+      if (state.profile) state.profile.favorites = action.payload;
+    },
   }
 });
 
-export const { setProfile, clearProfile, setDarkMode } = userSlice.actions;
+export const { setProfile, clearProfile, setDarkMode, setFavorites } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Recipe } from "../../types/recipe";
 import { useTabBarClearance } from "../../theme/layout";
 import { useThemeColors } from "../../theme/useThemeColors";
+import { useFavorite } from "../../hooks/useFavorite";
 
 import RecipeHeroImage from "./view/RecipeHeroImage";
 import RecipeInfoCard from "./view/RecipeInfoCard";
@@ -14,6 +15,7 @@ export default function RecipeView({ recipe }: { recipe: Recipe }) {
   const insets = useSafeAreaInsets();
   const tabBarClearance = useTabBarClearance();
   const colors = useThemeColors();
+  const { isFavorite, toggleFavorite } = useFavorite(recipe.id);
 
   return (
     <ScrollView
@@ -24,7 +26,12 @@ export default function RecipeView({ recipe }: { recipe: Recipe }) {
       contentContainerStyle={{ paddingBottom: tabBarClearance }}
       showsVerticalScrollIndicator={false}
     >
-      <RecipeHeroImage recipe={recipe} insetTop={insets.top} />
+      <RecipeHeroImage
+        recipe={recipe}
+        insetTop={insets.top}
+        isFavorite={isFavorite}
+        onToggleFavorite={toggleFavorite}
+      />
       <RecipeInfoCard recipe={recipe} />
       <RecipeIngredients
         ingredients={recipe.ingredients}
