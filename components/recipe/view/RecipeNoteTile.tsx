@@ -75,14 +75,14 @@ const createStyles = (colors: ThemeColors) =>
       width: 22,
       height: 22,
       borderRadius: 11,
-      backgroundColor: colors.primary[500],
+      backgroundColor: colors.primary[100],
       alignItems: "center",
       justifyContent: "center",
     },
     avatarText: {
       fontFamily: fonts.bodyBold,
       fontSize: 11,
-      color: colors.text.inverse,
+      color: colors.primary[900],
     },
     meta: {
       ...typography.caption,
