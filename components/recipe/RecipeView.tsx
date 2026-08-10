@@ -38,6 +38,9 @@ export default function RecipeView({ recipe }: { recipe: Recipe }) {
       // Without this the first tap on the send button only dismisses the
       // keyboard instead of submitting.
       keyboardShouldPersistTaps="handled"
+      // iOS: the keyboard overlays the ScrollView instead of resizing it, so
+      // without this the composer ends up hidden behind it.
+      automaticallyAdjustKeyboardInsets
     >
       <RecipeHeroImage
         recipe={recipe}

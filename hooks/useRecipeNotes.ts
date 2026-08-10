@@ -22,7 +22,16 @@ import {
  * Unlike favorites, notes DO echo back through the recipes onSnapshot, so the
  * local state here is only a short-lived overlay that the snapshot supersedes.
  */
-export function useRecipeNotes(recipeId: string, notes?: StoredNote[]) {
+export function useRecipeNotes(
+  recipeId: string,
+  notes?: StoredNote[]
+): {
+  displayNotes: DisplayNote[];
+  addNote: (text: string) => void;
+  removeNote: (note: DisplayNote) => void;
+  currentUid: string | undefined;
+  canWrite: boolean;
+} {
   const uid = useSelector((state: RootState) => state.auth.user?.uid);
   const authorName = useSelector((state: RootState) => state.user.profile?.name);
 
