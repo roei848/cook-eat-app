@@ -96,7 +96,7 @@ const createStyles = (colors: ThemeColors) =>
     },
     countText: {
       ...typography.caption,
-      color: colors.primary[700],
+      color: colors.primary[900],
     },
     empty: {
       ...typography.bodySmall,
