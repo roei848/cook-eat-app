@@ -41,8 +41,9 @@ export default function RecipeScreen({ navigation, route }: Props) {
       headerShadowVisible: false,
       headerLeft: () => (
         <Pressable onPress={() => navigation.goBack()} style={{ padding: 8 }}>
+          {/* chevron-forward = back under forced RTL (header is RTL, so this sits top-right) */}
           <Ionicons
-            name="chevron-back-outline"
+            name="chevron-forward-outline"
             size={28}
             color={colors.primary[500]}
           />

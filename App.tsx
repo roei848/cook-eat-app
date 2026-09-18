@@ -105,7 +105,11 @@ function AppBootstrap() {
     // Required for react-native-gesture-handler gestures (e.g. StepEditor drag)
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <NavigationContainer>
+        {/* Hebrew-only app, always RTL. Passed explicitly because the default
+            comes from I18nManager.getConstants().isRTL, a constant cached at JS
+            init that is still `false` on the launch where forceRTL() above first
+            flips the layout, which left native-stack headers laid out LTR. */}
+        <NavigationContainer direction="rtl">
           <RootNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
