@@ -15,6 +15,26 @@ import RecipeReviewScreen from "./RecipeReviewScreen";
 type Nav = NativeStackNavigationProp<AddRecipeStackParamList>;
 type Route = RouteProp<AddRecipeStackParamList, "RecipeReview">;
 
+/** Firebase Storage download URLs are already ours; any other http(s) image is a hotlink to the source site. */
+function isHotlinkedImage(url: string): boolean {
+  return /^https?:\/\//i.test(url) && !url.includes("firebasestorage.googleapis.com");
+}
+
+// Saving must not hang on a slow source site — past this, keep the hotlink
+const REHOST_TIMEOUT_MS = 15_000;
+
+/**
+ * Copy a source site's photo into our Storage so the recipe keeps its picture
+ * if the site moves it or blocks hotlinking. On failure or timeout the
+ * hotlink is still better than no image, so that is what comes back.
+ */
+async function rehostImage(hotlink: string): Promise<string> {
+  const keepHotlink = new Promise<string>((resolve) =>
+    setTimeout(() => resolve(hotlink), REHOST_TIMEOUT_MS)
+  );
+  return Promise.race([uploadRecipeImage(hotlink), keepHotlink]).catch(() => hotlink);
+}
+
 export default function RecipeReviewScreenContainer() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
@@ -24,10 +44,13 @@ export default function RecipeReviewScreenContainer() {
     (state: RootState) => state.user.profile?.name ?? ""
   );
 
-  const [recipe, setRecipe] = useState<Partial<Recipe>>({
-    byWho: userName,
+  const [recipe, setRecipe] = useState<Partial<Recipe>>(() => ({
     ...partialRecipe,
-  });
+    // Credit the page's author when the source names one, else the person saving
+    byWho: partialRecipe.byWho?.trim() || userName,
+    // Pre-fill the link field so the URL flow shows where the recipe came from
+    recipeLink: partialRecipe.recipeLink ?? recipeLink,
+  }));
   const [photoUri, setPhotoUri] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -55,6 +78,8 @@ export default function RecipeReviewScreenContainer() {
       let imageUrl = recipe.imageUrl;
       if (photoUri) {
         imageUrl = await uploadRecipeImage(photoUri);
+      } else if (imageUrl && isHotlinkedImage(imageUrl)) {
+        imageUrl = await rehostImage(imageUrl);
       }
 
       const id = await createRecipe({
@@ -68,7 +93,7 @@ export default function RecipeReviewScreenContainer() {
         ingredients: recipe.ingredients!,
         steps: recipe.steps!,
         imageUrl,
-        recipeLink,
+        recipeLink: recipe.recipeLink?.trim() || undefined,
         handwrittenRecipeImg,
       });
       if (!id) throw new Error("createRecipe returned null");

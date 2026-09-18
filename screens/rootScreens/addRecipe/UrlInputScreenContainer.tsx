@@ -18,7 +18,8 @@ export default function UrlInputScreenContainer() {
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   async function handleAnalyze() {
-    if (!URL_REGEX.test(url.trim())) {
+    const recipeLink = url.trim();
+    if (!URL_REGEX.test(recipeLink)) {
       setErrorMessage("כתובת URL לא תקינה — יש להתחיל עם http:// או https://");
       return;
     }
@@ -27,13 +28,9 @@ export default function UrlInputScreenContainer() {
     setErrorMessage(undefined);
 
     try {
-      const result = await parseRecipeFromUrl(url.trim());
-      const { imageUrl, ...partialRecipe } = result;
-
-      navigation.navigate("RecipeReview", {
-        partialRecipe: imageUrl ? { ...partialRecipe, imageUrl } : partialRecipe,
-        recipeLink: url.trim(),
-      });
+      // imageUrl / byWho arrive inside the partial when the page provides them
+      const partialRecipe = await parseRecipeFromUrl(recipeLink);
+      navigation.navigate("RecipeReview", { partialRecipe, recipeLink });
     } catch (error) {
       setErrorMessage("לא הצלחנו לגשת לכתובת, נסה שוב");
     } finally {

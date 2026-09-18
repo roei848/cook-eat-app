@@ -50,7 +50,7 @@ Three slices in `store/`:
 - Firestore collections: `users/`, `recipes/`
 - Auth persistence via AsyncStorage (users stay logged in across restarts)
 - Real-time recipe sync via `onSnapshot()` in `recipeService.ts`
-- `subscribed` flag in recipeSlice prevents duplicate Firestore listeners
+- Recipe listener lives in `App.tsx`, keyed on the signed-in `uid` (one per session); `subscribed` in recipeSlice only means "first snapshot arrived" and gates screen loaders
 
 ## Key Patterns
 

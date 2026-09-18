@@ -18,7 +18,7 @@ import { RootState, store } from "./store/store";
 import RootNavigator from "./screens/RootNavigator";
 import Loader from "./components/shared/Loader";
 import { useThemeColors } from "./theme/useThemeColors";
-import { setRecipes, setSubscribed } from "./store/recipeSlice";
+import { clearRecipes, setRecipes, setSubscribed } from "./store/recipeSlice";
 import { subscribeToRecipes } from "./services/firebase/recipeService";
 import {
   setGroceryItems,
@@ -30,19 +30,24 @@ import { subscribeToGrocery } from "./services/firebase/groceryService";
 
 function AppBootstrap() {
   const dispatch = useDispatch();
-  const subscribed = useSelector(
-    (state: RootState) => state.recipes.subscribed
-  );
   const uid = useSelector((state: RootState) => state.auth.user?.uid);
 
+  // One live listener for the signed-in session, like the grocery one below.
+  // Deliberately NOT keyed on `recipes.subscribed`: that flag flips on the
+  // first snapshot, and an effect depending on it would run its cleanup right
+  // then — tearing the listener down after a single delivery, so nothing added
+  // later showed up without an app refresh. `subscribed` is only a
+  // "first snapshot arrived" gate for screen loaders.
   useEffect(() => {
-    // Only subscribe if we haven't already
-    if (subscribed) return;
+    if (!uid) {
+      dispatch(clearRecipes());
+      return;
+    }
 
     const unsubscribe = subscribeToRecipes(
       (recipes) => {
         dispatch(setRecipes(recipes));
-        dispatch(setSubscribed(true)); // Move this inside!
+        dispatch(setSubscribed(true));
       },
       (error) => {
         console.error("❌ Snapshot Error:", error);
@@ -53,7 +58,7 @@ function AppBootstrap() {
     );
 
     return () => unsubscribe();
-  }, [dispatch, subscribed]);
+  }, [dispatch, uid]);
 
   useEffect(() => {
     if (!uid) {

@@ -15,7 +15,7 @@ import { typography } from "../../../theme/typography";
 import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
-import FlatButton from "../../../components/ui/FlatButton";
+import BackButton from "../../../components/ui/BackButton";
 import Loader from "../../../components/shared/Loader";
 
 interface UrlInputScreenProps {
@@ -37,6 +37,7 @@ export default function UrlInputScreen({
 }: UrlInputScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const canAnalyze = url.trim().length > 0;
 
   return (
     <Screen>
@@ -44,6 +45,13 @@ export default function UrlInputScreen({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
+        {/* Same top-bar back affordance as the wizard steps. Not a row with the
+            CTA: ScalePressable applies `style` to its inner scaled view, so a
+            Button given `flex: 1` inside a row collapses. */}
+        <View style={styles.topBar}>
+          <BackButton onPress={onBack} disabled={isLoading} />
+        </View>
+
         <View style={styles.container}>
           <View style={styles.header}>
             <Ionicons name="link-outline" size={40} color={colors.primary[500]} />
@@ -61,6 +69,8 @@ export default function UrlInputScreen({
             autoCapitalize="none"
             autoCorrect={false}
             keyboardType="url"
+            returnKeyType="go"
+            onSubmitEditing={canAnalyze ? onAnalyze : undefined}
             // URL content is Latin/LTR by nature — the one legitimate LTR input
             textAlign="left"
             editable={!isLoading}
@@ -71,15 +81,12 @@ export default function UrlInputScreen({
               <Loader size={160} text="מנתח מתכון עם AI..." />
             </View>
           ) : (
-            <View style={styles.actions}>
-              <FlatButton title="חזור" onPress={onBack} />
-              <Button
-                title="נתח"
-                onPress={onAnalyze}
-                disabled={!url.trim()}
-                style={styles.analyzeButton}
-              />
-            </View>
+            <Button
+              title="נתח"
+              onPress={onAnalyze}
+              disabled={!canAnalyze}
+              style={styles.cta}
+            />
           )}
         </View>
       </KeyboardAvoidingView>
@@ -90,10 +97,16 @@ export default function UrlInputScreen({
 const createStyles = (colors: ThemeColors) =>
   StyleSheet.create({
     flex: { flex: 1 },
+    topBar: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: SCREEN_PADDING_H,
+      marginBottom: spacing.lg,
+    },
     container: {
       flex: 1,
       paddingHorizontal: SCREEN_PADDING_H,
-      paddingTop: spacing.xxl,
+      paddingTop: spacing.lg,
     },
     header: {
       alignItems: "center",
@@ -114,12 +127,7 @@ const createStyles = (colors: ThemeColors) =>
       marginTop: spacing.lg,
       alignItems: "center",
     },
-    actions: {
-      flexDirection: "row",
-      gap: spacing.md,
-      alignItems: "center",
-    },
-    analyzeButton: {
-      flex: 1,
+    cta: {
+      marginTop: spacing.sm,
     },
   });

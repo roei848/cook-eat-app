@@ -6,8 +6,6 @@ import { Category } from "../../types/enums/category";
 export type CategorySummary = {
   category: Category;
   count: number;
-  /** Photo of the newest recipe in the category that has one. */
-  imageUrl?: string;
 };
 
 const CANONICAL_ORDER = Object.values(Category);
@@ -17,19 +15,10 @@ const selectRecipes = (state: RootState) => state.recipes.items;
 export const selectCategorySummaries = createSelector(
   [selectRecipes],
   (recipes): CategorySummary[] =>
-    CANONICAL_ORDER.map((category) => {
-      const inCategory = recipes.filter((r) => r.category === category);
-      // Sort by createdAt so the tile photo is deterministic (Firestore
-      // snapshot order is not guaranteed stable) and new photos surface.
-      const newestWithPhoto = inCategory
-        .filter((r) => !!r.imageUrl)
-        .sort((a, b) => b.createdAt - a.createdAt)[0];
-      return {
-        category,
-        count: inCategory.length,
-        imageUrl: newestWithPhoto?.imageUrl,
-      };
-    })
+    CANONICAL_ORDER.map((category) => ({
+      category,
+      count: recipes.filter((r) => r.category === category).length,
+    }))
 );
 
 export type BentoRow =

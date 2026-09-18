@@ -83,11 +83,18 @@ export async function createRecipe(
   try {
     const ref = doc(collection(db, "recipes"));
 
-    await setDoc(ref, {
-      ...data,
-      authorId: auth.currentUser?.uid,
-      createdAt: new Date().getTime(),
-    });
+    // Firestore setDoc throws on undefined values. Optional fields (imageUrl,
+    // recipeLink, handwrittenRecipeImg) are legitimately absent depending on
+    // which add flow produced the recipe, so drop them like updateRecipe does.
+    const payload = Object.fromEntries(
+      Object.entries({
+        ...data,
+        authorId: auth.currentUser?.uid,
+        createdAt: new Date().getTime(),
+      }).filter(([, value]) => value !== undefined)
+    );
+
+    await setDoc(ref, payload);
 
     return ref.id;
   } catch (error) {
