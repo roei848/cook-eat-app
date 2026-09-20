@@ -8,11 +8,6 @@ export default ({ config }) => ({
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
-  splash: {
-    image: "./assets/splash-icon.png",
-    resizeMode: "contain",
-    backgroundColor: "#FFFAF5",
-  },
   ios: {
     supportsTablet: true,
   },
@@ -26,11 +21,16 @@ export default ({ config }) => ({
   web: {
     favicon: "./assets/favicon.png",
   },
-  androidNavigationBar: {
-    visible: "sticky-immersive",
-  },
-  newArchEnabled: true,
   plugins: [
+    "expo-status-bar",
+    [
+      "expo-splash-screen",
+      {
+        image: "./assets/splash-icon.png",
+        resizeMode: "contain",
+        backgroundColor: "#FFFAF5",
+      },
+    ],
     "expo-font",
     "expo-web-browser",
     [

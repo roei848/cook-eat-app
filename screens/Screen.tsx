@@ -26,10 +26,7 @@ export default function Screen({ children, withTopInset = true }: Props) {
 
   return (
     <>
-      <StatusBar
-        style={isDark ? "light" : "dark"}
-        backgroundColor={colors.background.default}
-      />
+      <StatusBar style={isDark ? "light" : "dark"} />
 
       {/* No baked-in bottom padding: the tab bar floats, and content is
           expected to scroll underneath it. Screens pad their scrollables

@@ -57,11 +57,11 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   fallbackOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(255, 122, 0, 0.12)",
   },
   fallbackIcon: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: "center",
     alignItems: "center",
   },

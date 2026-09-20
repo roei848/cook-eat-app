@@ -101,6 +101,6 @@ Project agents live in `.claude/agents/`:
 - **Firebase credentials**: Hardcoded in `services/firebase/firebaseConfig.ts` — not environment-controlled
 - **Gemini API key**: Must be in `.env` as `GEMINI_API_KEY` and exposed via `app.config.js` `extra` — throws at runtime if missing
 - **Hebrew everywhere**: Enums in `types/enums/` (category, difficulty, relatives) use Hebrew values; mock data in `mocks/recipes.ts` is Hebrew
-- **New Architecture**: `app.json` has `newArchEnabled: true` — use Expo SDK 54+ compatible libraries only
+- **New Architecture**: always on since Expo SDK 55 (the `newArchEnabled` config key no longer exists) — the project is on SDK 57, use only libraries compatible with it
 - **No tests**: No testing framework configured
 - **No error boundaries**: No root-level error handling
