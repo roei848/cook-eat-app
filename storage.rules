@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Uploads must be images and stay under 20 MB.
+    function isImageUpload() {
+      return request.resource.contentType.matches('image/.*')
+        && request.resource.size < 20 * 1024 * 1024;
+    }
+
+    // --- PROFILE AVATARS ---
+    // Public read; only the owner can write (any extension).
+    match /profileImages/{userId}/{fileName} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == userId;
+    }
+
+    // --- RECIPE PHOTOS ---
+    // Attached from the add / review / edit recipe flows (uploadRecipeImage).
+    match /recipeImages/{fileName} {
+      allow read: if true;
+      allow create, update: if signedIn() && isImageUpload();
+      allow delete: if signedIn();
+    }
+
+    // --- HANDWRITTEN RECIPE PHOTOS ---
+    // Photos captured for AI extraction (uploadHandwrittenRecipeImage).
+    match /handwrittenRecipes/{fileName} {
+      allow read: if true;
+      allow create, update: if signedIn() && isImageUpload();
+      allow delete: if signedIn();
+    }
+  }
+}

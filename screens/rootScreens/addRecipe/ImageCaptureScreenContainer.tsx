@@ -79,13 +79,33 @@ export default function ImageCaptureScreenContainer() {
     setErrorMessage(undefined);
 
     try {
-      const [partialRecipe, handwrittenRecipeImg] = await Promise.all([
+      const [recipeResult, uploadResult] = await Promise.allSettled([
         analyzeRecipeImage(asset.base64),
         uploadHandwrittenRecipeImage(asset.uri),
       ]);
 
-      navigation.replace("RecipeReview", { partialRecipe, handwrittenRecipeImg });
+      if (recipeResult.status === "rejected") {
+        throw recipeResult.reason;
+      }
+
+      // The original photo is optional on the review screen — a failed upload
+      // must not discard a successful AI extraction.
+      let handwrittenRecipeImg: string | undefined;
+      if (uploadResult.status === "fulfilled") {
+        handwrittenRecipeImg = uploadResult.value;
+      } else {
+        console.warn(
+          "[ImageCapture] handwritten image upload failed, continuing without it:",
+          uploadResult.reason
+        );
+      }
+
+      navigation.replace("RecipeReview", {
+        partialRecipe: recipeResult.value,
+        handwrittenRecipeImg,
+      });
     } catch (error) {
+      console.error("[ImageCapture] recipe extraction failed:", error);
       setIsLoading(false);
       setErrorMessage("לא הצלחנו לקרוא את המתכון, נסה שוב");
     }
