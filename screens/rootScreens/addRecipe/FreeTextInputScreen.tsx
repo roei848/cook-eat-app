@@ -2,6 +2,7 @@ import React from "react";
 import {
   View,
   Text,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -13,34 +14,36 @@ import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { typography } from "../../../theme/typography";
 import { spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import Input from "../../../components/ui/Input";
 import Button from "../../../components/ui/Button";
-import FlatButton from "../../../components/ui/FlatButton";
 import BackButton from "../../../components/ui/BackButton";
 import Loader from "../../../components/shared/Loader";
 
-interface UrlInputScreenProps {
-  url: string;
+interface FreeTextInputScreenProps {
+  text: string;
+  /** Hard cap on the input so what the user sees is exactly what the model gets. */
+  maxLength: number;
   isLoading: boolean;
   errorMessage?: string;
-  onUrlChange: (url: string) => void;
+  onTextChange: (text: string) => void;
   onAnalyze: () => void;
-  onPasteTextInstead: () => void;
   onBack: () => void;
 }
 
-export default function UrlInputScreen({
-  url,
+export default function FreeTextInputScreen({
+  text,
+  maxLength,
   isLoading,
   errorMessage,
-  onUrlChange,
+  onTextChange,
   onAnalyze,
-  onPasteTextInstead,
   onBack,
-}: UrlInputScreenProps) {
+}: FreeTextInputScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
-  const canAnalyze = url.trim().length > 0;
+  const tabBarClearance = useTabBarClearance();
+  const canAnalyze = text.trim().length > 0;
 
   return (
     <Screen>
@@ -48,46 +51,39 @@ export default function UrlInputScreen({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
-        {/* Same top-bar back affordance as the wizard steps. Not a row with the
-            CTA: ScalePressable applies `style` to its inner scaled view, so a
+        {/* Back sits alone in the top bar, not in a row with the CTA:
+            ScalePressable applies `style` to its inner scaled view, so a
             Button given `flex: 1` inside a row collapses. */}
         <View style={styles.topBar}>
           <BackButton onPress={onBack} disabled={isLoading} />
         </View>
 
-        <View style={styles.container}>
+        {/* Scrolls because a full caption grows the text box well past one
+            screen; the bottom padding lets the CTA clear the floating tab bar. */}
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={[styles.container, { paddingBottom: tabBarClearance }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.header}>
-            <Ionicons name="link-outline" size={40} color={colors.primary[500]} />
-            <Text style={styles.title}>הדבק קישור למתכון</Text>
+            <Ionicons name="clipboard-outline" size={40} color={colors.primary[500]} />
+            <Text style={styles.title}>הדבק טקסט של מתכון</Text>
             <Text style={styles.subtitle}>
-              הכנס כתובת URL של מתכון מאתר בישול כלשהו
+              העתק את התיאור מפוסט באינסטגרם, פייסבוק או מהודעה והדבק כאן
             </Text>
           </View>
 
           <Input
-            value={url}
-            onChangeText={onUrlChange}
+            value={text}
+            onChangeText={onTextChange}
             error={errorMessage}
-            placeholder="https://www.example.com/recipe"
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            returnKeyType="go"
-            onSubmitEditing={canAnalyze ? onAnalyze : undefined}
-            // URL content is Latin/LTR by nature — the one legitimate LTR input
-            textAlign="left"
+            placeholder="הדבק כאן את הטקסט המלא של המתכון..."
+            multiline
+            maxLength={maxLength}
+            style={styles.textArea}
             editable={!isLoading}
           />
-
-          {/* Social links (Instagram, Facebook) often can't be fetched — offer
-              the paste-text route as soon as the link fails. */}
-          {errorMessage && !isLoading && (
-            <FlatButton
-              title="הקישור לא עובד? הדבק את הטקסט במקום"
-              onPress={onPasteTextInstead}
-              style={styles.fallbackLink}
-            />
-          )}
 
           {isLoading ? (
             <View style={styles.loadingContainer}>
@@ -101,7 +97,7 @@ export default function UrlInputScreen({
               style={styles.cta}
             />
           )}
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
   );
@@ -117,13 +113,12 @@ const createStyles = (colors: ThemeColors) =>
       marginBottom: spacing.lg,
     },
     container: {
-      flex: 1,
       paddingHorizontal: SCREEN_PADDING_H,
       paddingTop: spacing.lg,
     },
     header: {
       alignItems: "center",
-      marginBottom: spacing.xxxl,
+      marginBottom: spacing.xl,
       gap: spacing.sm,
     },
     title: {
@@ -136,13 +131,14 @@ const createStyles = (colors: ThemeColors) =>
       color: colors.text.secondary,
       textAlign: "center",
     },
+    textArea: {
+      minHeight: 220,
+      // Android anchors multiline text mid-box by default; iOS is already top.
+      textAlignVertical: "top",
+    },
     loadingContainer: {
       marginTop: spacing.lg,
       alignItems: "center",
-    },
-    fallbackLink: {
-      alignSelf: "center",
-      marginBottom: spacing.sm,
     },
     cta: {
       marginTop: spacing.sm,

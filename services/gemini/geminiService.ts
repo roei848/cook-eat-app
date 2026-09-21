@@ -25,22 +25,43 @@ function parseJsonResponse(text: string): Record<string, unknown> {
   }
 }
 
+// The Hebrew literals mirror the Category / Difficulty / Relative enum values.
+const RECIPE_FIELDS = `title (string), description (string), ingredients (array of {name, amount}),
+steps (array of {order, text}), timeInMinutes (number), difficulty (one of: "קל","בינוני","קשה"),
+category (one of: "מרק","סלט","מנה ראשונה","תוספת","מנה עיקרית","קינוח","משקה","אחר"),
+relatives (array, subset of: "צמחוני","טבעוני","ללא גלוטן","ללא חלב","דיאט")`;
+
+const JSON_ONLY = `Return ONLY valid JSON, no markdown, no explanation.`;
+
 const IMAGE_PROMPT = `You are a recipe extraction assistant. The image shows a handwritten Hebrew recipe.
 Extract all recipe information and return a JSON object with these fields:
-title (string), description (string), ingredients (array of {name, amount}),
-steps (array of {order, text}), timeInMinutes (number), difficulty (one of: "קל","בינוני","קשה"),
-category (one of: "מרק","סלט","מנה ראשונה","תוספת","מנה עיקרית","קינוח","משקה","אחר"),
-relatives (array, subset of: "צמחוני","טבעוני","ללא גלוטן","ללא חלב","דיאט").
-Return ONLY valid JSON, no markdown, no explanation.`;
+${RECIPE_FIELDS}.
+${JSON_ONLY}`;
 
 const URL_OUTPUT_FIELDS = `Return a JSON object with these fields:
-title (string), description (string), ingredients (array of {name, amount}),
-steps (array of {order, text}), timeInMinutes (number), difficulty (one of: "קל","בינוני","קשה"),
-category (one of: "מרק","סלט","מנה ראשונה","תוספת","מנה עיקרית","קינוח","משקה","אחר"),
-relatives (array, subset of: "צמחוני","טבעוני","ללא גלוטן","ללא חלב","דיאט"),
+${RECIPE_FIELDS},
 byWho (string, the person or site the page credits as the recipe's author, exactly as written, or "" if nobody is credited),
 imageUrl (string, absolute URL of the main recipe photo on the page, or "" if none).
-Return ONLY valid JSON, no markdown, no explanation.`;
+${JSON_ONLY}`;
+
+// Social captions run ~2k chars; long Facebook posts more. Keep the prompt
+// bounded; the paste screen applies the same cap as its input maxLength.
+export const MAX_TEXT_CHARS = 10_000;
+
+const textPrompt = (text: string) =>
+  `You are a recipe extraction assistant. The text below was copied from a social-media post, a message, or a web page.
+It may be in Hebrew or English and may include unrelated content such as hashtags, emojis, personal commentary, or calls to like and follow.
+Extract only the recipe and ignore everything else. If the text has no explicit title, compose a short Hebrew title.
+Return all text fields in Hebrew, translating when the source is in another language.
+Return a JSON object with these fields:
+${RECIPE_FIELDS},
+byWho (string, the person or page the text credits as the recipe's author, exactly as written, or "" if nobody is credited).
+${JSON_ONLY}
+
+Text:
+"""
+${text.slice(0, MAX_TEXT_CHARS)}
+"""`;
 
 // Keep the grounding block bounded — some sites' JSON-LD embeds whole comment threads
 const MAX_JSON_LD_CHARS = 12_000;
@@ -98,6 +119,35 @@ export async function parseRecipeFromUrl(url: string): Promise<Partial<Recipe>> 
 
   const parsed = parseJsonResponse(result.response.text());
   return mergeUrlResult(parsed, metadata);
+}
+
+export async function parseRecipeFromText(text: string): Promise<Partial<Recipe>> {
+  const genAI = new GoogleGenerativeAI(getApiKey());
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts: [{ text: textPrompt(text) }] }],
+  });
+
+  const parsed = parseJsonResponse(result.response.text());
+  return normalizeTextResult(parsed);
+}
+
+/**
+ * Pasted text has no page to pull a photo from, and an empty byWho is removed
+ * rather than kept as "" so the review screen's own default (the current
+ * user's name) can apply.
+ */
+function normalizeTextResult(parsed: Record<string, unknown>): Partial<Recipe> {
+  const recipe = { ...(parsed as Partial<Recipe>) };
+
+  const byWho = nonEmptyString(parsed.byWho);
+  if (byWho) recipe.byWho = byWho;
+  else delete recipe.byWho;
+
+  delete recipe.imageUrl;
+
+  return recipe;
 }
 
 /**

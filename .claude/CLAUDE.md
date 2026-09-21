@@ -20,7 +20,7 @@ App.tsx          → Redux Provider > AppBootstrap > NavigationContainer > RootN
 RootNavigator    → Watches Firebase auth state → AppTabs (authed) or AuthStack (unauthed)
 AppTabs          → Bottom tabs: Home | SearchTab | AddRecipe | Grocery | Profile
 SearchStack      → Search → Category → RecipeScreen (shared)
-AddRecipeStack   → MethodPicker → (Manual: Step1 → Step2 → Step3) | ImageCapture | UrlInput → RecipeReview
+AddRecipeStack   → MethodPicker → (Manual: Step1 → Step2 → Step3) | ImageCapture | UrlInput | FreeTextInput → RecipeReview
 ProfileStack     → Profile
 AuthStack        → Login → Register → ForgotPassword
 ```
@@ -33,7 +33,7 @@ AuthStack        → Login → Register → ForgotPassword
 - `components/` — Other reusable UI (category, profile, search, ui)
 - `store/` — Redux slices (auth, user, recipes)
 - `services/firebase/` — Firebase services (auth, recipes, users, storage)
-- `services/gemini/` — Gemini AI service: `analyzeRecipeImage()` and `parseRecipeFromUrl()`
+- `services/gemini/` — Gemini AI service: `analyzeRecipeImage()`, `parseRecipeFromUrl()`, `parseRecipeFromText()`
 - `theme/` — Light/dark color system + `useThemeColors()` hook
 - `types/` — TypeScript interfaces + enums (Hebrew values)
 - `mocks/` — Hebrew seed data for Firebase
@@ -68,8 +68,9 @@ Use `useThemeColors()` hook ([theme/useThemeColors.ts](theme/useThemeColors.ts))
 `services/gemini/geminiService.ts` uses `@google/generative-ai` with model `gemini-2.5-flash`:
 - `analyzeRecipeImage(base64)` — extracts a Hebrew recipe from a handwritten photo
 - `parseRecipeFromUrl(url)` — fetches and parses a recipe from a URL (uses `urlContext` tool)
+- `parseRecipeFromText(text)` — parses a recipe from pasted free text (social captions, messages); the UrlInput error state links here as a fallback
 
-Both return `Partial<Recipe>` passed to `RecipeReview` for user confirmation before saving.
+All return `Partial<Recipe>` passed to `RecipeReview` for user confirmation before saving.
 
 **API key**: set `GEMINI_API_KEY` in `.env` → read via `app.config.js` `extra.geminiApiKey` → accessed with `Constants.expoConfig.extra.geminiApiKey`. Never hardcoded.
 

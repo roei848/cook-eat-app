@@ -13,6 +13,7 @@ import ManualWizardStep2ScreenContainer from "./ManualWizardStep2ScreenContainer
 import ManualWizardStep3ScreenContainer from "./ManualWizardStep3ScreenContainer";
 import ImageCaptureScreenContainer from "./ImageCaptureScreenContainer";
 import UrlInputScreenContainer from "./UrlInputScreenContainer";
+import FreeTextInputScreenContainer from "./FreeTextInputScreenContainer";
 import RecipeReviewScreenContainer from "./RecipeReviewScreenContainer";
 
 export interface ManualStep1Data {
@@ -32,6 +33,9 @@ export type AddRecipeStackParamList = {
   ManualWizardStep3: { step1Data: ManualStep1Data; ingredients: Ingredient[] };
   ImageCapture: undefined;
   UrlInput: undefined;
+  // initialText: text the URL screen hands over when the user pasted a caption
+  // into the URL box by mistake
+  FreeTextInput: { initialText?: string } | undefined;
   RecipeReview: {
     partialRecipe: Partial<Recipe>;
     handwrittenRecipeImg?: string;
@@ -57,6 +61,7 @@ export default function AddRecipeStack() {
       <Stack.Screen name="ManualWizardStep3" component={ManualWizardStep3ScreenContainer} />
       <Stack.Screen name="ImageCapture" component={ImageCaptureScreenContainer} />
       <Stack.Screen name="UrlInput" component={UrlInputScreenContainer} />
+      <Stack.Screen name="FreeTextInput" component={FreeTextInputScreenContainer} />
       <Stack.Screen name="RecipeReview" component={RecipeReviewScreenContainer} />
     </Stack.Navigator>
   );

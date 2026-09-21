@@ -14,6 +14,7 @@ interface MethodPickerScreenProps {
   onSelectManual: () => void;
   onSelectImage: () => void;
   onSelectUrl: () => void;
+  onSelectFreeText: () => void;
 }
 
 interface MethodCard {
@@ -27,6 +28,7 @@ export default function MethodPickerScreen({
   onSelectManual,
   onSelectImage,
   onSelectUrl,
+  onSelectFreeText,
 }: MethodPickerScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
@@ -49,6 +51,12 @@ export default function MethodPickerScreen({
       title: "קישור",
       subtitle: "הדבק URL של מתכון מהאינטרנט",
       onPress: onSelectUrl,
+    },
+    {
+      icon: "clipboard-outline",
+      title: "טקסט",
+      subtitle: "הדבק תיאור מתכון מפוסט או מהודעה",
+      onPress: onSelectFreeText,
     },
   ];
 

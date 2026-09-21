@@ -15,6 +15,7 @@ export default function MethodPickerScreenContainer() {
       onSelectManual={() => navigation.navigate("ManualWizardStep1")}
       onSelectImage={() => navigation.navigate("ImageCapture")}
       onSelectUrl={() => navigation.navigate("UrlInput")}
+      onSelectFreeText={() => navigation.navigate("FreeTextInput")}
     />
   );
 }

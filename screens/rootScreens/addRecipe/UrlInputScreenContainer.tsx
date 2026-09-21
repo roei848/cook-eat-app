@@ -4,11 +4,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { AddRecipeStackParamList } from "./AddRecipeStack";
 import { parseRecipeFromUrl } from "../../../services/gemini/geminiService";
+import { isHttpUrl } from "../../../utils/url";
 import UrlInputScreen from "./UrlInputScreen";
 
 type Nav = NativeStackNavigationProp<AddRecipeStackParamList>;
-
-const URL_REGEX = /^https?:\/\/.+\..+/i;
 
 export default function UrlInputScreenContainer() {
   const navigation = useNavigation<Nav>();
@@ -19,7 +18,7 @@ export default function UrlInputScreenContainer() {
 
   async function handleAnalyze() {
     const recipeLink = url.trim();
-    if (!URL_REGEX.test(recipeLink)) {
+    if (!isHttpUrl(recipeLink)) {
       setErrorMessage("כתובת URL לא תקינה — יש להתחיל עם http:// או https://");
       return;
     }
@@ -30,12 +29,25 @@ export default function UrlInputScreenContainer() {
     try {
       // imageUrl / byWho arrive inside the partial when the page provides them
       const partialRecipe = await parseRecipeFromUrl(recipeLink);
-      navigation.navigate("RecipeReview", { partialRecipe, recipeLink });
+      // Hardware back / swipe-back are not disabled while loading — don't push
+      // the review over whatever the user navigated to meanwhile.
+      if (navigation.isFocused()) {
+        navigation.navigate("RecipeReview", { partialRecipe, recipeLink });
+      }
     } catch (error) {
       setErrorMessage("לא הצלחנו לגשת לכתובת, נסה שוב");
     } finally {
       setIsLoading(false);
     }
+  }
+
+  // `replace`, not `navigate`: once the user gives up on the link, Back should
+  // land on MethodPicker rather than on a dead URL screen. Text that is not
+  // URL-shaped was probably the caption itself, so carry it over.
+  function handlePasteTextInstead() {
+    const typed = url.trim();
+    const initialText = isHttpUrl(typed) ? undefined : typed;
+    navigation.replace("FreeTextInput", initialText ? { initialText } : undefined);
   }
 
   return (
@@ -48,6 +60,7 @@ export default function UrlInputScreenContainer() {
         setErrorMessage(undefined);
       }}
       onAnalyze={handleAnalyze}
+      onPasteTextInstead={handlePasteTextInstead}
       onBack={() => navigation.goBack()}
     />
   );
