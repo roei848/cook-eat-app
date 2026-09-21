@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cook &amp; Eat לאנדרואיד</title>
+  <meta name="description" content="הורדת אפליקציית Cook & Eat לאנדרואיד: ספר המתכונים המשפחתי, עם סנכרון בזמן אמת ורשימת קניות.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#FFFAF5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F0F0F" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Cook & Eat לאנדרואיד">
+  <meta property="og:description" content="ספר המתכונים המשפחתי, עכשיו כאפליקציה. הורדה והתקנה בשלוש דקות.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roei848.github.io/cook-eat-app/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FF7A00'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Suez+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFAF5;
+      --bg-2: #F5EFE8;
+      --surface: #FFFFFF;
+      --text: #111111;
+      --text-2: #5F5A55;
+      --text-3: #8A847E;
+      --border: #EDE5DC;
+      --accent: #FF7A00;
+      --accent-strong: #CC5F00;
+      --accent-soft: #FFE5CC;
+      --on-accent: #1A1000;
+      --shadow: 0 18px 50px -24px rgba(153, 63, 0, 0.35);
+      --radius: 16px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0F0F0F;
+        --bg-2: #171614;
+        --surface: #1E1E1E;
+        --text: #F2EDE6;
+        --text-2: #B3ACA4;
+        --text-3: #7E786F;
+        --border: #2A2A2A;
+        --accent: #FF9F43;
+        --accent-strong: #E67E22;
+        --accent-soft: #3A2410;
+        --on-accent: #1A1000;
+        --shadow: 0 18px 50px -24px rgba(0, 0, 0, 0.8);
+      }
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Assistant", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    a { color: inherit; }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+    h1, h2, h3, .display { font-family: "Suez One", "Assistant", serif; font-weight: 400; margin: 0; }
+
+    header { padding: 22px 0; }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; }
+    .wordmark { font-family: "Suez One", serif; font-size: 22px; color: var(--accent-strong); text-decoration: none; letter-spacing: 0.01em; }
+    @media (prefers-color-scheme: dark) { .wordmark { color: var(--accent); } }
+    .platform { font-weight: 600; color: var(--text-3); font-size: 15px; }
+
+    .hero { padding: 24px 0 64px; }
+    .hero .wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 36px;
+      align-items: center;
+    }
+    @media (min-width: 820px) {
+      .hero { padding: 40px 0 88px; }
+      .hero .wrap { grid-template-columns: 1.15fr 0.85fr; gap: 56px; }
+    }
+    .hero h1 { font-size: clamp(34px, 4.6vw, 52px); line-height: 1.12; letter-spacing: -0.01em; }
+    .hero p { margin: 20px 0 0; font-size: 20px; color: var(--text-2); max-width: 30em; }
+    .hero p b { color: var(--text); font-weight: 600; }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 26px 24px;
+      box-shadow: var(--shadow);
+    }
+    .panel .kicker { margin: 0; font-size: 15px; font-weight: 600; color: var(--text-3); }
+    .panel .version { margin: 6px 0 2px; font-size: 34px; line-height: 1.1; }
+    .panel .updated { margin: 0 0 18px; font-size: 15px; color: var(--text-3); }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 22px; padding: 0; list-style: none; border-top: 1px solid var(--border); padding-top: 16px; }
+    .meta li { font-size: 14px; color: var(--text-3); line-height: 1.3; }
+    .meta li span { display: block; font-size: 17px; font-weight: 600; color: var(--text); margin-top: 2px; }
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; min-height: 58px; padding: 14px 20px;
+      background: var(--accent); color: var(--on-accent);
+      border-radius: var(--radius); text-decoration: none;
+      font-size: 20px; font-weight: 700;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+    .btn:hover { background: var(--accent-strong); }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible { outline: 3px solid var(--accent-strong); outline-offset: 3px; }
+    .panel .hint { margin: 12px 0 0; font-size: 14px; color: var(--text-3); text-align: center; }
+
+    section { padding: 64px 0; }
+    section h2 { font-size: clamp(28px, 3.6vw, 38px); line-height: 1.15; margin-bottom: 28px; }
+    .band { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; counter-reset: step; }
+    @media (min-width: 820px) { .steps { grid-template-columns: repeat(3, 1fr); gap: 28px; } }
+    .steps li { counter-increment: step; display: grid; grid-template-columns: 52px 1fr; gap: 14px; align-items: start; }
+    .steps li::before {
+      content: counter(step);
+      font-family: "Suez One", serif; font-size: 34px; line-height: 1;
+      color: var(--accent-strong); padding-top: 2px;
+    }
+    @media (prefers-color-scheme: dark) { .steps li::before { color: var(--accent); } }
+    .steps h3 { font-size: 22px; line-height: 1.2; margin-bottom: 6px; }
+    .steps p { margin: 0; color: var(--text-2); font-size: 17px; }
+
+    .features { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px 40px; }
+    @media (min-width: 640px) { .features { grid-template-columns: 1fr 1fr; } }
+    .features li { border-top: 2px solid var(--accent-soft); padding-top: 14px; }
+    .features h3 { font-size: 21px; line-height: 1.25; margin-bottom: 4px; }
+    .features p { margin: 0; color: var(--text-2); font-size: 17px; }
+
+    .faq { margin: 0; display: grid; gap: 22px; max-width: 46em; }
+    .faq dt { font-weight: 700; font-size: 19px; }
+    .faq dd { margin: 4px 0 0; color: var(--text-2); }
+
+    footer { padding: 32px 0 44px; border-top: 1px solid var(--border); color: var(--text-3); font-size: 15px; }
+    footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+    footer a { color: var(--text-2); }
+
+    @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:active { transform: none; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="wordmark" href="#">Cook &amp; Eat</a>
+      <span class="platform">אפליקציה לאנדרואיד</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div class="wrap">
+        <div>
+          <h1>המתכונים של המשפחה, באפליקציה אחת</h1>
+          <p>שומרים מתכונים, מחפשים לפי קטגוריה, מסנכרנים בין כל המכשירים ובונים רשימת קניות. <b>זמין כרגע לאנדרואיד בלבד.</b></p>
+        </div>
+
+        <div class="panel" id="download">
+          <p class="kicker">קובץ התקנה לאנדרואיד (APK)</p>
+          <p class="version display">גרסה <span id="version">1.0.0</span></p>
+          <p class="updated">עודכן ב-<span id="published">21 בספטמבר 2026</span></p>
+          <ul class="meta">
+            <li>גודל הקובץ<span id="size">__APK_SIZE_MB__ MB</span></li>
+            <li>דרישת מערכת<span>Android __MIN_ANDROID__ ומעלה</span></li>
+          </ul>
+          <a class="btn" id="download-link" href="https://github.com/roei848/cook-eat-app/releases/latest/download/cook-eat.apk">הורדת האפליקציה</a>
+          <p class="hint">הקובץ יורד מ-GitHub Releases של הפרויקט.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="band" id="install">
+      <div class="wrap">
+        <h2>איך מתקינים</h2>
+        <ol class="steps">
+          <li>
+            <div>
+              <h3>מורידים את הקובץ</h3>
+              <p>לוחצים על כפתור ההורדה. אם Chrome מזהיר שהקובץ "עלול להזיק למכשיר", בוחרים "הורדה בכל זאת". ההודעה הזו מופיעה לכל קובץ APK שלא מגיע מחנות Play.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>פותחים ומאשרים</h3>
+              <p>פותחים את הקובץ מההתראה או מתיקיית ההורדות. אנדרואיד יבקש לאפשר התקנה מהמקור הזה, מאשרים פעם אחת ואז לוחצים "התקנה".</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>נכנסים ומתחילים</h3>
+              <p>פותחים את Cook &amp; Eat, נרשמים עם אימייל וסיסמה, ומוסיפים את המתכון הראשון.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <h2>מה יש באפליקציה</h2>
+        <ul class="features">
+          <li>
+            <h3>מצלמים מתכון בכתב יד</h3>
+            <p>הבינה המלאכותית מקלידה אותו ומסדרת את המצרכים והשלבים.</p>
+          </li>
+          <li>
+            <h3>מדביקים קישור או טקסט</h3>
+            <p>מתכון מאתר, מווטסאפ או מאינסטגרם נכנס לספר בצורה מסודרת.</p>
+          </li>
+          <li>
+            <h3>רעיונות ממה שיש במקרר</h3>
+            <p>מקלידים כמה מצרכים ומקבלים שלושה מתכונים שלמים לבחירה.</p>
+          </li>
+          <li>
+            <h3>רשימת קניות</h3>
+            <p>מסמנים מה חסר, והרשימה נשמרת ומתעדכנת בכל המכשירים שלכם.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="band" id="faq">
+      <div class="wrap">
+        <h2>שאלות קצרות</h2>
+        <dl class="faq">
+          <div>
+            <dt>יש גרסה לאייפון?</dt>
+            <dd>עדיין לא. בינתיים האפליקציה זמינה לאנדרואיד בלבד.</dd>
+          </div>
+          <div>
+            <dt>איך מעדכנים לגרסה חדשה?</dt>
+            <dd>מורידים שוב מהעמוד הזה ומתקינים מעל הגרסה הקיימת. אין צורך למחוק, וכל המתכונים נשמרים בחשבון.</dd>
+          </div>
+          <div>
+            <dt>Play Protect הציג אזהרה. מה עושים?</dt>
+            <dd>זה קורה כי האפליקציה לא מופצת דרך חנות Play. לוחצים "פרטים נוספים" ואז "התקנה בכל מקרה".</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Cook &amp; Eat</span>
+      <a href="https://github.com/roei848/cook-eat-app">הקוד המקורי ב-GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    // Keep version, size and date current from the latest GitHub release.
+    // The static values above are the fallback if the API is unavailable.
+    (async function () {
+      try {
+        const res = await fetch("https://api.github.com/repos/roei848/cook-eat-app/releases/latest", {
+          headers: { Accept: "application/vnd.github+json" }
+        });
+        if (!res.ok) return;
+        const release = await res.json();
+        const asset = (release.assets || []).find(function (a) { return a.name === "cook-eat.apk"; });
+        if (!asset) return;
+        var version = String(release.tag_name || "").replace(/^v/, "");
+        if (version) document.getElementById("version").textContent = version;
+        document.getElementById("size").textContent = (asset.size / (1024 * 1024)).toFixed(0) + " MB";
+        var when = new Date(asset.updated_at || release.published_at);
+        if (!isNaN(when)) {
+          document.getElementById("published").textContent =
+            when.toLocaleDateString("he-IL", { day: "numeric", month: "long", year: "numeric" });
+        }
+        document.getElementById("download-link").href = asset.browser_download_url;
+      } catch (e) { /* fallback values stay in place */ }
+    })();
+  </script>
+</body>
+</html>
