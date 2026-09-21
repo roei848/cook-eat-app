@@ -20,7 +20,7 @@ App.tsx          → Redux Provider > AppBootstrap > NavigationContainer > RootN
 RootNavigator    → Watches Firebase auth state → AppTabs (authed) or AuthStack (unauthed)
 AppTabs          → Bottom tabs: Home | SearchTab | AddRecipe | Grocery | Profile
 SearchStack      → Search → Category → RecipeScreen (shared)
-AddRecipeStack   → MethodPicker → (Manual: Step1 → Step2 → Step3) | ImageCapture | UrlInput | FreeTextInput → RecipeReview
+AddRecipeStack   → MethodPicker → (Manual: Step1 → Step2 → Step3) | ImageCapture | UrlInput | FreeTextInput | (AiIdeasInput → AiIdeasResults) → RecipeReview
 ProfileStack     → Profile
 AuthStack        → Login → Register → ForgotPassword
 ```
@@ -29,21 +29,22 @@ AuthStack        → Login → Register → ForgotPassword
 - `screens/` — Navigation screens
 - `screens/rootScreens/addRecipe/` — Full add-recipe wizard (Container/Presenter pairs per screen)
 - `components/recipe/form/` — Wizard form inputs (CategoryPicker, IngredientEditor, StepEditor, etc.)
-- `components/recipe/review/` — RecipeReviewCard shown before saving
+- `components/ai/` — AI ideas flow UI (IngredientChipsInput, AiRecipeOptionCard)
 - `components/` — Other reusable UI (category, profile, search, ui)
 - `store/` — Redux slices (auth, user, recipes)
-- `services/firebase/` — Firebase services (auth, recipes, users, storage)
-- `services/gemini/` — Gemini AI service: `analyzeRecipeImage()`, `parseRecipeFromUrl()`, `parseRecipeFromText()`
+- `services/firebase/` — Firebase services (auth, recipes, userService, grocery, storage)
+- `services/gemini/` — Gemini AI: `geminiClient.ts` (shared model/key/JSON helpers), `geminiService.ts` (extraction), `recipeIdeasPrompt.ts` + `recipeIdeasService.ts` (generation)
 - `theme/` — Light/dark color system + `useThemeColors()` hook
 - `types/` — TypeScript interfaces + enums (Hebrew values)
 - `mocks/` — Hebrew seed data for Firebase
 
 ## State Management (Redux)
 
-Three slices in `store/`:
+Four slices in `store/`:
 - `authSlice` — `{ user: { uid, email } | null }` — actions: `setUser`, `logoutUser`
 - `userSlice` — `{ profile: UserProfile | null }` — actions: `setProfile`, `clearProfile`, `setDarkMode`, `setFavorites`
 - `recipeSlice` — `{ items: Recipe[], subscribed: boolean }` — actions: `setRecipes`, `setSubscribed`, `clearRecipes`
+- `grocerySlice` — `{ items, subscribed, error }` — per-user `users/{uid}/grocery` subcollection, synced in `App.tsx`
 
 ## Firebase
 
@@ -65,12 +66,17 @@ Use `useThemeColors()` hook ([theme/useThemeColors.ts](theme/useThemeColors.ts))
 
 ## AI Integration (Gemini)
 
-`services/gemini/geminiService.ts` uses `@google/generative-ai` with model `gemini-2.5-flash`:
+`services/gemini/` uses `@google/generative-ai` with model `gemini-2.5-flash` (shared helpers in `geminiClient.ts`).
+
+Extraction (`geminiService.ts`), each returning one `Partial<Recipe>`:
 - `analyzeRecipeImage(base64)` — extracts a Hebrew recipe from a handwritten photo
 - `parseRecipeFromUrl(url)` — fetches and parses a recipe from a URL (uses `urlContext` tool)
 - `parseRecipeFromText(text)` — parses a recipe from pasted free text (social captions, messages); the UrlInput error state links here as a fallback
 
-All return `Partial<Recipe>` passed to `RecipeReview` for user confirmation before saving.
+Generation (`recipeIdeasService.ts`, prompt + schema in `recipeIdeasPrompt.ts`):
+- `generateRecipeIdeas(request, { signal, avoidTitles })` — one call, 3 complete recipes from fridge ingredients or a free-text wish, returned as `AiRecipeOption[]` (`types/aiIdeas.ts`). The only call using `responseSchema` JSON mode; `utils/aiRecipeIdeas.ts` normalizes the response (enum fallbacks, step numbering) and holds the pure form validation.
+
+All results are passed to `RecipeReview` for user confirmation before saving. Saves that came from an AI option `popTo` the results screen (via the `aiOrigin` param) instead of resetting to MethodPicker.
 
 **API key**: set `GEMINI_API_KEY` in `.env` → read via `app.config.js` `extra.geminiApiKey` → accessed with `Constants.expoConfig.extra.geminiApiKey`. Never hardcoded.
 

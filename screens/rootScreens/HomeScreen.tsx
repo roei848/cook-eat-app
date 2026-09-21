@@ -14,6 +14,7 @@ import HomeEmptyState from "../../components/home/HomeEmptyState";
 import SectionHeader from "../../components/home/SectionHeader";
 import DailyHeroCard from "../../components/home/DailyHeroCard";
 import RecipeRail from "../../components/home/RecipeRail";
+import AiIdeasPromoCard from "../../components/home/AiIdeasPromoCard";
 import { RootState } from "../../store/store";
 import {
   selectDailyHero,
@@ -80,6 +81,14 @@ export default function HomeScreen({
       ?.navigate("AddRecipe");
   };
 
+  // initial: false keeps MethodPicker under the AI screen on a cold stack so
+  // Back lands there instead of leaving the tab (same as SearchTab → Category)
+  const openAiIdeas = () => {
+    navigation
+      .getParent<BottomTabNavigationProp<AppTabsParamList>>()
+      ?.navigate("AddRecipe", { screen: "AiIdeasInput", initial: false });
+  };
+
   if (!subscribed) {
     return (
       <Screen>
@@ -113,6 +122,10 @@ export default function HomeScreen({
           <DailyHeroCard recipe={hero} onPress={() => openRecipe(hero)} />
         </>
       ),
+    },
+    {
+      key: "aiIdeas",
+      node: <AiIdeasPromoCard onPress={openAiIdeas} />,
     },
     quickPicks.length > 0 && {
       key: "quickPicks",

@@ -38,7 +38,7 @@ async function rehostImage(hotlink: string): Promise<string> {
 export default function RecipeReviewScreenContainer() {
   const navigation = useNavigation<Nav>();
   const route = useRoute<Route>();
-  const { partialRecipe, handwrittenRecipeImg, recipeLink } = route.params;
+  const { partialRecipe, handwrittenRecipeImg, recipeLink, aiOrigin } = route.params;
 
   const userName = useSelector(
     (state: RootState) => state.user.profile?.name ?? ""
@@ -98,7 +98,17 @@ export default function RecipeReviewScreenContainer() {
       });
       if (!id) throw new Error("createRecipe returned null");
 
-      navigation.reset({ index: 0, routes: [{ name: "MethodPicker" }] });
+      if (aiOrigin) {
+        // Back to the still-mounted results so the user can save another
+        // option; merge keeps `request` and only adds the saved id.
+        navigation.popTo(
+          "AiIdeasResults",
+          { request: aiOrigin.request, savedOptionId: aiOrigin.optionId },
+          { merge: true }
+        );
+      } else {
+        navigation.reset({ index: 0, routes: [{ name: "MethodPicker" }] });
+      }
     } catch (error) {
       Alert.alert("שמירה נכשלה", "נסה שוב");
     } finally {

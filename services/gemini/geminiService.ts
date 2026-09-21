@@ -1,29 +1,9 @@
-import Constants from "expo-constants";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Recipe } from "../../types/recipe";
+import { createGeminiModel, parseJsonResponse } from "./geminiClient";
 import {
   fetchRecipePageMetadata,
   RecipePageMetadata,
 } from "../web/recipePageMetadata";
-
-function getApiKey(): string {
-  const key = Constants.expoConfig?.extra?.geminiApiKey as string | undefined;
-  if (!key) throw new Error("GEMINI_API_KEY not configured");
-  return key;
-}
-
-function parseJsonResponse(text: string): Record<string, unknown> {
-  const cleaned = text
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/i, "")
-    .replace(/\s*```$/, "")
-    .trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch {
-    throw new Error(`Gemini response was not valid JSON: ${cleaned.slice(0, 200)}`);
-  }
-}
 
 // The Hebrew literals mirror the Category / Difficulty / Relative enum values.
 const RECIPE_FIELDS = `title (string), description (string), ingredients (array of {name, amount}),
@@ -83,8 +63,7 @@ ${URL_OUTPUT_FIELDS}`;
 export async function analyzeRecipeImage(
   base64Image: string
 ): Promise<Partial<Recipe>> {
-  const genAI = new GoogleGenerativeAI(getApiKey());
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = createGeminiModel();
 
   const result = await model.generateContent({
     contents: [
@@ -108,8 +87,7 @@ export async function parseRecipeFromUrl(url: string): Promise<Partial<Recipe>> 
   // exact where the model would guess. Fails soft to model-only extraction.
   const metadata = await fetchRecipePageMetadata(url);
 
-  const genAI = new GoogleGenerativeAI(getApiKey());
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = createGeminiModel();
 
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: urlPrompt(url, metadata.recipeJsonLd) }] }],
@@ -122,8 +100,7 @@ export async function parseRecipeFromUrl(url: string): Promise<Partial<Recipe>> 
 }
 
 export async function parseRecipeFromText(text: string): Promise<Partial<Recipe>> {
-  const genAI = new GoogleGenerativeAI(getApiKey());
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = createGeminiModel();
 
   const result = await model.generateContent({
     contents: [{ role: "user", parts: [{ text: textPrompt(text) }] }],

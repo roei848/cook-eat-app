@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Animated, { FadeInUp } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -8,6 +8,7 @@ import { ThemeColors } from "../../../theme/colors";
 import { useThemeColors } from "../../../theme/useThemeColors";
 import { typography } from "../../../theme/typography";
 import { radius, spacing, SCREEN_PADDING_H } from "../../../theme/spacing";
+import { useTabBarClearance } from "../../../theme/layout";
 import ScalePressable from "../../../components/ui/ScalePressable";
 
 interface MethodPickerScreenProps {
@@ -15,6 +16,7 @@ interface MethodPickerScreenProps {
   onSelectImage: () => void;
   onSelectUrl: () => void;
   onSelectFreeText: () => void;
+  onSelectAiIdeas: () => void;
 }
 
 interface MethodCard {
@@ -29,9 +31,11 @@ export default function MethodPickerScreen({
   onSelectImage,
   onSelectUrl,
   onSelectFreeText,
+  onSelectAiIdeas,
 }: MethodPickerScreenProps) {
   const colors = useThemeColors();
   const styles = createStyles(colors);
+  const tabBarClearance = useTabBarClearance();
 
   const methods: MethodCard[] = [
     {
@@ -58,6 +62,12 @@ export default function MethodPickerScreen({
       subtitle: "הדבק תיאור מתכון מפוסט או מהודעה",
       onPress: onSelectFreeText,
     },
+    {
+      icon: "sparkles-outline",
+      title: "רעיונות מ-AI",
+      subtitle: "ספר מה יש במקרר או מה בא לך, וקבל 3 הצעות",
+      onPress: onSelectAiIdeas,
+    },
   ];
 
   return (
@@ -66,7 +76,12 @@ export default function MethodPickerScreen({
         <Text style={styles.title}>הוספת מתכון</Text>
         <Text style={styles.subtitle}>בחר את שיטת ההוספה</Text>
 
-        <View style={styles.cards}>
+        {/* Five cards plus the header overflow small screens behind the
+            floating tab bar, so the list scrolls. */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.cards, { paddingBottom: tabBarClearance }]}
+        >
           {methods.map((method, index) => (
             <Animated.View
               key={method.title}
@@ -89,7 +104,7 @@ export default function MethodPickerScreen({
               </ScalePressable>
             </Animated.View>
           ))}
-        </View>
+        </ScrollView>
       </View>
     </Screen>
   );

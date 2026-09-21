@@ -2,7 +2,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigatorScreenParams } from "@react-navigation/native";
 
 import HomeStack from "../screens/rootScreens/home/HomeStack";
-import AddRecipeStack from "../screens/rootScreens/addRecipe/AddRecipeStack";
+import AddRecipeStack, {
+  AddRecipeStackParamList,
+} from "../screens/rootScreens/addRecipe/AddRecipeStack";
 import GroceryListScreen from "../screens/rootScreens/GroceryListScreen";
 import ProfileStack from "./rootScreens/profile/ProfileStack";
 import SearchStack, {
@@ -13,7 +15,8 @@ import FloatingTabBar from "../components/navigation/FloatingTabBar";
 export type AppTabsParamList = {
   Home: undefined;
   SearchTab: NavigatorScreenParams<SearchStackParamList>;
-  AddRecipe: undefined;
+  // `| undefined` keeps plain `navigate("AddRecipe")` valid for the tab bar
+  AddRecipe: NavigatorScreenParams<AddRecipeStackParamList> | undefined;
   Grocery: undefined;
   Profile: undefined;
 };
