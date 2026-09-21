@@ -86,6 +86,45 @@ RootNavigator (auth-gated)
 - Full Hebrew RTL layout
 - Grocery list management
 
+## Release build (Android APK)
+
+Users install the app from the download page at <https://roei848.github.io/cook-eat-app/> (the `gh-pages` branch). The page links to the stable URL <https://github.com/roei848/cook-eat-app/releases/latest/download/cook-eat.apk> and reads the version, size and date from the latest GitHub release.
+
+### Signing
+
+Release builds are signed with a dedicated keystore that lives outside git in `credentials/` (gitignored):
+
+```
+credentials/
+├── cook-eat-release.keystore   # PKCS12, alias "cook-eat"
+└── keystore.properties         # storeFile, keyAlias, storePassword, keyPassword
+```
+
+`plugins/withReleaseSigning.js` wires that file into the generated `android/app/build.gradle` on every prebuild. When the folder is missing, release builds fall back to the template debug keystore, which is fine for local testing but produces an APK that cannot update an install signed with the real key.
+
+**Back up `credentials/` somewhere safe (password manager, private drive).** If it is lost, existing installs cannot be updated in place.
+
+### Build
+
+```bash
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+npx expo prebuild --platform android --clean
+cd android && ./gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+# -> android/app/build/outputs/apk/release/app-release.apk
+```
+
+The x86 ABIs are left out on purpose; they are only needed for emulators.
+
+### Publish a new version
+
+1. Bump `version` and increment `android.versionCode` in `app.config.js`, then build as above.
+2. Create the release. The asset must be a file literally named `cook-eat.apk` so the stable link keeps working:
+   ```bash
+   cp android/app/build/outputs/apk/release/app-release.apk /tmp/cook-eat.apk
+   gh release create vX.Y.Z /tmp/cook-eat.apk --title "Cook & Eat X.Y.Z" --notes "What changed"
+   ```
+3. Nothing else to do: the download page picks up the new release automatically.
+
 ## License
 
 This project is private and not licensed for public use.

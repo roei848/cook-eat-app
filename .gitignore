@@ -46,3 +46,5 @@ yarn-error.*
 # claude
 docs/
 .superpowers/
+# release signing (keystore + passwords, never commit)
+credentials/

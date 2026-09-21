@@ -17,11 +17,13 @@ export default ({ config }) => ({
       backgroundColor: "#ffffff",
     },
     package: "com.roei848.cookeatapp",
+    versionCode: 1,
   },
   web: {
     favicon: "./assets/favicon.png",
   },
   plugins: [
+    "./plugins/withReleaseSigning",
     "expo-status-bar",
     [
       "expo-splash-screen",
