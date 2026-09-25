@@ -49,6 +49,7 @@ Four slices in `store/`:
 ## Firebase
 
 - Firestore collections: `users/`, `recipes/`
+- Security rules live in the repo: `firestore.rules` and `storage.rules` (`firebase.json`). Recipe `update`/`delete` is author-only, except a write whose only changed key is `notes` — that is what lets any signed-in user add/remove notes on other people's recipes. Deploy with `firebase deploy --only firestore:rules,storage`; README → "Firebase security rules"
 - Auth persistence via AsyncStorage (users stay logged in across restarts)
 - Sign-in methods: email/password and Google. `services/firebase/googleSignIn.ts` wraps `@react-native-google-signin/google-signin` and returns an ID token; `authService.loginWithGoogle()` exchanges it via `signInWithCredential`. `logout()` also signs out of Google so the account picker shows again
 - `users/{uid}` profile: created by `registerWithEmail` for email users, and by `ensureUserProfile()` (get-or-create transaction, called from the auth listener in `RootNavigator`) for provider sign-ins with no registration form. Pure seeding helpers live in `utils/userProfile.ts`

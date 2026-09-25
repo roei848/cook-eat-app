@@ -89,6 +89,23 @@ RootNavigator (auth-gated)
 - Full Hebrew RTL layout
 - Grocery list management
 
+## Firebase security rules
+
+Firestore and Storage rules are versioned here as `firestore.rules` and `storage.rules` (wired up in `firebase.json`; default project in `.firebaserc`). The copy in the Firebase console is what actually runs, so deploy after editing:
+
+```bash
+firebase deploy --only firestore:rules          # Firestore only
+firebase deploy --only firestore:rules,storage  # both
+```
+
+Rules worth knowing:
+
+- `recipes/{id}`: anyone can read; signed-in users can create with their own `authorId`. Updates and deletes are author-only, **except** a write that changes nothing but `notes` — that is how any family member can add or remove a note on someone else's recipe (`addRecipeNote` / `removeRecipeNote`).
+- `users/{uid}`: owner-only, and profile updates may only touch `avatarUrl` and `darkMode`.
+- Storage: `profileImages/{uid}/…` is owner-only; `recipeImages/` and `handwrittenRecipes/` accept image uploads under 20 MB from any signed-in user.
+
+A "שמירה נכשלה" alert with no other symptom is usually a rule deny. Check the device log (`adb logcat -s ReactNativeJS`) for `permission-denied` before debugging app code.
+
 ## Google Sign-In setup
 
 Google login uses [`@react-native-google-signin/google-signin`](https://react-native-google-signin.github.io/docs/) (the free "original" API) to get a Google ID token, which is exchanged for a Firebase session with `signInWithCredential`. It is a native module: it works in development builds (`npx expo run:android`) and release APKs, **not in Expo Go**. First-time Google users get their `users/{uid}` profile created automatically from their Google name, email and photo.

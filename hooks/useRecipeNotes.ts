@@ -85,7 +85,10 @@ export function useRecipeNotes(
 
       setPending((prev) => [...prev, note]);
 
-      addRecipeNote(recipeId, note).catch(() => {
+      addRecipeNote(recipeId, note).catch((error) => {
+        // Surface the reason (usually a Firestore permission-denied) — the
+        // alert below hides it and nothing else logs it.
+        console.warn("addRecipeNote failed:", error);
         setPending((prev) => prev.filter((p) => p.id !== note.id));
         Alert.alert("שמירה נכשלה", "נסה שוב");
       });
@@ -98,7 +101,8 @@ export function useRecipeNotes(
       const raw = note.raw;
       setPendingDeletes((prev) => [...prev, raw]);
 
-      removeRecipeNote(recipeId, raw).catch(() => {
+      removeRecipeNote(recipeId, raw).catch((error) => {
+        console.warn("removeRecipeNote failed:", error);
         setPendingDeletes((prev) => prev.filter((d) => !sameStoredNote(d, raw)));
         Alert.alert("מחיקה נכשלה", "נסה שוב");
       });
