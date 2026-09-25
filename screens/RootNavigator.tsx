@@ -8,7 +8,7 @@ import { logoutUser, setUser } from "../store/authSlice";
 import { RootState } from "../store/store";
 import AppTabs from "./AppTabs";
 import AuthStack from "./AuthStack";
-import { fetchUserProfile } from "../services/firebase/userService";
+import { ensureUserProfile } from "../services/firebase/userService";
 import { clearProfile, setProfile } from "../store/userSlice";
 
 export default function RootNavigator() {
@@ -26,8 +26,9 @@ export default function RootNavigator() {
           email: firebaseUser.email || "",
         }));
 
-        // Load user profile from Firestore
-        const profile = await fetchUserProfile(firebaseUser.uid);
+        // Load the Firestore profile, creating it when this is the first
+        // sign-in through a provider (Google) that has no registration form.
+        const profile = await ensureUserProfile(firebaseUser);
         if (profile) {
           dispatch(
             setProfile({

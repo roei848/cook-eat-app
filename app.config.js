@@ -1,5 +1,12 @@
 import 'dotenv/config';
 
+// iOS client IDs look like "<id>.apps.googleusercontent.com"; the URL scheme
+// the Google Sign-In SDK registers is that ID reversed.
+const googleIosClientId = process.env.GOOGLE_IOS_CLIENT_ID;
+const googleIosUrlScheme = googleIosClientId
+  ? `com.googleusercontent.apps.${googleIosClientId.replace(/\.apps\.googleusercontent\.com$/, "")}`
+  : undefined;
+
 export default ({ config }) => ({
   ...config,
   name: "cook-eat-app",
@@ -42,9 +49,23 @@ export default ({ config }) => ({
         cameraPermission: "האפליקציה מבקשת גישה למצלמה",
       },
     ],
+    // Google Sign-In. We use the Firebase JS SDK (no google-services.json),
+    // so the plugin runs in its "without Firebase" mode, which only registers
+    // the iOS URL scheme and requires it. On Android the module autolinks and
+    // needs no plugin, so it is only added once an iOS client ID exists.
+    ...(googleIosUrlScheme
+      ? [
+          [
+            "@react-native-google-signin/google-signin",
+            { iosUrlScheme: googleIosUrlScheme },
+          ],
+        ]
+      : []),
   ],
   extra: {
     ...config.extra,
     geminiApiKey: process.env.GEMINI_API_KEY,
+    googleWebClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+    googleIosClientId,
   },
 });

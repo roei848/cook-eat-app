@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
-import { loginWithEmail } from "../../services/firebase/authService";
+import { loginWithEmail, loginWithGoogle } from "../../services/firebase/authService";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import FlatButton from "../../components/ui/FlatButton";
+import GoogleSignInButton from "../../components/auth/GoogleSignInButton";
+import OrDivider from "../../components/auth/OrDivider";
 
 // TODO: Remove any type
 export default function LoginScreen({ navigation }: { navigation: any }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -27,6 +30,20 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
       setLoading(false);
     }
   };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setGoogleLoading(true);
+      // Resolves null when the picker is dismissed — nothing to report then.
+      await loginWithGoogle();
+    } catch (error: any) {
+      Alert.alert("Google Sign-In Failed", error.message);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const busy = loading || googleLoading;
 
   return (
     <View style={styles.container}>
@@ -47,16 +64,31 @@ export default function LoginScreen({ navigation }: { navigation: any }) {
         onChangeText={setPassword}
       />
 
-      <Button title="Login" onPress={handleLogin} loading={loading} />
+      <Button
+        title="Login"
+        onPress={handleLogin}
+        loading={loading}
+        disabled={googleLoading}
+      />
+
+      <OrDivider style={styles.divider} />
+
+      <GoogleSignInButton
+        onPress={handleGoogleLogin}
+        loading={googleLoading}
+        disabled={loading}
+      />
 
       <FlatButton
         title="Don't have an account? Register"
         onPress={() => navigation.navigate("Register")}
+        disabled={busy}
         style={{ marginTop: 16 }}
       />
       <FlatButton
         title="Forgot password?"
         onPress={() => navigation.navigate("ForgotPassword")}
+        disabled={busy}
       />
     </View>
   );
@@ -72,5 +104,8 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: "700",
     marginBottom: 30,
+  },
+  divider: {
+    marginVertical: 20,
   },
 });

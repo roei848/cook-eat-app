@@ -50,6 +50,8 @@ Four slices in `store/`:
 
 - Firestore collections: `users/`, `recipes/`
 - Auth persistence via AsyncStorage (users stay logged in across restarts)
+- Sign-in methods: email/password and Google. `services/firebase/googleSignIn.ts` wraps `@react-native-google-signin/google-signin` and returns an ID token; `authService.loginWithGoogle()` exchanges it via `signInWithCredential`. `logout()` also signs out of Google so the account picker shows again
+- `users/{uid}` profile: created by `registerWithEmail` for email users, and by `ensureUserProfile()` (get-or-create transaction, called from the auth listener in `RootNavigator`) for provider sign-ins with no registration form. Pure seeding helpers live in `utils/userProfile.ts`
 - Real-time recipe sync via `onSnapshot()` in `recipeService.ts`
 - Recipe listener lives in `App.tsx`, keyed on the signed-in `uid` (one per session); `subscribed` in recipeSlice only means "first snapshot arrived" and gates screen loaders
 
@@ -107,6 +109,7 @@ Project agents live in `.claude/agents/`:
 - **RTL forced**: `App.tsx` calls `I18nManager.forceRTL(true)` — all layouts are right-to-left for Hebrew
 - **Firebase credentials**: Hardcoded in `services/firebase/firebaseConfig.ts` — not environment-controlled
 - **Gemini API key**: Must be in `.env` as `GEMINI_API_KEY` and exposed via `app.config.js` `extra` — throws at runtime if missing
+- **Google Sign-In**: native module, so it needs a dev build (`expo run:android`), not Expo Go. `GOOGLE_WEB_CLIENT_ID` in `.env` (→ `extra.googleWebClientId`) is required; the Android SHA-1s (debug + release) must be registered in Firebase or sign-in fails with `DEVELOPER_ERROR`. The config plugin is only added when `GOOGLE_IOS_CLIENT_ID` is set (it only configures iOS). Setup steps in README → "Google Sign-In setup"
 - **Hebrew everywhere**: Enums in `types/enums/` (category, difficulty, relatives) use Hebrew values; mock data in `mocks/recipes.ts` is Hebrew
 - **New Architecture**: always on since Expo SDK 55 (the `newArchEnabled` config key no longer exists) — the project is on SDK 57, use only libraries compatible with it
 - **No tests**: No testing framework configured
