@@ -107,7 +107,7 @@ Project agents live in `.claude/agents/`:
 
 ## Gotchas
 
-- **RTL forced**: `App.tsx` calls `I18nManager.forceRTL(true)` — all layouts are right-to-left for Hebrew
+- **RTL forced**: `App.tsx` calls `I18nManager.forceRTL(true)` — all layouts are right-to-left for Hebrew. That flag does NOT reach native Android views (`Alert.alert` dialogs, pickers), which follow the app locale — `plugins/withHebrewLocale.js` pins the Android app locale to Hebrew so they render RTL too; it is a native change, so rebuild with `expo run:android`
 - **Firebase credentials**: Hardcoded in `services/firebase/firebaseConfig.ts` — not environment-controlled
 - **Gemini API key**: Must be in `.env` as `GEMINI_API_KEY` and exposed via `app.config.js` `extra` — throws at runtime if missing
 - **Google Sign-In**: native module, so it needs a dev build (`expo run:android`), not Expo Go. `GOOGLE_WEB_CLIENT_ID` in `.env` (→ `extra.googleWebClientId`) is required; the Android SHA-1s (debug + release) must be registered in Firebase or sign-in fails with `DEVELOPER_ERROR`. The config plugin is only added when `GOOGLE_IOS_CLIENT_ID` is set (it only configures iOS). Setup steps in README → "Google Sign-In setup"

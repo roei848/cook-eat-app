@@ -31,6 +31,7 @@ export default ({ config }) => ({
   },
   plugins: [
     "./plugins/withReleaseSigning",
+    "./plugins/withHebrewLocale",
     "expo-status-bar",
     [
       "expo-splash-screen",
