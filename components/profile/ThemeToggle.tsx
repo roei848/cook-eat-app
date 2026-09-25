@@ -19,6 +19,12 @@ interface Props {
   onChange: (value: Theme) => void;
 }
 
+const OPTION_WIDTH = 60;
+
+// In both layouts (RTL `row`, LTR `row-reverse`) the first child sits on the
+// right, so the light option is always on the right and dark on the left.
+const OPTIONS_DIRECTION = I18nManager.isRTL ? "row" : "row-reverse";
+
 export default function ThemeToggle({ value, onChange }: Props) {
   const colors = useThemeColors();
   const translateX = useRef(
@@ -37,9 +43,15 @@ export default function ThemeToggle({ value, onChange }: Props) {
     }).start();
   }, [isDark]);
 
+  // The indicator is laid out in normal flow as the first child, so it rests
+  // exactly where the first option (light) is. Dark slides it one option to
+  // the left. Transforms are physical pixels, so no RTL branch is needed.
+  // (Don't make it `position: "absolute"` without insets: the New
+  // Architecture's Yoga places such a view at the container's flex-start,
+  // which is the right edge here, not at x = 0.)
   const indicatorTranslate = translateX.interpolate({
     inputRange: [0, 1],
-    outputRange: I18nManager.isRTL ? [64, 4] : [4, 64],
+    outputRange: [0, -OPTION_WIDTH],
   });
 
   return (
@@ -62,49 +74,51 @@ export default function ThemeToggle({ value, onChange }: Props) {
         ]}
       />
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => onChange("light")}
-        activeOpacity={0.85}
-      >
-        <Ionicons
-          name="sunny"
-          size={18}
-          color={!isDark ? colors.text.inverse : colors.text.secondary}
-        />
-        <Text
-          style={[
-            styles.text,
-            {
-              color: !isDark ? colors.text.inverse : colors.text.secondary,
-            },
-          ]}
+      <View style={styles.options}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => onChange("light")}
+          activeOpacity={0.85}
         >
-          בהיר
-        </Text>
-      </TouchableOpacity>
+          <Ionicons
+            name="sunny"
+            size={18}
+            color={!isDark ? colors.text.inverse : colors.text.secondary}
+          />
+          <Text
+            style={[
+              styles.text,
+              {
+                color: !isDark ? colors.text.inverse : colors.text.secondary,
+              },
+            ]}
+          >
+            בהיר
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => onChange("dark")}
-        activeOpacity={0.85}
-      >
-        <Ionicons
-          name="moon"
-          size={18}
-          color={isDark ? colors.text.inverse : colors.text.secondary}
-        />
-        <Text
-          style={[
-            styles.text,
-            {
-              color: isDark ? colors.text.inverse : colors.text.secondary,
-            },
-          ]}
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => onChange("dark")}
+          activeOpacity={0.85}
         >
-          כהה
-        </Text>
-      </TouchableOpacity>
+          <Ionicons
+            name="moon"
+            size={18}
+            color={isDark ? colors.text.inverse : colors.text.secondary}
+          />
+          <Text
+            style={[
+              styles.text,
+              {
+                color: isDark ? colors.text.inverse : colors.text.secondary,
+              },
+            ]}
+          >
+            כהה
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -114,19 +128,26 @@ const styles = StyleSheet.create({
     height: 48,
     width: 128,
     borderRadius: 24,
-    flexDirection: I18nManager.isRTL ? "row" : "row-reverse",
+    flexDirection: OPTIONS_DIRECTION,
     padding: 4,
     overflow: "hidden",
   },
   indicator: {
-    position: "absolute",
-    top: 4,
-    width: 60,
+    width: OPTION_WIDTH,
     height: 40,
     borderRadius: 20,
   },
+  options: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: OPTIONS_DIRECTION,
+    padding: 4,
+  },
   option: {
-    width: 60,
+    width: OPTION_WIDTH,
     justifyContent: "center",
     alignItems: "center",
   },
