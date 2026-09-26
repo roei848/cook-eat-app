@@ -11,7 +11,7 @@ export default ({ config }) => ({
   ...config,
   name: "cook-eat-app",
   slug: "cook-eat-app",
-  version: "1.0.1",
+  version: "1.0.2",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
@@ -24,7 +24,7 @@ export default ({ config }) => ({
       backgroundColor: "#F6F6EF",
     },
     package: "com.roei848.cookeatapp",
-    versionCode: 2,
+    versionCode: 3,
   },
   web: {
     favicon: "./assets/favicon.png",
