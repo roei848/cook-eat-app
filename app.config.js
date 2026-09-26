@@ -21,7 +21,7 @@ export default ({ config }) => ({
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/adaptive-icon.png",
-      backgroundColor: "#ffffff",
+      backgroundColor: "#F6F6EF",
     },
     package: "com.roei848.cookeatapp",
     versionCode: 2,
@@ -38,6 +38,9 @@ export default ({ config }) => ({
       {
         image: "./assets/splash-icon.png",
         resizeMode: "contain",
+        // Android 12+ shows the splash image inside a 192 dp circle; the badge
+        // is round, so 180 dp fills it without clipping (the default is 100).
+        imageWidth: 180,
         backgroundColor: "#FFFAF5",
       },
     ],

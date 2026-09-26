@@ -59,6 +59,7 @@ The app includes native modules (Google Sign-In, release signing), so it runs in
 ├── store/                   # Redux slices (auth, user, recipes)
 ├── services/firebase/       # Firebase services (auth, recipes, users, storage)
 ├── theme/                   # Light/dark color system
+├── scripts/logo_assets.py   # Regenerates the app icon set from assets/CookEatLogo.jpeg (needs Pillow)
 ├── types/                   # TypeScript interfaces & enums
 └── mocks/                   # Hebrew seed data
 ```

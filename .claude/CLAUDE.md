@@ -37,6 +37,7 @@ AuthStack        → Login → Register → ForgotPassword
 - `theme/` — Light/dark color system + `useThemeColors()` hook
 - `types/` — TypeScript interfaces + enums (Hebrew values)
 - `mocks/` — Hebrew seed data for Firebase
+- `assets/` — app icon set (`icon.png`, `adaptive-icon.png`, `splash-icon.png`, `favicon.png`) generated from `assets/CookEatLogo.jpeg` by `scripts/logo_assets.py` (Python + Pillow); rerun `python3 scripts/logo_assets.py build A assets` after changing the logo, then rebuild the native app
 
 ## State Management (Redux)
 
