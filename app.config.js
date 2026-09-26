@@ -11,7 +11,7 @@ export default ({ config }) => ({
   ...config,
   name: "cook-eat-app",
   slug: "cook-eat-app",
-  version: "1.1.0",
+  version: "1.0.1",
   orientation: "portrait",
   icon: "./assets/icon.png",
   userInterfaceStyle: "light",
