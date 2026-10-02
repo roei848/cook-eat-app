@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { View, Text, StyleSheet, Alert } from "react-native";
 import { registerWithEmail } from "../../services/firebase/authService";
+import Screen from "../Screen";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import FlatButton from "../../components/ui/FlatButton";
+import { useThemeColors } from "../../theme/useThemeColors";
+import { ThemeColors } from "../../theme/colors";
+import { typography } from "../../theme/typography";
+import { authErrorMessage } from "../../utils/authErrors";
 
 // TODO: Remove any type
 export default function RegisterScreen({ navigation }: { navigation: any }) {
+  const colors = useThemeColors();
+  const styles = createStyles(colors);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,86 +21,100 @@ export default function RegisterScreen({ navigation }: { navigation: any }) {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!name || !email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields");
+    if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+      Alert.alert("שגיאה", "יש למלא את כל השדות");
       return;
     }
 
     if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+      Alert.alert("שגיאה", "הסיסמאות אינן תואמות");
       return;
     }
 
     try {
       setLoading(true);
       await registerWithEmail(name.trim(), email.trim(), password.trim());
-    } catch (error: any) {
-      Alert.alert("Registration Failed", error.message);
+    } catch (error) {
+      Alert.alert("ההרשמה נכשלה", authErrorMessage(error));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
+    <Screen>
+      <View style={styles.container}>
+        <Text style={styles.title}>יצירת חשבון</Text>
 
-      <Input
-        label="Name"
-        placeholder="Enter your name"
-        value={name}
-        onChangeText={setName}
-      />
+        <Input
+          label="שם"
+          placeholder="איך קוראים לך?"
+          autoComplete="name"
+          textContentType="name"
+          value={name}
+          onChangeText={setName}
+        />
 
-      <Input
-        label="Email"
-        placeholder="Enter your email"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+        <Input
+          label="אימייל"
+          placeholder="name@example.com"
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="email-address"
+          autoComplete="email"
+          textContentType="emailAddress"
+          // Email addresses are Latin/LTR — same treatment as the URL field
+          textAlign="left"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-      <Input
-        label="Password"
-        placeholder="Enter your password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+        <Input
+          label="סיסמה"
+          placeholder="לפחות 6 תווים"
+          secureTextEntry
+          autoComplete="new-password"
+          textContentType="newPassword"
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      <Input
-        label="Confirm Password"
-        placeholder="Re-enter password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+        <Input
+          label="אימות סיסמה"
+          placeholder="הסיסמה פעם נוספת"
+          secureTextEntry
+          autoComplete="new-password"
+          textContentType="newPassword"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
 
-      <Button
-        title="Register"
-        onPress={handleRegister}
-        loading={loading}
-      />
+        <Button title="הרשמה" onPress={handleRegister} loading={loading} />
 
-      <FlatButton
-        title="Already have an account? Login"
-        onPress={() => navigation.navigate("Login")}
-        style={{ marginTop: 16 }}
-      />
-    </View>
+        <FlatButton
+          title="כבר יש לך חשבון? התחברות"
+          onPress={() => navigation.navigate("Login")}
+          disabled={loading}
+          style={styles.loginLink}
+        />
+      </View>
+    </Screen>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "700",
-    marginBottom: 30,
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+      justifyContent: "center",
+    },
+    title: {
+      ...typography.displayL,
+      color: colors.text.primary,
+      marginBottom: 30,
+    },
+    loginLink: {
+      marginTop: 16,
+    },
+  });

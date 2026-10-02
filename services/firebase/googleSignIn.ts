@@ -65,12 +65,14 @@ export async function requestGoogleIdToken(): Promise<string | null> {
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:
           return null;
+        // Known cases get this wrapper's own stable codes (not the native
+        // SDK's values) so UI copy — utils/authErrors.ts — can key on them.
         case statusCodes.IN_PROGRESS:
-          throw new GoogleSignInError("Sign-in is already in progress.", error.code);
+          throw new GoogleSignInError("Sign-in is already in progress.", "IN_PROGRESS");
         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
           throw new GoogleSignInError(
             "Google Play Services are not available on this device.",
-            error.code
+            "PLAY_SERVICES_NOT_AVAILABLE"
           );
         default:
           // DEVELOPER_ERROR (code 10) lands here: package name / SHA-1 not

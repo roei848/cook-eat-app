@@ -5,7 +5,7 @@ import { useThemeColors } from "../../theme/useThemeColors";
 import { typography } from "../../theme/typography";
 
 export default function OrDivider({
-  label = "or",
+  label = "או",
   style,
 }: {
   label?: string;
@@ -33,7 +33,5 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.caption,
-    textTransform: "uppercase",
-    letterSpacing: 1,
   },
 });

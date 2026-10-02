@@ -23,7 +23,7 @@ export default function GoogleSignInButton({
   onPress,
   loading = false,
   disabled = false,
-  title = "Continue with Google",
+  title = "המשך באמצעות Google",
   style,
 }: GoogleSignInButtonProps) {
   const colors = useThemeColors();
