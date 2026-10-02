@@ -9,7 +9,7 @@ const googleIosUrlScheme = googleIosClientId
 
 export default ({ config }) => ({
   ...config,
-  name: "cook-eat-app",
+  name: "CookEat",
   slug: "cook-eat-app",
   version: "1.0.3",
   orientation: "portrait",
